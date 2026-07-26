@@ -121,7 +121,7 @@
   .feature-row.right{ transform:translateX(40px); flex-direction:row-reverse; }
   .feature-row.visible{ opacity:1; transform:translateX(0); }
   .feature-visual{ flex:1; aspect-ratio:1; border-radius:20px; background:var(--bg-soft);
-    border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:3rem; color:var(--accent); }
+    border:1px solid var(--border); display:flex; align-items:center; justify-content:center; padding:2rem; }
   .feature-text{ flex:1; }
   .feature-tag{ display:inline-block; padding:.3rem .85rem; border-radius:999px; border:1px solid var(--border-strong);
     color:var(--text-dim); font-size:.8rem; font-weight:600; margin-bottom:1rem; }
@@ -129,17 +129,31 @@
   .feature-text p{ color:var(--text-dim); font-size:1rem; line-height:1.6; margin-bottom:1.4rem; }
   .feature-link{ color:var(--accent); font-weight:600; text-decoration:none; font-size:.92rem; }
 
-  /* ---------- About teaser ---------- */
-  #about{ background:var(--bg-soft); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
-  .about-teaser{ max-width:760px; margin:0 auto; text-align:center; opacity:0; transform:translateY(30px);
-    transition:opacity .7s, transform .7s; }
-  .about-teaser.visible{ opacity:1; transform:translateY(0); }
-  .author-avatar{ width:96px; height:96px; border-radius:50%; margin:0 auto 1.4rem;
-    background:var(--text); color:white; display:flex; align-items:center;
-    justify-content:center; font-size:2rem; font-weight:800; font-family:'Plus Jakarta Sans'; }
-  .about-teaser p.quote{ font-size:1.2rem; color:var(--text); line-height:1.6; margin-bottom:1.1rem; font-weight:500; }
-  .about-teaser .name{ font-weight:700; }
-  .about-teaser .role{ color:var(--text-dim); font-size:.88rem; margin-bottom:1.4rem; }
+  /* ---------- Feature mini mockups ---------- */
+  .mini-card{ background:white; border:1px solid var(--border); border-radius:16px; padding:1.4rem;
+    width:100%; max-width:280px; box-shadow:0 20px 40px -24px rgba(24,24,27,.15); }
+  .mini-card-row{ display:flex; gap:.5rem; margin-bottom:.6rem; }
+  .mini-domain-chip{ flex:1; background:var(--bg-soft); border:1px solid var(--border); border-radius:10px;
+    padding:.55rem .7rem; font-size:.66rem; color:var(--text-dim); font-weight:600; display:flex; flex-direction:column; gap:.2rem; }
+  .mini-domain-chip b{ font-size:.95rem; color:var(--text); font-family:'Plus Jakarta Sans'; }
+  .mini-filter-row{ display:flex; gap:.4rem; margin-top:.9rem; padding-top:.9rem; border-top:1px solid var(--border); }
+  .mini-filter-pill{ font-size:.66rem; font-weight:700; padding:.3rem .7rem; border-radius:999px; border:1px solid var(--border-strong); color:var(--text-dim); }
+  .mini-filter-pill.active{ background:var(--accent); border-color:var(--accent); color:white; }
+  .mini-mock-top{ display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:.92rem; margin-bottom:1rem; }
+  .mini-badge{ font-size:.6rem; font-weight:800; padding:.2rem .55rem; border-radius:999px; text-transform:uppercase; letter-spacing:.3px; }
+  .mini-badge.progress{ background:var(--gold-soft); color:var(--gold); }
+  .mini-mock-modules{ display:flex; gap:.6rem; margin-bottom:.9rem; }
+  .mini-mod{ flex:1; border:1px solid var(--border); border-radius:10px; padding:.55rem; font-size:.68rem; font-weight:700; color:var(--text-dim); display:flex; justify-content:space-between; align-items:center; }
+  .mini-mod.done{ color:var(--success); border-color:#bbf7d0; background:#f0fdf4; }
+  .mini-mod.active{ color:var(--accent); border-color:var(--accent-soft); background:var(--accent-soft); }
+  .mini-mock-bar{ height:6px; background:var(--bg-soft); border-radius:999px; overflow:hidden; margin-bottom:1.1rem; }
+  .mini-mock-fill{ height:100%; width:62%; background:var(--accent); border-radius:999px; }
+  .mini-resume-btn{ width:100%; background:var(--text); color:white; border:none; padding:.6rem; border-radius:8px; font-weight:700; font-size:.78rem; font-family:inherit; }
+  .mini-progress-head{ display:flex; justify-content:space-between; align-items:center; font-size:.85rem; font-weight:700; color:var(--text-dim); margin-bottom:.8rem; }
+  .mini-progress-head .mini-score{ font-size:1.1rem; color:var(--accent); font-family:'Plus Jakarta Sans'; }
+  .mini-chart{ width:100%; height:auto; margin-bottom:.8rem; }
+  .mini-progress-foot{ display:flex; justify-content:space-between; font-size:.72rem; color:var(--text-dim); font-weight:600; }
+  .mini-progress-foot .up{ color:var(--success); }
 
   /* ---------- CTA banner ---------- */
   .cta-banner{ max-width:960px; margin:0 auto; text-align:center; background:var(--accent-soft);
@@ -187,8 +201,6 @@
     <ul class="nav-links">
       <li><a href="question-bank.html">Question Bank</a></li>
       <li><a href="mocks.html">SAT Mocks</a></li>
-      <li><a href="kingdom.html">Kingdom <span class="new-badge">new</span></a></li>
-      <li><a href="about.html">About Author</a></li>
     </ul>
     <div class="nav-actions">
       <button class="btn-login" onclick="openModal('login')">Log in</button>
@@ -267,7 +279,23 @@
     </div>
 
     <div class="feature-row left">
-      <div class="feature-visual">📚</div>
+      <div class="feature-visual">
+        <div class="mini-card">
+          <div class="mini-card-row">
+            <span class="mini-domain-chip">Algebra<b>496</b></span>
+            <span class="mini-domain-chip">Advanced Math<b>135</b></span>
+          </div>
+          <div class="mini-card-row">
+            <span class="mini-domain-chip">Problem-Solving<b>146</b></span>
+            <span class="mini-domain-chip">Geometry<b>191</b></span>
+          </div>
+          <div class="mini-filter-row">
+            <span class="mini-filter-pill active">Easy</span>
+            <span class="mini-filter-pill">Medium</span>
+            <span class="mini-filter-pill">Hard</span>
+          </div>
+        </div>
+      </div>
       <div class="feature-text">
         <span class="feature-tag">Question Bank</span>
         <h3>Thousands of questions, sorted by skill</h3>
@@ -277,7 +305,17 @@
     </div>
 
     <div class="feature-row right">
-      <div class="feature-visual">⏱️</div>
+      <div class="feature-visual">
+        <div class="mini-card mini-mock-card">
+          <div class="mini-mock-top"><span>Mock Test 4</span><span class="mini-badge progress">In progress</span></div>
+          <div class="mini-mock-modules">
+            <div class="mini-mod done">M1 <span>✓</span></div>
+            <div class="mini-mod active">M2 <span>14:52</span></div>
+          </div>
+          <div class="mini-mock-bar"><div class="mini-mock-fill"></div></div>
+          <button class="mini-resume-btn">Resume test →</button>
+        </div>
+      </div>
       <div class="feature-text">
         <span class="feature-tag">SAT Mocks</span>
         <h3>Full-length exams, real timing</h3>
@@ -287,22 +325,21 @@
     </div>
 
     <div class="feature-row left">
-      <div class="feature-visual">📈</div>
+      <div class="feature-visual">
+        <div class="mini-card mini-progress-card">
+          <div class="mini-progress-head"><span>Your score history</span><span class="mini-score">1600</span></div>
+          <svg viewBox="0 0 220 90" class="mini-chart" preserveAspectRatio="none">
+            <polyline points="0,80 40,65 80,55 120,40 160,25 220,8" fill="none" stroke="#4338ca" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="220" cy="8" r="4" fill="#4338ca"/>
+          </svg>
+          <div class="mini-progress-foot"><span>12 mocks taken</span><span class="up">+190 pts</span></div>
+        </div>
+      </div>
       <div class="feature-text">
         <span class="feature-tag">Progress Tracking</span>
         <h3>See every point you gain</h3>
         <p>Your history, your weak spots, your growth curve — all in one place, so improvement isn't a guess. (Coming soon)</p>
       </div>
-    </div>
-  </section>
-
-  <section id="about">
-    <div class="about-teaser">
-      <div class="author-avatar">A</div>
-      <p class="quote">"I built SAT 1600 because I know exactly what it takes to chase a perfect score — and I wanted every student to have a real system for it, not vague tips."</p>
-      <div class="name">— The Author</div>
-      <div class="role">Founder, SAT 1600</div>
-      <a class="feature-link" href="about.html">Read the full story →</a>
     </div>
   </section>
 
@@ -318,7 +355,6 @@
     <div>
       <a href="question-bank.html">Question Bank</a>
       <a href="mocks.html">Mocks</a>
-      <a href="about.html">About Author</a>
     </div>
     <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
   </footer>
@@ -372,7 +408,7 @@
   });
 
   // --- Scroll reveal (scrollytelling) ---
-  const revealEls = document.querySelectorAll('.stat, .feature-row, .about-teaser, .cta-banner');
+  const revealEls = document.querySelectorAll('.stat, .feature-row, .cta-banner');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if(entry.isIntersecting){

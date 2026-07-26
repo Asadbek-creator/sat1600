@@ -51,9 +51,16 @@
   .btn-primary:hover{ background:#000; }
 
   .all-card{ border:1px solid var(--border-strong); border-radius:16px; padding:1.6rem; display:flex; align-items:center;
-    justify-content:space-between; background:var(--bg-soft); margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem; }
+    justify-content:space-between; background:var(--bg-soft); margin-bottom:1.4rem; flex-wrap:wrap; gap:1rem; }
   .all-card h3{ font-size:1.1rem; font-weight:700; }
   .all-card p{ color:var(--text-dim); font-size:.88rem; }
+
+  .filter-row{ display:flex; align-items:center; gap:.7rem; margin-bottom:2.2rem; flex-wrap:wrap; }
+  .filter-label{ font-size:.82rem; font-weight:700; color:var(--text-dim); margin-right:.2rem; }
+  .filter-pill{ border:1px solid var(--border-strong); background:white; color:var(--text-dim); font-weight:700; font-size:.82rem;
+    padding:.45rem 1rem; border-radius:999px; cursor:pointer; font-family:inherit; transition:.12s; }
+  .filter-pill:hover{ border-color:var(--accent); color:var(--text); }
+  .filter-pill.active{ background:var(--accent); border-color:var(--accent); color:white; }
 
   .note{ font-size:.82rem; color:var(--text-faint); border-top:1px solid var(--border); padding-top:1.2rem; }
   footer{ padding:2.6rem 5%; text-align:center; color:var(--text-faint); border-top:1px solid var(--border); font-size:.88rem; }
@@ -68,8 +75,6 @@
     <ul class="nav-links">
       <li><a href="question-bank.html" class="active">Question Bank</a></li>
       <li><a href="mocks.html">SAT Mocks</a></li>
-      <li><a href="kingdom.html">Kingdom <span class="new-badge">new</span></a></li>
-      <li><a href="about.html">About Author</a></li>
     </ul>
     <div class="nav-actions">
       <button class="btn-login">Log in</button>
@@ -89,7 +94,15 @@
         <h3>Mixed practice</h3>
         <p>60 random questions pulled from every domain — a quick, balanced session.</p>
       </div>
-      <a class="btn-primary" href="player.html?mode=bank&domain=All">Start mixed practice</a>
+      <button class="btn-primary" onclick="go('All')">Start mixed practice</button>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Difficulty:</span>
+      <button class="filter-pill active" data-diff="All" onclick="selectDifficulty('All')">All</button>
+      <button class="filter-pill" data-diff="Easy" onclick="selectDifficulty('Easy')">Easy</button>
+      <button class="filter-pill" data-diff="Medium" onclick="selectDifficulty('Medium')">Medium</button>
+      <button class="filter-pill" data-diff="Hard" onclick="selectDifficulty('Hard')">Hard</button>
     </div>
 
     <div class="domain-grid">
@@ -98,40 +111,53 @@
         <h3>Algebra</h3>
         <p>Linear equations, systems of equations, inequalities, and linear functions.</p>
         <div class="count">496 questions</div>
-        <a class="btn-primary" href="player.html?mode=bank&domain=Algebra">Practice Algebra</a>
+        <button class="btn-primary" onclick="go('Algebra')">Practice Algebra</button>
       </div>
       <div class="domain-card">
         <div class="icon">📐</div>
         <h3>Advanced Math</h3>
         <p>Quadratics, exponential functions, polynomials, and nonlinear equations.</p>
         <div class="count">135 questions</div>
-        <a class="btn-primary" href="player.html?mode=bank&domain=Advanced Math">Practice Advanced Math</a>
+        <button class="btn-primary" onclick="go('Advanced Math')">Practice Advanced Math</button>
       </div>
       <div class="domain-card">
         <div class="icon">📊</div>
         <h3>Problem-Solving &amp; Data Analysis</h3>
         <p>Ratios, percentages, scatterplots, statistics, and probability.</p>
         <div class="count">146 questions</div>
-        <a class="btn-primary" href="player.html?mode=bank&domain=Problem-Solving and Data Analysis">Practice Data Analysis</a>
+        <button class="btn-primary" onclick="go('Problem-Solving and Data Analysis')">Practice Data Analysis</button>
       </div>
       <div class="domain-card">
         <div class="icon">🔺</div>
         <h3>Geometry &amp; Trigonometry</h3>
         <p>Angles, triangles, circles, area/volume, and right-triangle trigonometry.</p>
         <div class="count">191 questions</div>
-        <a class="btn-primary" href="player.html?mode=bank&domain=Geometry and Trigonometry">Practice Geometry</a>
+        <button class="btn-primary" onclick="go('Geometry and Trigonometry')">Practice Geometry</button>
       </div>
     </div>
 
-    <p class="note">Note: domain tags are auto-classified by keyword matching, so a few questions may be filed under the wrong domain — this can be refined with manual review later. Practice sessions are capped at 60 questions and shuffled each time.</p>
+    <p class="note">Note: domain tags are auto-classified by keyword matching and difficulty (Easy/Medium/Hard) is an estimated heuristic based on question position, length and topic — both may be refined with manual review later. Practice sessions are capped at 60 questions and shuffled each time.</p>
+
+    <script>
+      let selectedDifficulty = 'All';
+      function selectDifficulty(d){
+        selectedDifficulty = d;
+        document.querySelectorAll('.filter-pill').forEach(el=>{
+          el.classList.toggle('active', el.dataset.diff === d);
+        });
+      }
+      function go(domain){
+        let url = `player.html?mode=bank&domain=${encodeURIComponent(domain)}`;
+        if(selectedDifficulty !== 'All') url += `&difficulty=${selectedDifficulty}`;
+        location.href = url;
+      }
+    </script>
   </div>
 
   <footer>
     <div>
       <a href="question-bank.html">Question Bank</a>
       <a href="mocks.html">Mocks</a>
-      <a href="kingdom.html">Kingdom</a>
-      <a href="about.html">About Author</a>
     </div>
     <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
   </footer>

@@ -43,7 +43,16 @@
   .info-banner{ display:flex; gap:.8rem; align-items:center; border:1px solid var(--border); background:var(--accent-soft);
     border-radius:12px; padding:1rem 1.3rem; margin-bottom:2rem; font-size:.9rem; color:var(--text); }
 
-  .mock-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1.1rem; }
+  .section-label{ font-size:.85rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.4px; margin:2.2rem 0 1rem; }
+  .section-label:first-of-type{ margin-top:0; }
+  .mock-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1.1rem; margin-bottom:.5rem; }
+  .mock-card.completed{ background:var(--success-soft); border-color:#bbf7d0; }
+  .mock-card.inprogress{ background:var(--gold-soft); border-color:#fde68a; }
+  .badge-done{ background:#dcfce7; color:var(--success); font-size:.68rem; font-weight:800; padding:.2rem .6rem; border-radius:999px; text-transform:uppercase; }
+  .badge-progress{ background:#fef3c7; color:var(--gold); font-size:.68rem; font-weight:800; padding:.2rem .6rem; border-radius:999px; text-transform:uppercase; }
+  .score-line{ font-size:.85rem; font-weight:700; color:var(--text); margin-bottom:.8rem; }
+  .btn-resume{ background:var(--gold); color:white; border:none; padding:.65rem 1rem; border-radius:8px; font-weight:700; font-size:.85rem; cursor:pointer; font-family:inherit; width:100%; text-decoration:none; text-align:center; display:block; }
+  .btn-resume:hover{ background:#8a3f07; }
   .mock-card{ border:1px solid var(--border); border-radius:14px; padding:1.3rem; position:relative; display:flex; flex-direction:column; }
   .mock-card .top-row{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.6rem; }
   .mock-card h3{ font-size:1.05rem; font-weight:700; }
@@ -73,8 +82,6 @@
     <ul class="nav-links">
       <li><a href="question-bank.html">Question Bank</a></li>
       <li><a href="mocks.html" class="active">SAT Mocks</a></li>
-      <li><a href="kingdom.html">Kingdom <span class="new-badge">new</span></a></li>
-      <li><a href="about.html">About Author</a></li>
     </ul>
     <div class="nav-actions">
       <button class="btn-login">Log in</button>
@@ -95,17 +102,18 @@
       ℹ️ Your first <b>10 mock tests are free</b>. Unlock more with coins — earn coins by solving questions, walking, or visiting the Market.
     </div>
 
+    <div id="completedSection"></div>
+    <div id="progressSection"></div>
+    <div class="section-label" id="availableLabel">Available tests</div>
     <div class="mock-grid" id="mockGrid"></div>
 
-    <p class="note">Preview note: these are the real practice questions from your uploaded book, scored against your provided answer key. Coin balance and unlock state are demo/sample for this preview — they'll persist for real once accounts are connected.</p>
+    <p class="note">Preview note: these are the real practice questions from your uploaded book, scored against your provided answer key. Coin balance and unlock state are demo/sample for now — completed/in-progress status is saved in this browser and will move to your real account once accounts are connected.</p>
   </div>
 
   <footer>
     <div>
       <a href="question-bank.html">Question Bank</a>
       <a href="mocks.html">Mocks</a>
-      <a href="kingdom.html">Kingdom</a>
-      <a href="about.html">About Author</a>
     </div>
     <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
   </footer>
@@ -117,10 +125,25 @@
   const TOTAL = 22;
   const unlocked = new Set(Array.from({length: FREE_COUNT}, (_,i)=>i+1));
 
+  function getProgress(n){
+    try{ return JSON.parse(localStorage.getItem(`sat1600_mock_${n}`)); }catch(e){ return null; }
+  }
+
   function render(){
     const grid = document.getElementById('mockGrid');
+    const completedWrap = document.getElementById('completedSection');
+    const progressWrap = document.getElementById('progressSection');
+    const availableLabel = document.getElementById('availableLabel');
+
+    const completed = [];
+    const inProgress = [];
     let html = '';
+
     for(let n=1; n<=TOTAL; n++){
+      const prog = getProgress(n);
+      if(prog && prog.status === 'completed'){ completed.push({n, prog}); continue; }
+      if(prog && prog.status === 'in_progress'){ inProgress.push({n, prog}); continue; }
+
       const isUnlocked = unlocked.has(n);
       html += `<div class="mock-card ${isUnlocked?'':'locked'}" id="card-${n}">
         <div class="top-row">
@@ -138,6 +161,34 @@
     }
     grid.innerHTML = html;
     document.getElementById('coinBalance').textContent = coins;
+
+    if(completed.length){
+      completedWrap.innerHTML = `<div class="section-label">Completed</div><div class="mock-grid">` +
+        completed.map(({n,prog}) => `
+          <div class="mock-card completed">
+            <div class="top-row"><h3>Mock Test ${n}</h3><span class="badge-done">✓ Completed</span></div>
+            <p>Full Math section · Module 1 &amp; Module 2 · 44 questions total.</p>
+            <div class="score-line">Score: ${prog.score} / ${prog.total} (${prog.pct}%)</div>
+            <a class="btn-start" href="player.html?mode=mock&test=${n}">Retake test</a>
+          </div>`).join('') + `</div>`;
+    } else {
+      completedWrap.innerHTML = '';
+    }
+
+    if(inProgress.length){
+      progressWrap.innerHTML = `<div class="section-label">In progress</div><div class="mock-grid">` +
+        inProgress.map(({n,prog}) => `
+          <div class="mock-card inprogress">
+            <div class="top-row"><h3>Mock Test ${n}</h3><span class="badge-progress">⏳ In progress</span></div>
+            <p>Full Math section · Module 1 &amp; Module 2 · 44 questions total.</p>
+            <div class="score-line">You left off at question ${(prog.idx||0)+1} of 44</div>
+            <a class="btn-resume" href="player.html?mode=mock&test=${n}">Resume test →</a>
+          </div>`).join('') + `</div>`;
+    } else {
+      progressWrap.innerHTML = '';
+    }
+
+    availableLabel.style.display = (completed.length || inProgress.length) ? 'block' : 'none';
   }
 
   function unlock(n){

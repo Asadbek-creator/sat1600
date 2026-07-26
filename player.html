@@ -105,21 +105,36 @@
   const params = new URLSearchParams(location.search);
   const mode = params.get('mode') || 'bank';
   const domainFilter = params.get('domain') || 'All';
+  const difficultyFilter = params.get('difficulty') || 'All';
   const testNum = params.get('test');
 
+  // --- Local progress store (per-browser today; swaps to Supabase once accounts land) ---
+  const MockProgress = {
+    key(n){ return `sat1600_mock_${n}`; },
+    get(n){ try{ return JSON.parse(localStorage.getItem(this.key(n))); }catch(e){ return null; } },
+    save(n, state){ try{ localStorage.setItem(this.key(n), JSON.stringify(state)); }catch(e){} },
+    clear(n){ try{ localStorage.removeItem(this.key(n)); }catch(e){} }
+  };
+
   let pool = [];
+  let resumedFrom = null;
   if(mode === 'mock' && testNum && QUESTIONS[testNum]){
     document.getElementById('backLink').href = 'mocks.html';
     document.getElementById('titleText').textContent = 'Mock Test ' + testNum;
     QUESTIONS[testNum].M1.forEach(q => pool.push({...q, module:'Module 1'}));
     QUESTIONS[testNum].M2.forEach(q => pool.push({...q, module:'Module 2'}));
+    const saved = MockProgress.get(testNum);
+    if(saved && saved.status === 'in_progress' && Array.isArray(saved.userAnswers) && saved.userAnswers.length === pool.length){
+      resumedFrom = saved;
+    }
   } else {
     document.getElementById('backLink').href = 'question-bank.html';
     document.getElementById('titleText').textContent = domainFilter === 'All' ? 'All Questions' : domainFilter;
     Object.keys(QUESTIONS).forEach(t=>{
       ['M1','M2'].forEach(m=>{
         QUESTIONS[t].M1 && QUESTIONS[t][m].forEach(q=>{
-          if(domainFilter === 'All' || q.domain === domainFilter){
+          if((domainFilter === 'All' || q.domain === domainFilter) &&
+             (difficultyFilter === 'All' || q.difficulty === difficultyFilter)){
             pool.push({...q, module:m, test:t});
           }
         });
@@ -130,12 +145,21 @@
     pool = pool.slice(0, 60); // cap a practice session at 60 questions
   }
 
-  document.getElementById('subText').textContent = `${pool.length} questions${mode==='mock' ? ' · Module 1 + Module 2' : ''}`;
+  document.getElementById('subText').textContent = `${pool.length} questions${mode==='mock' ? ' · Module 1 + Module 2' : ''}${difficultyFilter!=='All' ? ' · '+difficultyFilter : ''}`;
 
-  let idx = 0;
-  const userAnswers = new Array(pool.length).fill(null);
+  let idx = resumedFrom ? Math.min(resumedFrom.idx||0, pool.length-1) : 0;
+  const userAnswers = resumedFrom ? resumedFrom.userAnswers.slice() : new Array(pool.length).fill(null);
   const checkedState = new Array(pool.length).fill(false);
   let score = 0;
+
+  function saveMockProgress(){
+    if(mode !== 'mock' || !testNum) return;
+    MockProgress.save(testNum, { status:'in_progress', idx, userAnswers, updatedAt: Date.now() });
+  }
+  if(mode === 'mock' && testNum){
+    saveMockProgress(); // marks it in_progress the moment the test is opened
+    window.addEventListener('beforeunload', saveMockProgress);
+  }
 
   function parseFraction(s){
     if(s==null) return null;
@@ -160,7 +184,7 @@
     document.getElementById('progressFill').style.width = ((idx)/(pool.length))*100 + '%';
     document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
 
-    let html = `<div class="qmeta"><span class="domain-tag">${q.domain}${q.module ? ' · '+q.module : ''}</span><span class="qnum">Question ${idx+1} of ${pool.length}</span></div>`;
+    let html = `<div class="qmeta"><span class="domain-tag">${q.domain}${q.module ? ' · '+q.module : ''}${q.difficulty ? ' · '+q.difficulty : ''}</span><span class="qnum">Question ${idx+1} of ${pool.length}</span></div>`;
     if(q.images && q.images.length){
       q.images.forEach(src => { html += `<img class="qimg" src="${src}" alt="figure">`; });
     }
@@ -207,9 +231,11 @@
     document.querySelectorAll('.choice').forEach(el=>{
       el.classList.toggle('selected', el.dataset.letter === letter);
     });
+    saveMockProgress();
   }
   function onGridInput(val){
     userAnswers[idx] = val;
+    saveMockProgress();
   }
 
   function checkAnswer(){
@@ -242,9 +268,9 @@
     fb.textContent = isCorrect ? '✓ Correct!' : `✗ Not quite. Correct answer: ${correctVal !== undefined ? correctVal : pool[idx].answer}`;
   }
 
-  function prevQ(){ if(idx>0){ idx--; render(); } }
+  function prevQ(){ if(idx>0){ idx--; saveMockProgress(); render(); } }
   function nextQ(){
-    if(idx < pool.length-1){ idx++; render(); }
+    if(idx < pool.length-1){ idx++; saveMockProgress(); render(); }
     else { showEnd(); }
   }
 
@@ -266,6 +292,11 @@
       });
     }
     const pct = Math.round((finalScore/pool.length)*100);
+
+    if(mode === 'mock' && testNum){
+      MockProgress.save(testNum, { status:'completed', score: finalScore, total: pool.length, pct, completedAt: Date.now() });
+      window.removeEventListener('beforeunload', saveMockProgress);
+    }
 
     let breakdownHtml = '';
     if(mode === 'mock'){
