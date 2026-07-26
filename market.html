@@ -114,6 +114,7 @@
       <li><a href="mocks.html">SAT Mocks</a></li>
       <li><a href="missions.html">Missions</a></li>
       <li><a href="market.html" class="active">Market</a></li>
+      <li><a href="walk.html">Steps</a></li>
     </ul>
     <div class="nav-actions">
       <button class="btn-login" onclick="openModal('login')">Log in</button>
@@ -159,6 +160,12 @@
           <h3>Missions</h3>
           <p>Hit concrete goals — solve counts, topic mastery, streak milestones, mock scores — for one-time bonus payouts up to 100 coins.</p>
           <a href="missions.html">View missions →</a>
+        </div>
+        <div class="earn-card">
+          <div class="icon">🚶</div>
+          <h3>Daily steps</h3>
+          <p>Walk 10,000 steps in a day and log it — earn 10 coins once per day. Log your own count, or use the optional live tracker.</p>
+          <a href="walk.html">Log today's steps →</a>
         </div>
       </div>
     </div>
@@ -244,7 +251,8 @@
     if(reason.startsWith('question:')) return 'Question Bank — correct answer';
     if(reason.startsWith('mission:')) return 'Mission reward';
     if(reason.startsWith('unlock_mock:')) return 'Mock test unlock';
-    if(reason === 'daily_streak') return 'Daily streak bonus';
+    if(reason.startsWith('streak:')) return 'Daily streak bonus';
+    if(reason === 'daily_steps') return 'Daily steps bonus (10k+)';
     return reason;
   }
 
