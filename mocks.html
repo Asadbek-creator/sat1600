@@ -31,7 +31,26 @@
   .btn-login:hover{ background:var(--bg-soft); }
   .btn-signup { background: var(--text); border:none; color:white; font-weight:600;
     padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+  .nav-user{ font-size:.88rem; font-weight:600; color:var(--text-dim); padding:.55rem .3rem; }
   @media (max-width:900px){ .nav-links{ display:none; } }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.4); backdrop-filter:blur(2px);
+    display:none; align-items:center; justify-content:center; z-index:2000; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:white; border:1px solid var(--border); border-radius:16px; padding:2.2rem;
+    width:90%; max-width:380px; position:relative; box-shadow:0 30px 60px -20px rgba(0,0,0,.25); }
+  .modal h3{ font-size:1.3rem; margin-bottom:1.4rem; font-weight:700; color:var(--text); }
+  .modal input{ width:100%; padding:.75rem .9rem; margin-bottom:.9rem; border-radius:8px;
+    border:1px solid var(--border-strong); background:white; color:var(--text); font-size:.92rem; font-family:inherit; }
+  .modal input:focus{ outline:none; border-color:var(--accent); }
+  .modal .btn-primary{ width:100%; background:var(--text); color:white; border:none; padding:.75rem 1.3rem; border-radius:10px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  .modal .btn-primary:hover{ background:#000; }
+  .modal-close{ position:absolute; top:1.1rem; right:1.3rem; background:none; border:none; color:var(--text-faint);
+    font-size:1.3rem; cursor:pointer; }
+  .modal-switch{ text-align:center; margin-top:1.1rem; color:var(--text-dim); font-size:.88rem; }
+  .modal-switch a{ color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
+  .modal-note{ font-size:.78rem; color:var(--text-faint); text-align:center; margin-top:1rem; }
 
   .wrap{ max-width:1000px; margin:0 auto; padding:3rem 5% 5rem; }
   .page-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.6rem; flex-wrap:wrap; gap:1rem; }
@@ -84,8 +103,8 @@
       <li><a href="mocks.html" class="active">SAT Mocks</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="btn-login">Log in</button>
-      <button class="btn-signup">Sign up</button>
+      <button class="btn-login" onclick="openModal('login')">Log in</button>
+      <button class="btn-signup" onclick="openModal('signup')">Sign up</button>
     </div>
   </nav>
 
@@ -99,7 +118,7 @@
     </div>
 
     <div class="info-banner">
-      ℹ️ Your first <b>10 mock tests are free</b>. Unlock more with coins — earn coins by solving questions, walking, or visiting the Market.
+      ℹ️ Your first <b>10 mock tests are free</b>. Unlock more with coins earned by practicing.
     </div>
 
     <div id="completedSection"></div>
@@ -118,6 +137,27 @@
     <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
   </footer>
 
+  <!-- Login / Sign up modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Log in</h3>
+      <form onsubmit="return false;">
+        <input type="text" id="modalNameField" placeholder="Full name" style="display:none;">
+        <input type="email" id="modalEmailField" placeholder="Email address" autocomplete="email">
+        <input type="password" id="modalPasswordField" placeholder="Password" autocomplete="current-password">
+        <p id="modalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
+        <button class="btn-primary" type="submit" id="modalSubmit">Log in</button>
+      </form>
+      <div class="modal-switch">
+        <span id="modalSwitchText">Don't have an account? <a onclick="openModal('signup')">Sign up</a></span>
+      </div>
+      <p class="modal-note">Your account works across Question Bank, Mocks and progress tracking.</p>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/auth.js"></script>
 <script>
   let coins = 640;
   const UNLOCK_PRICE = 150;

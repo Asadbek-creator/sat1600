@@ -53,6 +53,7 @@
   .btn-signup { background: var(--text); border:none; color:white; font-weight:600;
     padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; transition: background .15s; font-family:inherit; }
   .btn-signup:hover{ background:#000; }
+  .nav-user{ font-size:.88rem; font-weight:600; color:var(--text-dim); padding:.55rem .3rem; }
 
   /* ---------- Hero ---------- */
   .hero { padding: 80px 5% 100px; max-width:1280px; margin:0 auto; }
@@ -364,49 +365,23 @@
     <div class="modal">
       <button class="modal-close" onclick="closeModal()">&times;</button>
       <h3 id="modalTitle">Log in</h3>
-      <form onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="return false;">
         <input type="text" id="modalNameField" placeholder="Full name" style="display:none;">
-        <input type="email" placeholder="Email address">
-        <input type="password" placeholder="Password">
+        <input type="email" id="modalEmailField" placeholder="Email address" autocomplete="email">
+        <input type="password" id="modalPasswordField" placeholder="Password" autocomplete="current-password">
+        <p id="modalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
         <button class="btn-primary" type="submit" id="modalSubmit">Log in</button>
       </form>
       <div class="modal-switch">
         <span id="modalSwitchText">Don't have an account? <a onclick="openModal('signup')">Sign up</a></span>
       </div>
-      <p class="modal-note">Front-end preview only — accounts aren't connected yet.</p>
+      <p class="modal-note">Your account works across Question Bank, Mocks and progress tracking.</p>
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/auth.js"></script>
 <script>
-  // --- Modal logic ---
-  function openModal(type){
-    document.getElementById('modalOverlay').classList.add('open');
-    setMode(type);
-  }
-  function closeModal(){
-    document.getElementById('modalOverlay').classList.remove('open');
-  }
-  function setMode(type){
-    const title = document.getElementById('modalTitle');
-    const nameField = document.getElementById('modalNameField');
-    const submit = document.getElementById('modalSubmit');
-    const switchText = document.getElementById('modalSwitchText');
-    if(type === 'signup'){
-      title.textContent = 'Create your account';
-      nameField.style.display = 'block';
-      submit.textContent = 'Sign up';
-      switchText.innerHTML = 'Already have an account? <a onclick="openModal(\'login\')">Log in</a>';
-    } else {
-      title.textContent = 'Log in';
-      nameField.style.display = 'none';
-      submit.textContent = 'Log in';
-      switchText.innerHTML = 'Don\'t have an account? <a onclick="openModal(\'signup\')">Sign up</a>';
-    }
-  }
-  document.getElementById('modalOverlay').addEventListener('click', function(e){
-    if(e.target === this) closeModal();
-  });
-
   // --- Scroll reveal (scrollytelling) ---
   const revealEls = document.querySelectorAll('.stat, .feature-row, .cta-banner');
   const observer = new IntersectionObserver((entries) => {
