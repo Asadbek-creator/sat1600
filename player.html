@@ -469,7 +469,7 @@
     document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
 
     if(mode === 'bank' && isCorrect && q.qkey && window.sbClient && loggedInUser){
-      window.sbClient.rpc('award_question_coin', { p_question_key: q.qkey, p_is_correct: true }).then(({data, error})=>{
+      window.sbClient.rpc('award_question_coin', { p_question_key: q.qkey, p_is_correct: true, p_domain: q.domain || null }).then(({data, error})=>{
         if(!error && data && data.awarded){
           if(window.currentUserProfile) window.currentUserProfile.coins = data.coins;
           if(window.updateNavCoinDisplay) window.updateNavCoinDisplay();
