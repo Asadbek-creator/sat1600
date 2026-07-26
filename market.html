@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketplace — SAT 1600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
+    --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-soft:#eef2ff;
+    --gold:#b45309; --gold-soft:#fffbeb; --danger:#dc2626; --success:#16a34a; --success-soft:#f0fdf4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg); color: var(--text); min-height:100vh; }
+  h1,h2{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
+  a{ color:inherit; }
+  nav { position: sticky; top:0; z-index:1000; display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 5%; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border-bottom:1px solid var(--border); }
+  .logo { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; text-decoration:none; color:var(--text); font-family:'Plus Jakarta Sans'; }
+  .logo span{ color:var(--accent); }
+  .nav-links { display:flex; gap:2.2rem; list-style:none; }
+  .nav-links a { text-decoration:none; color: var(--text-dim); font-size:0.925rem; font-weight:500; transition:.15s; display:inline-flex; align-items:center; gap:.4rem; }
+  .nav-links a.active, .nav-links a:hover { color: var(--text); }
+  .nav-actions { display:flex; gap:0.6rem; align-items:center; }
+  .btn-login { background:none; border:none; color:var(--text); font-weight:600; cursor:pointer; font-size:.9rem; padding:.55rem 1rem; font-family:inherit; border-radius:8px; }
+  .btn-login:hover{ background:var(--bg-soft); }
+  .btn-signup { background: var(--text); border:none; color:white; font-weight:600;
+    padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+  .nav-user{ font-size:.88rem; font-weight:600; color:var(--text-dim); padding:.55rem .3rem; }
+  .nav-coins{ font-size:.85rem; font-weight:700; color:var(--gold); background:var(--gold-soft); padding:.4rem .7rem; border-radius:999px; }
+  @media (max-width:900px){ .nav-links{ display:none; } }
+
+  .wrap{ max-width:960px; margin:0 auto; padding:3rem 5% 5rem; }
+  .page-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.4rem; flex-wrap:wrap; gap:1rem; }
+  .page-head h1{ font-size:clamp(2rem,5vw,2.6rem); font-weight:800; letter-spacing:-1px; margin-bottom:.4rem; }
+  .page-head p{ color:var(--text-dim); font-size:1.05rem; max-width:560px; }
+  .coin-chip{ display:flex; align-items:center; gap:.5rem; border:1px solid var(--border); border-radius:12px; padding:.8rem 1.2rem; background:var(--bg-soft); font-weight:800; font-size:1.15rem; }
+  .coin-chip span.lbl{ font-size:.7rem; color:var(--text-dim); font-weight:600; display:block; }
+
+  .guest-card{ border:1px solid var(--border); border-radius:16px; padding:2.4rem; text-align:center; margin-bottom:2.4rem; background:var(--bg-soft); }
+  .guest-card h3{ margin-bottom:.6rem; }
+  .guest-card p{ color:var(--text-dim); margin-bottom:1.4rem; }
+
+  .section-title{ font-size:1.3rem; font-weight:800; margin:2.4rem 0 .5rem; }
+  .section-sub{ color:var(--text-dim); font-size:.92rem; margin-bottom:1.4rem; }
+
+  .earn-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:1.1rem; }
+  .earn-card{ border:1px solid var(--border); border-radius:14px; padding:1.4rem; }
+  .earn-card .icon{ font-size:1.6rem; margin-bottom:.7rem; }
+  .earn-card h3{ font-size:1rem; font-weight:700; margin-bottom:.4rem; }
+  .earn-card p{ color:var(--text-dim); font-size:.85rem; margin-bottom:1rem; }
+  .earn-card a{ font-size:.85rem; font-weight:700; color:var(--accent); text-decoration:none; }
+  .earn-card a:hover{ text-decoration:underline; }
+
+  .pack-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:1.1rem; }
+  .pack-card{ border:1px solid var(--border); border-radius:14px; padding:1.6rem; text-align:center; position:relative; }
+  .pack-card.popular{ border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .pack-badge{ position:absolute; top:-.6rem; left:50%; transform:translateX(-50%); background:var(--accent); color:white;
+    font-size:.68rem; font-weight:800; padding:.25rem .7rem; border-radius:999px; text-transform:uppercase; }
+  .pack-coins{ font-size:1.8rem; font-weight:800; margin-bottom:.2rem; }
+  .pack-coins .u{ font-size:.9rem; color:var(--text-dim); font-weight:600; }
+  .pack-price{ color:var(--text-dim); font-size:.95rem; margin-bottom:1.2rem; }
+  .btn-buy{ display:block; width:100%; background:var(--text); color:white; border:none; padding:.75rem 1rem; border-radius:10px;
+    font-weight:700; font-size:.88rem; cursor:pointer; font-family:inherit; text-decoration:none; }
+  .btn-buy:hover{ background:#000; }
+
+  .contact-note{ border:1px solid var(--border); background:var(--accent-soft); border-radius:12px; padding:1.1rem 1.3rem;
+    font-size:.88rem; color:var(--text); margin-top:1.4rem; }
+  .contact-note a{ color:var(--accent); font-weight:700; text-decoration:none; }
+  .contact-note a:hover{ text-decoration:underline; }
+
+  .history-list{ border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .history-row{ display:flex; justify-content:space-between; padding:.85rem 1.2rem; font-size:.85rem; border-bottom:1px solid var(--border); }
+  .history-row:last-child{ border-bottom:none; }
+  .history-row .amt.pos{ color:var(--success); font-weight:700; }
+  .history-row .amt.neg{ color:var(--danger); font-weight:700; }
+  .history-empty{ padding:1.4rem; text-align:center; color:var(--text-faint); font-size:.88rem; }
+
+  footer{ padding:2.6rem 5%; text-align:center; color:var(--text-faint); border-top:1px solid var(--border); font-size:.88rem; }
+  footer a{ text-decoration:none; color:var(--text-dim); margin:0 .6rem; }
+  footer a:hover{ color:var(--text); }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.4); backdrop-filter:blur(2px);
+    display:none; align-items:center; justify-content:center; z-index:2000; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:white; border:1px solid var(--border); border-radius:16px; padding:2.2rem;
+    width:90%; max-width:380px; position:relative; box-shadow:0 30px 60px -20px rgba(0,0,0,.25); }
+  .modal h3{ font-size:1.3rem; margin-bottom:1.4rem; font-weight:700; color:var(--text); }
+  .modal input{ width:100%; padding:.75rem .9rem; margin-bottom:.9rem; border-radius:8px;
+    border:1px solid var(--border-strong); background:white; color:var(--text); font-size:.92rem; font-family:inherit; }
+  .modal input:focus{ outline:none; border-color:var(--accent); }
+  .modal .btn-primary{ width:100%; background:var(--text); color:white; border:none; padding:.75rem 1.3rem; border-radius:10px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  .modal .btn-primary:hover{ background:#000; }
+  .modal-close{ position:absolute; top:1.1rem; right:1.3rem; background:none; border:none; color:var(--text-faint);
+    font-size:1.3rem; cursor:pointer; }
+  .modal-switch{ text-align:center; margin-top:1.1rem; color:var(--text-dim); font-size:.88rem; }
+  .modal-switch a{ color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
+  .modal-note{ font-size:.78rem; color:var(--text-faint); text-align:center; margin-top:1rem; }
+  .btn-primary{ background:var(--text); color:white; border:none; padding:.75rem 1.3rem; border-radius:10px; font-weight:700;
+    font-size:.9rem; cursor:pointer; font-family:inherit; text-decoration:none; text-align:center; display:inline-block; }
+  .btn-primary:hover{ background:#000; }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">SAT<span>1600</span></a>
+    <ul class="nav-links">
+      <li><a href="question-bank.html">Question Bank</a></li>
+      <li><a href="mocks.html">SAT Mocks</a></li>
+      <li><a href="missions.html">Missions</a></li>
+      <li><a href="market.html" class="active">Market</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-login" onclick="openModal('login')">Log in</button>
+      <button class="btn-signup" onclick="openModal('signup')">Sign up</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <h1>Marketplace</h1>
+        <p>Coins unlock mock tests. Earn them for free by practicing, or buy a top-up if you want to unlock everything right away.</p>
+      </div>
+      <div class="coin-chip" id="balanceChip" style="display:none;">
+        <span>🪙 <span id="coinBalance">0</span><span class="lbl">Your balance</span></span>
+      </div>
+    </div>
+
+    <div class="guest-card" id="guestCard" style="display:none;">
+      <h3>Sign up to start earning coins</h3>
+      <p>Create a free account to track coins, streaks, missions and mock unlocks.</p>
+      <button class="btn-primary" onclick="openModal('signup')">Create a free account</button>
+    </div>
+
+    <div id="marketRoot">
+      <div class="section-title">Earn coins for free</div>
+      <div class="section-sub">Every coin here comes from actually practicing — nothing is required to purchase.</div>
+      <div class="earn-grid">
+        <div class="earn-card">
+          <div class="icon">📘</div>
+          <h3>Question Bank</h3>
+          <p>Earn 1 coin the first time you answer a question correctly. Coins are never re-earned for the same question.</p>
+          <a href="question-bank.html">Practice now →</a>
+        </div>
+        <div class="earn-card">
+          <div class="icon">🔥</div>
+          <h3>Daily streak</h3>
+          <p>Log in and practice every day. Your streak reward grows each day — day 7 pays 7 coins, day 20 pays 20, and so on.</p>
+          <a href="question-bank.html">Keep your streak →</a>
+        </div>
+        <div class="earn-card">
+          <div class="icon">🏆</div>
+          <h3>Missions</h3>
+          <p>Hit concrete goals — solve counts, topic mastery, streak milestones, mock scores — for one-time bonus payouts up to 100 coins.</p>
+          <a href="missions.html">View missions →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Buy coins</div>
+    <div class="section-sub">Prefer to skip the grind? Coin packages are arranged directly with the SAT1600 team — no card details are ever entered on this site.</div>
+    <div class="pack-grid">
+      <div class="pack-card">
+        <div class="pack-coins">150 <span class="u">coins</span></div>
+        <div class="pack-price">Unlocks 1 mock test</div>
+        <a class="btn-buy" href="mailto:asadbek1112009@gmail.com?subject=SAT1600%20coin%20purchase%20-%20150%20coins&body=Hi%2C%20I%27d%20like%20to%20buy%20150%20coins%20for%20my%20SAT1600%20account.%20My%20account%20email%20is%3A%20">Contact to buy</a>
+      </div>
+      <div class="pack-card popular">
+        <div class="pack-badge">Best value</div>
+        <div class="pack-coins">750 <span class="u">coins</span></div>
+        <div class="pack-price">Unlocks 5 mock tests</div>
+        <a class="btn-buy" href="mailto:asadbek1112009@gmail.com?subject=SAT1600%20coin%20purchase%20-%20750%20coins&body=Hi%2C%20I%27d%20like%20to%20buy%20750%20coins%20for%20my%20SAT1600%20account.%20My%20account%20email%20is%3A%20">Contact to buy</a>
+      </div>
+      <div class="pack-card">
+        <div class="pack-coins">1800 <span class="u">coins</span></div>
+        <div class="pack-price">Unlocks all remaining tests</div>
+        <a class="btn-buy" href="mailto:asadbek1112009@gmail.com?subject=SAT1600%20coin%20purchase%20-%201800%20coins&body=Hi%2C%20I%27d%20like%20to%20buy%201800%20coins%20for%20my%20SAT1600%20account.%20My%20account%20email%20is%3A%20">Contact to buy</a>
+      </div>
+    </div>
+    <div class="contact-note">
+      ✉️ Purchases are arranged manually — tap "Contact to buy" to email the SAT1600 team from your own inbox, mention your account email, and coins are added once payment is confirmed. Nothing is charged automatically on this page.
+    </div>
+
+    <div class="section-title">Recent coin activity</div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">Log in to see your coin history.</div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <a href="question-bank.html">Question Bank</a>
+      <a href="mocks.html">Mocks</a>
+      <a href="missions.html">Missions</a>
+      <a href="market.html">Market</a>
+    </div>
+    <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
+  </footer>
+
+  <!-- Login / Sign up modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Log in</h3>
+      <form onsubmit="return false;">
+        <input type="text" id="modalNameField" placeholder="Full name" style="display:none;">
+        <input type="email" id="modalEmailField" placeholder="Email address" autocomplete="email">
+        <input type="password" id="modalPasswordField" placeholder="Password" autocomplete="current-password">
+        <p id="modalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
+        <button class="btn-primary" type="submit" id="modalSubmit">Log in</button>
+      </form>
+      <div class="modal-switch">
+        <span id="modalSwitchText">Don't have an account? <a onclick="openModal('signup')">Sign up</a></span>
+      </div>
+      <p class="modal-note">Your account works across Question Bank, Mocks and progress tracking.</p>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  function escapeHtmlMk(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function timeAgo(iso){
+    const d = new Date(iso);
+    const diffMs = Date.now() - d.getTime();
+    const mins = Math.floor(diffMs/60000);
+    if(mins < 1) return 'just now';
+    if(mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins/60);
+    if(hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs/24);
+    return days + 'd ago';
+  }
+
+  function reasonLabel(reason){
+    if(!reason) return 'Coin activity';
+    if(reason.startsWith('question:')) return 'Question Bank — correct answer';
+    if(reason.startsWith('mission:')) return 'Mission reward';
+    if(reason.startsWith('unlock_mock:')) return 'Mock test unlock';
+    if(reason === 'daily_streak') return 'Daily streak bonus';
+    return reason;
+  }
+
+  async function loadMarket(){
+    if(!window.sbClient) return;
+    let session = null;
+    try{ const { data } = await window.sbClient.auth.getSession(); session = data && data.session; }catch(e){}
+
+    if(!session){
+      document.getElementById('guestCard').style.display = 'block';
+      document.getElementById('balanceChip').style.display = 'none';
+      document.getElementById('historyList').innerHTML = '<div class="history-empty">Log in to see your coin history.</div>';
+      return;
+    }
+    document.getElementById('guestCard').style.display = 'none';
+    document.getElementById('balanceChip').style.display = 'flex';
+
+    const [profileRes, eventsRes] = await Promise.all([
+      window.sbClient.from('profiles').select('coins').eq('id', session.user.id).single(),
+      window.sbClient.from('coin_events').select('amount, reason, created_at').order('created_at', { ascending:false }).limit(15)
+    ]);
+
+    document.getElementById('coinBalance').textContent = profileRes.data ? (profileRes.data.coins || 0) : 0;
+
+    const events = eventsRes.data || [];
+    const historyList = document.getElementById('historyList');
+    if(!events.length){
+      historyList.innerHTML = '<div class="history-empty">No coin activity yet — solve a question to earn your first coin.</div>';
+    } else {
+      historyList.innerHTML = events.map(e => `
+        <div class="history-row">
+          <span>${escapeHtmlMk(reasonLabel(e.reason))} · <span style="color:var(--text-faint);">${timeAgo(e.created_at)}</span></span>
+          <span class="amt ${e.amount >= 0 ? 'pos' : 'neg'}">${e.amount >= 0 ? '+' : ''}${e.amount}</span>
+        </div>`).join('');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(loadMarket, 300); });
+  document.addEventListener('sat1600:authchange', loadMarket);
+</script>
+</body>
+</html>

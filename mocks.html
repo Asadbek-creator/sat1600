@@ -103,6 +103,7 @@
       <li><a href="question-bank.html">Question Bank</a></li>
       <li><a href="mocks.html" class="active">SAT Mocks</a></li>
       <li><a href="missions.html">Missions</a></li>
+      <li><a href="market.html">Market</a></li>
     </ul>
     <div class="nav-actions">
       <button class="btn-login" onclick="openModal('login')">Log in</button>
@@ -128,7 +129,7 @@
     <div class="section-label" id="availableLabel">Available tests</div>
     <div class="mock-grid" id="mockGrid"></div>
 
-    <p class="note">Preview note: these are the real practice questions from your uploaded book, scored against your provided answer key. Coin balance and unlock state are demo/sample for now — completed/in-progress status is saved in this browser and will move to your real account once accounts are connected.</p>
+    <p class="note">These are the real practice questions from your uploaded book, scored against your provided answer key. Coin balance and unlock state are tied to your account — visit the <a href="market.html" style="color:var(--accent); font-weight:600;">Marketplace</a> to see how to earn or buy more coins.</p>
   </div>
 
   <footer>
@@ -161,7 +162,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-  let coins = 640;
+  let coins = 0;
+  let loggedIn = false;
   const UNLOCK_PRICE = 150;
   const FREE_COUNT = 10;
   const TOTAL = 22;
@@ -197,7 +199,7 @@
           ? `<a class="btn-start" href="player.html?mode=mock&test=${n}">Start Test</a>`
           : `<div class="price">🪙 ${UNLOCK_PRICE} coins</div>
              <button class="btn-unlock" onclick="unlock(${n})">Unlock</button>
-             <div class="msg" id="msg-${n}">Not enough coins — earn more by walking or solving questions.</div>`
+             <div class="msg" id="msg-${n}">${loggedIn ? 'Not enough coins — earn more in the Question Bank, streaks and missions, or visit the Marketplace.' : 'Log in to unlock mock tests with coins.'}</div>`
         }
       </div>`;
     }
@@ -233,17 +235,48 @@
     availableLabel.style.display = (completed.length || inProgress.length) ? 'block' : 'none';
   }
 
-  function unlock(n){
-    if(coins >= UNLOCK_PRICE){
-      coins -= UNLOCK_PRICE;
-      unlocked.add(n);
-      render();
-    } else {
-      document.getElementById('msg-'+n).classList.add('show');
+  async function loadUnlockState(){
+    if(!window.sbClient) { render(); return; }
+    let session = null;
+    try{ const { data } = await window.sbClient.auth.getSession(); session = data && data.session; }catch(e){}
+    loggedIn = !!session;
+    if(!session){ coins = 0; render(); return; }
+
+    const [profileRes, unlocksRes] = await Promise.all([
+      window.sbClient.from('profiles').select('coins').eq('id', session.user.id).single(),
+      window.sbClient.from('mock_unlocks').select('test_num')
+    ]);
+    coins = profileRes.data ? (profileRes.data.coins || 0) : 0;
+    (unlocksRes.data || []).forEach(row => unlocked.add(parseInt(row.test_num, 10)));
+    render();
+  }
+
+  async function unlock(n){
+    if(!loggedIn){ if(window.openModal) window.openModal('signup'); return; }
+    const btn = document.querySelector(`#card-${n} .btn-unlock`);
+    if(btn){ btn.disabled = true; btn.textContent = 'Unlocking…'; }
+    try{
+      const { data, error } = await window.sbClient.rpc('unlock_mock_test', { p_test_num: String(n) });
+      if(!error && data && data.unlocked){
+        unlocked.add(n);
+        if(typeof data.coins === 'number') coins = data.coins;
+        if(window.currentUserProfile && typeof data.coins === 'number') window.currentUserProfile.coins = data.coins;
+        if(window.updateNavCoinDisplay) window.updateNavCoinDisplay();
+        if(window.sat1600Toast) window.sat1600Toast('🔓 Mock Test ' + n + ' unlocked!', 2200);
+        render();
+      } else {
+        const msgEl = document.getElementById('msg-'+n);
+        if(msgEl){ msgEl.textContent = 'Not enough coins (need ' + UNLOCK_PRICE + ') — earn more or visit the Marketplace.'; msgEl.classList.add('show'); }
+        if(btn){ btn.disabled = false; btn.textContent = 'Unlock'; }
+      }
+    }catch(e){
+      if(btn){ btn.disabled = false; btn.textContent = 'Unlock'; }
     }
   }
 
   render();
+  document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(loadUnlockState, 300); });
+  document.addEventListener('sat1600:authchange', loadUnlockState);
 </script>
 </body>
 </html>
