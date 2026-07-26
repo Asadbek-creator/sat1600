@@ -420,7 +420,18 @@
     setupHighlightListener();
 
     if(mode === 'bank' && checkedState[idx]){
-      showFeedback(true);
+      const wasCorrect = !!(checkedState.__correct && checkedState.__correct[idx]);
+      if(q.type === 'mc'){
+        document.querySelectorAll('.choice').forEach(el=>{
+          const letter = el.dataset.letter;
+          if(letter === String(q.answer)) el.classList.add('correct');
+          else if(letter === userAnswers[idx]) el.classList.add('incorrect');
+        });
+      } else {
+        const inp = document.getElementById('gridInput');
+        if(inp) inp.classList.add(wasCorrect ? 'correct' : 'incorrect');
+      }
+      showFeedback(wasCorrect, q.answer);
     }
 
     if(window.renderMathInElement){
