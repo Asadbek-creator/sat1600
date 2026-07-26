@@ -482,7 +482,8 @@
   function showFeedback(isCorrect, correctVal){
     const fb = document.getElementById('feedback');
     fb.classList.add('show', isCorrect ? 'correct' : 'incorrect');
-    fb.textContent = isCorrect ? '✓ Correct!' : `✗ Not quite. Correct answer: ${correctVal !== undefined ? correctVal : pool[idx].answer}`;
+    const cv = correctVal !== undefined ? correctVal : pool[idx].answer;
+    fb.textContent = isCorrect ? '✓ Correct!' : `✗ Not quite. Correct answer: ${cv!=null && cv!=='' ? cv : 'N/A'}`;
   }
 
   function prevQ(){ if(idx>0){ idx--; saveMockProgress(); render(); } }
@@ -638,7 +639,7 @@
               <div class="ri-meta"><span>${q.domain}${q.module?' · '+q.module:''}</span><span>${q.difficulty||''}</span></div>
               <div class="ri-stem">${escapeHtml(q.stem)}</div>
               <div class="ri-ans">Your answer: <span class="wrong">${given!=null && given!=='' ? escapeHtml(String(given)) : '(blank)'}</span>
-                &nbsp;·&nbsp; Correct: <span class="right">${escapeHtml(String(q.answer))}</span></div>
+                &nbsp;·&nbsp; Correct: <span class="right">${q.answer!=null && q.answer!=='' ? escapeHtml(String(q.answer)) : 'N/A'}</span></div>
             </div>`).join('')}
         </div>
       </div>` : '';
