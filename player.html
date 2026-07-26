@@ -100,6 +100,8 @@
     <div class="end-screen hidden" id="endScreen"></div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/auth.js"></script>
 <script src="assets/qbank/questions.js"></script>
 <script>
   const params = new URLSearchParams(location.search);
@@ -116,49 +118,102 @@
     clear(n){ try{ localStorage.removeItem(this.key(n)); }catch(e){} }
   };
 
+  function qKey(t, m, num){ return `${t}_${m}_${num}`; }
+
   let pool = [];
   let resumedFrom = null;
-  if(mode === 'mock' && testNum && QUESTIONS[testNum]){
-    document.getElementById('backLink').href = 'mocks.html';
-    document.getElementById('titleText').textContent = 'Mock Test ' + testNum;
-    QUESTIONS[testNum].M1.forEach(q => pool.push({...q, module:'Module 1'}));
-    QUESTIONS[testNum].M2.forEach(q => pool.push({...q, module:'Module 2'}));
-    const saved = MockProgress.get(testNum);
-    if(saved && saved.status === 'in_progress' && Array.isArray(saved.userAnswers) && saved.userAnswers.length === pool.length){
-      resumedFrom = saved;
-    }
-  } else {
-    document.getElementById('backLink').href = 'question-bank.html';
-    document.getElementById('titleText').textContent = domainFilter === 'All' ? 'All Questions' : domainFilter;
-    Object.keys(QUESTIONS).forEach(t=>{
-      ['M1','M2'].forEach(m=>{
-        QUESTIONS[t].M1 && QUESTIONS[t][m].forEach(q=>{
-          if((domainFilter === 'All' || q.domain === domainFilter) &&
-             (difficultyFilter === 'All' || q.difficulty === difficultyFilter)){
-            pool.push({...q, module:m, test:t});
-          }
-        });
-      });
-    });
-    // shuffle for practice variety
-    for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-    pool = pool.slice(0, 60); // cap a practice session at 60 questions
+  let idx = 0;
+  let userAnswers = [];
+  let checkedState = [];
+  let score = 0;
+  let allSolved = false;
+  let loggedInUser = null;
+
+  async function getSolvedKeySet(){
+    if(!window.sbClient || !loggedInUser) return new Set();
+    try{
+      const { data, error } = await window.sbClient.from('solved_questions').select('question_key');
+      if(error || !data) return new Set();
+      return new Set(data.map(r => r.question_key));
+    }catch(e){ return new Set(); }
   }
 
-  document.getElementById('subText').textContent = `${pool.length} questions${mode==='mock' ? ' · Module 1 + Module 2' : ''}${difficultyFilter!=='All' ? ' · '+difficultyFilter : ''}`;
+  async function init(){
+    // resolve the session ourselves rather than depending on auth.js's own (racy) timing
+    if(window.sbClient){
+      try{
+        const { data } = await window.sbClient.auth.getSession();
+        loggedInUser = data && data.session ? data.session.user : null;
+      }catch(e){}
+    }
 
-  let idx = resumedFrom ? Math.min(resumedFrom.idx||0, pool.length-1) : 0;
-  const userAnswers = resumedFrom ? resumedFrom.userAnswers.slice() : new Array(pool.length).fill(null);
-  const checkedState = new Array(pool.length).fill(false);
-  let score = 0;
+    if(mode === 'mock' && testNum && QUESTIONS[testNum]){
+      document.getElementById('backLink').href = 'mocks.html';
+      document.getElementById('titleText').textContent = 'Mock Test ' + testNum;
+      QUESTIONS[testNum].M1.forEach(q => pool.push({...q, module:'Module 1'}));
+      QUESTIONS[testNum].M2.forEach(q => pool.push({...q, module:'Module 2'}));
+      const saved = MockProgress.get(testNum);
+      if(saved && saved.status === 'in_progress' && Array.isArray(saved.userAnswers) && saved.userAnswers.length === pool.length){
+        resumedFrom = saved;
+      }
+    } else {
+      document.getElementById('backLink').href = 'question-bank.html';
+      document.getElementById('titleText').textContent = domainFilter === 'All' ? 'All Questions' : domainFilter;
+      const solvedKeys = await getSolvedKeySet();
+      let skippedSolved = 0;
+      Object.keys(QUESTIONS).forEach(t=>{
+        ['M1','M2'].forEach(m=>{
+          QUESTIONS[t].M1 && QUESTIONS[t][m].forEach(q=>{
+            const key = qKey(t, m, q.num);
+            if((domainFilter === 'All' || q.domain === domainFilter) &&
+               (difficultyFilter === 'All' || q.difficulty === difficultyFilter)){
+              if(solvedKeys.has(key)){ skippedSolved++; return; }
+              pool.push({...q, module:m, test:t, qkey:key});
+            }
+          });
+        });
+      });
+      // shuffle for practice variety
+      for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+      if(pool.length === 0 && skippedSolved > 0){
+        allSolved = true;
+      }
+      pool = pool.slice(0, 60); // cap a practice session at 60 questions
+    }
+
+    document.getElementById('subText').textContent = allSolved
+      ? 'All caught up here!'
+      : `${pool.length} questions${mode==='mock' ? ' · Module 1 + Module 2' : ''}${difficultyFilter!=='All' ? ' · '+difficultyFilter : ''}`;
+
+    idx = resumedFrom ? Math.min(resumedFrom.idx||0, pool.length-1) : 0;
+    userAnswers = resumedFrom ? resumedFrom.userAnswers.slice() : new Array(pool.length).fill(null);
+    checkedState = new Array(pool.length).fill(false);
+
+    if(mode === 'mock' && testNum){
+      saveMockProgress(); // marks it in_progress the moment the test is opened
+      window.addEventListener('beforeunload', saveMockProgress);
+    }
+
+    if(allSolved){
+      renderAllSolved();
+    } else {
+      render();
+    }
+  }
+
+  function renderAllSolved(){
+    document.getElementById('qcard').innerHTML = `
+      <div style="text-align:center; padding:2rem 1rem;">
+        <div style="font-size:2.4rem; margin-bottom:.8rem;">🎉</div>
+        <h2 style="margin-bottom:.6rem;">You've solved every question here!</h2>
+        <p style="color:var(--text-dim); margin-bottom:1.4rem;">Try a different domain or difficulty from the Question Bank.</p>
+        <a href="question-bank.html" class="btn btn-primary" style="text-decoration:none; display:inline-block;">Back to Question Bank</a>
+      </div>`;
+  }
 
   function saveMockProgress(){
     if(mode !== 'mock' || !testNum) return;
     MockProgress.save(testNum, { status:'in_progress', idx, userAnswers, updatedAt: Date.now() });
-  }
-  if(mode === 'mock' && testNum){
-    saveMockProgress(); // marks it in_progress the moment the test is opened
-    window.addEventListener('beforeunload', saveMockProgress);
   }
 
   function parseFraction(s){
@@ -260,6 +315,16 @@
     checkedState.__correct[idx] = isCorrect;
     showFeedback(isCorrect, q.answer);
     document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
+
+    if(mode === 'bank' && isCorrect && q.qkey && window.sbClient && loggedInUser){
+      window.sbClient.rpc('award_question_coin', { p_question_key: q.qkey, p_is_correct: true }).then(({data, error})=>{
+        if(!error && data && data.awarded){
+          if(window.currentUserProfile) window.currentUserProfile.coins = data.coins;
+          if(window.updateNavCoinDisplay) window.updateNavCoinDisplay();
+          if(window.sat1600Toast) window.sat1600Toast('🪙 +1 coin!', 1800);
+        }
+      }).catch(()=>{});
+    }
   }
 
   function showFeedback(isCorrect, correctVal){
@@ -336,7 +401,7 @@
     `;
   }
 
-  render();
+  init();
 </script>
 </body>
 </html>
