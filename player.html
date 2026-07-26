@@ -82,6 +82,46 @@
   .breakdown-row{ display:flex; justify-content:space-between; font-size:.88rem; padding:.4rem 0; border-bottom:1px solid var(--border); }
 
   .hidden{ display:none !important; }
+
+  .topbar-actions{ display:flex; gap:.6rem; align-items:center; }
+  .btn-small{ padding:.5rem .9rem; border-radius:8px; border:1px solid var(--border-strong); background:white; color:var(--text);
+    font-weight:700; font-size:.8rem; cursor:pointer; font-family:inherit; }
+  .btn-small:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .nav-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.55); z-index:2000; display:flex;
+    align-items:center; justify-content:center; padding:2rem; }
+  .nav-panel{ background:white; border-radius:16px; max-width:640px; width:100%; max-height:85vh; overflow-y:auto; padding:1.8rem; }
+  .nav-panel h2{ font-size:1.15rem; margin-bottom:.3rem; }
+  .nav-panel .nav-sub{ color:var(--text-dim); font-size:.85rem; margin-bottom:1.2rem; }
+  .nav-module-label{ font-size:.78rem; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.03em;
+    margin:1rem 0 .5rem; }
+  .nav-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(42px,1fr)); gap:.5rem; }
+  .nav-chip{ aspect-ratio:1; border-radius:8px; border:1.5px solid var(--border-strong); background:white; font-weight:700;
+    font-size:.82rem; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-dim); }
+  .nav-chip.answered{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
+  .nav-chip.current{ outline:2px solid var(--text); outline-offset:1px; }
+  .nav-actions-row{ display:flex; justify-content:space-between; align-items:center; margin-top:1.6rem; gap:.8rem; }
+  .nav-legend{ display:flex; gap:1rem; font-size:.78rem; color:var(--text-dim); margin-top:.8rem; }
+  .nav-legend span{ display:flex; align-items:center; gap:.35rem; }
+  .legend-dot{ width:12px; height:12px; border-radius:4px; border:1.5px solid var(--border-strong); display:inline-block; }
+  .legend-dot.answered{ background:var(--accent-soft); border-color:var(--accent); }
+
+  mark.hl{ background:#fef08a; border-radius:2px; padding:0 1px; cursor:pointer; }
+  .hl-popup{ position:absolute; background:var(--text); color:white; font-size:.78rem; font-weight:700; padding:.4rem .7rem;
+    border-radius:8px; cursor:pointer; z-index:100; display:none; box-shadow:0 8px 20px -6px rgba(0,0,0,.4); }
+
+  .review-section{ text-align:left; max-width:560px; margin:1.6rem auto 0; }
+  .review-toggle{ background:none; border:1px solid var(--border-strong); border-radius:8px; padding:.6rem 1rem; font-weight:700;
+    font-size:.85rem; cursor:pointer; font-family:inherit; color:var(--text); width:100%; text-align:center; }
+  .review-list{ margin-top:1rem; display:flex; flex-direction:column; gap:.8rem; }
+  .review-item{ border:1px solid var(--border); border-radius:12px; padding:1rem; text-align:left; }
+  .review-item .ri-meta{ display:flex; justify-content:space-between; font-size:.75rem; color:var(--text-dim); margin-bottom:.5rem; font-weight:600; }
+  .review-item .ri-stem{ font-size:.92rem; margin-bottom:.6rem; }
+  .review-item .ri-ans{ font-size:.85rem; }
+  .review-item .ri-ans .wrong{ color:var(--danger); font-weight:700; }
+  .review-item .ri-ans .right{ color:var(--success); font-weight:700; }
+
+  .scaled-score{ font-size:1.1rem; color:var(--text-dim); margin-top:-.6rem; margin-bottom:1rem; }
 </style>
 </head>
 <body>
@@ -91,7 +131,10 @@
       <h1 id="titleText">Practice</h1>
       <div class="sub" id="subText">Loading…</div>
     </div>
-    <div class="score-chip" id="scoreChip">0 / 0</div>
+    <div class="topbar-actions">
+      <button type="button" class="btn-small hidden" id="reviewBtn" onclick="openNav()">Review</button>
+      <div class="score-chip" id="scoreChip">0 / 0</div>
+    </div>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
 
@@ -99,6 +142,11 @@
     <div class="qcard" id="qcard"></div>
     <div class="end-screen hidden" id="endScreen"></div>
   </div>
+
+  <div class="nav-overlay hidden" id="navOverlay">
+    <div class="nav-panel" id="navPanel"></div>
+  </div>
+  <div class="hl-popup" id="hlPopup">Highlight</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/auth.js"></script>
@@ -128,6 +176,90 @@
   let score = 0;
   let allSolved = false;
   let loggedInUser = null;
+  let highlights = {}; // id -> [[start,end], ...]
+  let pendingRange = null; // Range currently selected, awaiting highlight click
+
+  const SCORE_CURVE = [ [0,200],[10,300],[20,350],[30,400],[40,450],[50,500],[60,560],[70,620],[80,680],[90,740],[95,780],[100,800] ];
+  function scaledScore(pct){
+    for(let i=0;i<SCORE_CURVE.length-1;i++){
+      const [p0,s0]=SCORE_CURVE[i], [p1,s1]=SCORE_CURVE[i+1];
+      if(pct>=p0 && pct<=p1){
+        return Math.round((s0 + (s1-s0)*(pct-p0)/(p1-p0))/10)*10;
+      }
+    }
+    return 800;
+  }
+
+  function hlStorageKey(){ return mode==='mock' ? `sat1600_hl_mock_${testNum}` : 'sat1600_hl_bank'; }
+  function loadHighlights(){
+    try{ highlights = JSON.parse(localStorage.getItem(hlStorageKey())) || {}; }catch(e){ highlights = {}; }
+  }
+  function saveHighlights(){
+    try{ localStorage.setItem(hlStorageKey(), JSON.stringify(highlights)); }catch(e){}
+  }
+  function qId(i){
+    const q = pool[i];
+    return mode==='mock' ? `${testNum}_${i}` : (q.qkey || `bank_${i}`);
+  }
+  function stemHtmlWithHighlights(rawStem, ranges){
+    if(!ranges || !ranges.length) return escapeHtml(rawStem);
+    const sorted = ranges.slice().sort((a,b)=>a[0]-b[0]);
+    let html = '', pos = 0;
+    sorted.forEach(([s,e])=>{
+      if(s<pos || e<=s || e>rawStem.length) return;
+      html += escapeHtml(rawStem.slice(pos, s));
+      html += `<mark class="hl">${escapeHtml(rawStem.slice(s, e))}</mark>`;
+      pos = e;
+    });
+    html += escapeHtml(rawStem.slice(pos));
+    return html;
+  }
+  function offsetWithin(container, node, offset){
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    let total = 0, n;
+    while((n = walker.nextNode())){
+      if(n === node) return total + offset;
+      total += n.textContent.length;
+    }
+    return total;
+  }
+  function setupHighlightListener(){
+    const stemEl = document.getElementById('qstem');
+    if(!stemEl) return;
+    stemEl.addEventListener('mouseup', ()=>{
+      setTimeout(()=>{
+        const sel = window.getSelection();
+        const popup = document.getElementById('hlPopup');
+        if(!sel || sel.isCollapsed || sel.rangeCount===0){ popup.style.display='none'; pendingRange=null; return; }
+        const range = sel.getRangeAt(0);
+        if(!stemEl.contains(range.commonAncestorContainer)){ popup.style.display='none'; return; }
+        const startOffset = offsetWithin(stemEl, range.startContainer, range.startOffset);
+        const endOffset = offsetWithin(stemEl, range.endContainer, range.endOffset);
+        if(endOffset <= startOffset){ popup.style.display='none'; return; }
+        pendingRange = [startOffset, endOffset];
+        const rect = range.getBoundingClientRect();
+        popup.style.left = (rect.left + window.scrollX) + 'px';
+        popup.style.top = (rect.top + window.scrollY - 38) + 'px';
+        popup.style.display = 'block';
+      }, 5);
+    });
+    stemEl.addEventListener('click', (e)=>{
+      if(e.target && e.target.classList && e.target.classList.contains('hl')){
+        const id = qId(idx);
+        const q = pool[idx];
+        const clickedText = e.target.textContent;
+        const list = highlights[id] || [];
+        const startIdx = q.stem.indexOf(clickedText);
+        highlights[id] = list.filter(r => !(startIdx>=0 && r[0]<=startIdx && r[1]>=startIdx+clickedText.length));
+        saveHighlights();
+        render();
+      }
+    });
+  }
+  document.addEventListener('mousedown', (e)=>{
+    const popup = document.getElementById('hlPopup');
+    if(popup && e.target !== popup) popup.style.display = 'none';
+  });
 
   async function getSolvedKeySet(){
     if(!window.sbClient || !loggedInUser) return new Set();
@@ -139,6 +271,25 @@
   }
 
   async function init(){
+    loadHighlights();
+    const hlPopup = document.getElementById('hlPopup');
+    if(hlPopup){
+      hlPopup.onclick = ()=>{
+        if(pendingRange){
+          const id = qId(idx);
+          highlights[id] = highlights[id] || [];
+          highlights[id].push(pendingRange);
+          saveHighlights();
+          pendingRange = null;
+          hlPopup.style.display = 'none';
+          render();
+        }
+      };
+    }
+    if(mode === 'mock'){
+      const rb = document.getElementById('reviewBtn');
+      if(rb) rb.classList.remove('hidden');
+    }
     // resolve the session ourselves rather than depending on auth.js's own (racy) timing
     if(window.sbClient){
       try{
@@ -243,7 +394,7 @@
     if(q.images && q.images.length){
       q.images.forEach(src => { html += `<img class="qimg" src="${src}" alt="figure">`; });
     }
-    html += `<div class="qstem">${escapeHtml(q.stem)}</div>`;
+    html += `<div class="qstem" id="qstem">${stemHtmlWithHighlights(q.stem, highlights[qId(idx)])}</div>`;
 
     if(q.type === 'mc'){
       html += `<div class="choices" id="choicesWrap">`;
@@ -266,6 +417,7 @@
       </div>`;
 
     card.innerHTML = html;
+    setupHighlightListener();
 
     if(mode === 'bank' && checkedState[idx]){
       showFeedback(true);
@@ -336,7 +488,64 @@
   function prevQ(){ if(idx>0){ idx--; saveMockProgress(); render(); } }
   function nextQ(){
     if(idx < pool.length-1){ idx++; saveMockProgress(); render(); }
+    else if(mode === 'mock'){ openNav(); }
     else { showEnd(); }
+  }
+
+  function goToQuestion(i){
+    idx = i;
+    saveMockProgress();
+    closeNav();
+    render();
+  }
+
+  function buildNavHtml(){
+    const answeredCount = userAnswers.filter(a => a!=null && a!=='').length;
+    let body = '';
+    if(mode === 'mock'){
+      const m1 = pool.map((q,i)=>({q,i})).filter(x=>x.q.module==='Module 1');
+      const m2 = pool.map((q,i)=>({q,i})).filter(x=>x.q.module==='Module 2');
+      [['Module 1', m1], ['Module 2', m2]].forEach(([label, items])=>{
+        if(!items.length) return;
+        body += `<div class="nav-module-label">${label}</div><div class="nav-grid">`;
+        items.forEach(({q,i})=>{
+          const answered = userAnswers[i]!=null && userAnswers[i]!=='';
+          body += `<button type="button" class="nav-chip ${answered?'answered':''} ${i===idx?'current':''}" onclick="goToQuestion(${i})">${i+1}</button>`;
+        });
+        body += `</div>`;
+      });
+    } else {
+      body += `<div class="nav-grid">`;
+      pool.forEach((q,i)=>{
+        const answered = userAnswers[i]!=null && userAnswers[i]!=='';
+        body += `<button type="button" class="nav-chip ${answered?'answered':''} ${i===idx?'current':''}" onclick="goToQuestion(${i})">${i+1}</button>`;
+      });
+      body += `</div>`;
+    }
+    return `
+      <h2>Question Navigator</h2>
+      <div class="nav-sub">${answeredCount} of ${pool.length} answered</div>
+      ${body}
+      <div class="nav-legend">
+        <span><span class="legend-dot answered"></span> Answered</span>
+        <span><span class="legend-dot"></span> Unanswered</span>
+      </div>
+      <div class="nav-actions-row">
+        <button class="btn btn-ghost" onclick="closeNav()">← Back to Question</button>
+        <button class="btn btn-primary" onclick="submitTest()">Submit ${mode==='mock' ? 'Test' : 'Session'}</button>
+      </div>`;
+  }
+
+  function openNav(){
+    document.getElementById('navPanel').innerHTML = buildNavHtml();
+    document.getElementById('navOverlay').classList.remove('hidden');
+  }
+  function closeNav(){
+    document.getElementById('navOverlay').classList.add('hidden');
+  }
+  function submitTest(){
+    closeNav();
+    showEnd();
   }
 
   function showEnd(){
@@ -357,10 +566,30 @@
       });
     }
     const pct = Math.round((finalScore/pool.length)*100);
+    const scaled = mode==='mock' ? scaledScore(pct) : null;
 
     if(mode === 'mock' && testNum){
-      MockProgress.save(testNum, { status:'completed', score: finalScore, total: pool.length, pct, completedAt: Date.now() });
+      MockProgress.save(testNum, { status:'completed', score: finalScore, total: pool.length, pct, scaled, completedAt: Date.now() });
       window.removeEventListener('beforeunload', saveMockProgress);
+
+      if(window.sbClient && loggedInUser){
+        const m1Total = pool.filter(q=>q.module==='Module 1').length;
+        const m2Total = pool.filter(q=>q.module==='Module 2').length;
+        let m1ok=0, m2ok=0;
+        pool.forEach((q,i)=>{
+          const a = userAnswers[i]; if(a==null) return;
+          const ok = q.type==='mc' ? a===String(q.answer) : checkGrid(a,q.answer);
+          if(ok){ if(q.module==='Module 1') m1ok++; else m2ok++; }
+        });
+        window.sbClient.from('mock_attempts').insert({
+          user_id: loggedInUser.id,
+          test_num: testNum,
+          raw_score: finalScore,
+          total_questions: pool.length,
+          scaled_score: scaled,
+          module_breakdown: { module1:{correct:m1ok,total:m1Total}, module2:{correct:m2ok,total:m2Total} }
+        }).then(()=>{}).catch(()=>{});
+      }
     }
 
     let breakdownHtml = '';
@@ -392,12 +621,36 @@
         `<div class="breakdown-row"><span>${d}</span><span>${v.correct} / ${v.total}</span></div>`).join('') + '</div>';
     }
 
+    const wrongList = [];
+    pool.forEach((q,i)=>{
+      const a = userAnswers[i];
+      const ok = a!=null && (q.type==='mc' ? a===String(q.answer) : checkGrid(a,q.answer));
+      if(!ok) wrongList.push({q, i, given:a});
+    });
+    const reviewHtml = wrongList.length ? `
+      <div class="review-section">
+        <button type="button" class="review-toggle" onclick="document.getElementById('reviewList').classList.toggle('hidden')">
+          Review ${wrongList.length} missed question${wrongList.length===1?'':'s'}
+        </button>
+        <div class="review-list hidden" id="reviewList">
+          ${wrongList.map(({q,given})=>`
+            <div class="review-item">
+              <div class="ri-meta"><span>${q.domain}${q.module?' · '+q.module:''}</span><span>${q.difficulty||''}</span></div>
+              <div class="ri-stem">${escapeHtml(q.stem)}</div>
+              <div class="ri-ans">Your answer: <span class="wrong">${given!=null && given!=='' ? escapeHtml(String(given)) : '(blank)'}</span>
+                &nbsp;·&nbsp; Correct: <span class="right">${escapeHtml(String(q.answer))}</span></div>
+            </div>`).join('')}
+        </div>
+      </div>` : '';
+
     end.innerHTML = `
-      <div class="big">${pct}%</div>
+      <div class="big">${mode==='mock' ? scaled+' / 800' : pct+'%'}</div>
+      ${mode==='mock' ? `<div class="scaled-score">Estimated score · ${pct}% correct</div>` : ''}
       <h2>${finalScore} / ${pool.length} correct</h2>
       <p>${mode==='mock' ? 'Mock test complete — here is how you did by module.' : 'Practice session complete — here is your breakdown by domain.'}</p>
       ${breakdownHtml}
-      <a href="${mode==='mock' ? 'mocks.html' : 'question-bank.html'}" class="btn btn-primary" style="text-decoration:none; display:inline-block;">Back</a>
+      ${reviewHtml}
+      <a href="${mode==='mock' ? 'mocks.html' : 'question-bank.html'}" class="btn btn-primary" style="text-decoration:none; display:inline-block; margin-top:1.2rem;">Back</a>
     `;
   }
 
