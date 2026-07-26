@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Kingdom — SAT 1600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
+    --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-soft:#eef2ff;
+    --gold:#b45309; --gold-soft:#fffbeb; --danger:#dc2626; --success:#16a34a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg); color: var(--text); min-height:100vh; }
+  h1,h2,h3{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
+  a{ color:inherit; }
+
+  /* Nav (shared) */
+  nav { position: sticky; top:0; z-index:1000; display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 5%; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border-bottom:1px solid var(--border); }
+  .logo { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; text-decoration:none; color:var(--text); font-family:'Plus Jakarta Sans'; }
+  .logo span{ color:var(--accent); }
+  .nav-links { display:flex; gap:2.2rem; list-style:none; }
+  .nav-links a { text-decoration:none; color: var(--text-dim); font-size:0.925rem; font-weight:500; transition:.15s; display:inline-flex; align-items:center; gap:.4rem; }
+  .nav-links a.active, .nav-links a:hover { color: var(--text); }
+  .new-badge{ background:var(--gold-soft); color:var(--gold); font-size:.65rem; font-weight:700; padding:.1rem .4rem; border-radius:999px; letter-spacing:.3px; text-transform:uppercase; }
+  .nav-actions { display:flex; gap:0.6rem; align-items:center; }
+  .btn-login { background:none; border:none; color:var(--text); font-weight:600; cursor:pointer; font-size:.9rem; padding:.55rem 1rem; font-family:inherit; border-radius:8px; }
+  .btn-login:hover{ background:var(--bg-soft); }
+  .btn-signup { background: var(--text); border:none; color:white; font-weight:600;
+    padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+  @media (max-width:900px){ .nav-links{ display:none; } }
+
+  /* Game sub-tabs */
+  .tabbar{ display:flex; gap:.5rem; padding: 1.2rem 5% 0; max-width:1100px; margin:0 auto; }
+  .tab{ text-decoration:none; padding:.6rem 1.1rem; border-radius:8px 8px 0 0; font-size:.9rem; font-weight:600; color:var(--text-dim); border-bottom:2px solid transparent; }
+  .tab.active{ color:var(--text); border-bottom:2px solid var(--accent); }
+  .tab:hover{ color:var(--text); }
+
+  .wrap{ max-width:1100px; margin:0 auto; padding: 2rem 5% 5rem; }
+
+  /* Stat chips */
+  .stat-bar{ display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2.4rem; }
+  .stat-chip{ display:flex; align-items:center; gap:.6rem; border:1px solid var(--border); border-radius:12px; padding:.9rem 1.3rem; background:var(--bg-soft); }
+  .stat-chip .icon{ font-size:1.3rem; }
+  .stat-chip .val{ font-size:1.15rem; font-weight:800; font-family:'Plus Jakarta Sans'; }
+  .stat-chip .lbl{ font-size:.75rem; color:var(--text-dim); }
+  .stat-chip.coin .val{ color:var(--gold); }
+
+  /* Kingdom header */
+  .kingdom-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.6rem; flex-wrap:wrap; gap:1rem; }
+  .kingdom-head h1{ font-size:2rem; font-weight:800; letter-spacing:-1px; }
+  .kingdom-head p{ color:var(--text-dim); font-size:.95rem; margin-top:.3rem; }
+  .level-pill{ background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:.8rem; padding:.35rem .9rem; border-radius:999px; }
+
+  /* Land grid */
+  .land-board{ border:1px solid var(--border); border-radius:20px; padding:1.5rem; background:var(--bg-soft); margin-bottom:3rem; }
+  .land-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:.8rem; }
+  .plot{ aspect-ratio:1; border-radius:12px; border:1px solid var(--border); background:white; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:.3rem; font-size:1.6rem; position:relative; transition:transform .15s, box-shadow .15s; }
+  .plot.built{ border-color:var(--border-strong); }
+  .plot.empty{ color:var(--text-faint); border-style:dashed; cursor:pointer; }
+  .plot.empty:hover{ transform:translateY(-2px); box-shadow:0 8px 16px -8px rgba(24,24,27,.2); border-color:var(--accent); color:var(--accent); }
+  .plot .plot-label{ font-size:.62rem; font-weight:600; color:var(--text-dim); text-align:center; padding:0 .2rem; }
+  @media (max-width:700px){ .land-grid{ grid-template-columns:repeat(3,1fr); } }
+
+  /* Earn coins section */
+  .section-head{ margin-bottom:1.6rem; }
+  .section-head h2{ font-size:1.4rem; font-weight:800; letter-spacing:-.5px; margin-bottom:.4rem; }
+  .section-head p{ color:var(--text-dim); font-size:.95rem; }
+  .earn-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-bottom:3rem; }
+  .earn-card{ border:1px solid var(--border); border-radius:16px; padding:1.5rem; }
+  .earn-card .icon{ width:44px; height:44px; border-radius:10px; background:var(--gold-soft); color:var(--gold); display:flex;
+    align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:1rem; }
+  .earn-card h3{ font-size:1.05rem; font-weight:700; margin-bottom:.4rem; }
+  .earn-card p{ font-size:.88rem; color:var(--text-dim); line-height:1.5; }
+  .earn-card .reward{ font-weight:700; color:var(--gold); }
+  @media (max-width:800px){ .earn-grid{ grid-template-columns:1fr; } }
+
+  /* CTA row */
+  .cta-row{ display:flex; gap:1rem; flex-wrap:wrap; }
+  .btn-primary{ background:var(--text); padding:.9rem 1.7rem; border-radius:10px; border:none; color:white; font-weight:600;
+    font-size:.95rem; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  .btn-secondary{ padding:.9rem 1.7rem; border-radius:10px; border:1px solid var(--border-strong); background:white;
+    color:var(--text); font-weight:600; font-size:.95rem; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+
+  .note{ font-size:.8rem; color:var(--text-faint); margin-top:2.5rem; border-top:1px solid var(--border); padding-top:1.2rem; }
+
+  footer{ padding:2.6rem 5%; text-align:center; color:var(--text-faint); border-top:1px solid var(--border); font-size:.88rem; }
+  footer a{ text-decoration:none; color:var(--text-dim); margin:0 .6rem; }
+  footer a:hover{ color:var(--text); }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">SAT<span>1600</span></a>
+    <ul class="nav-links">
+      <li><a href="question-bank.html">Question Bank</a></li>
+      <li><a href="mocks.html">SAT Mocks</a></li>
+      <li><a href="kingdom.html" class="active">Kingdom <span class="new-badge">new</span></a></li>
+      <li><a href="about.html">About Author</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-login">Log in</button>
+      <button class="btn-signup">Sign up</button>
+    </div>
+  </nav>
+
+  <div class="tabbar">
+    <a href="kingdom.html" class="tab active">My Kingdom</a>
+    <a href="market.html" class="tab">Market</a>
+  </div>
+
+  <div class="wrap">
+    <div class="stat-bar">
+      <div class="stat-chip coin"><span class="icon">🪙</span><div><div class="val">640</div><div class="lbl">Coins</div></div></div>
+      <div class="stat-chip"><span class="icon">📈</span><div><div class="val">Level 3</div><div class="lbl">Kingdom rank</div></div></div>
+    </div>
+
+    <div class="kingdom-head">
+      <div>
+        <h1>Asadbek's Kingdom <span class="level-pill">Lvl 3</span></h1>
+        <p>Built from questions you've solved correctly. Keep practicing to grow your land.</p>
+      </div>
+    </div>
+
+    <div class="land-board">
+      <div class="land-grid">
+        <div class="plot built">🏰<span class="plot-label">Castle</span></div>
+        <div class="plot built">🏠<span class="plot-label">Cottage</span></div>
+        <div class="plot built">⛏️<span class="plot-label">Gold Mine</span></div>
+        <div class="plot built">🗼<span class="plot-label">Watchtower</span></div>
+        <div class="plot empty" onclick="window.location.href='market.html'">+<span class="plot-label">Build</span></div>
+        <div class="plot built">🏠<span class="plot-label">Cottage</span></div>
+        <div class="plot empty" onclick="window.location.href='market.html'">+<span class="plot-label">Build</span></div>
+        <div class="plot empty" onclick="window.location.href='market.html'">+<span class="plot-label">Build</span></div>
+        <div class="plot empty" onclick="window.location.href='market.html'">+<span class="plot-label">Build</span></div>
+        <div class="plot empty" onclick="window.location.href='market.html'">+<span class="plot-label">Build</span></div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>How you earn coins</h2>
+      <p>Every part of your studying feeds your kingdom — the game runs on real SAT practice.</p>
+    </div>
+    <div class="earn-grid">
+      <div class="earn-card">
+        <div class="icon">📚</div>
+        <h3>Solve a question</h3>
+        <p>Every correct answer in the Question Bank adds <span class="reward">+10 coins</span> to your treasury.</p>
+      </div>
+      <div class="earn-card">
+        <div class="icon">⏱️</div>
+        <h3>Finish a mock exam</h3>
+        <p>Complete a full-length mock and earn a <span class="reward">+200 coin</span> bonus, plus army strength based on your score.</p>
+      </div>
+      <div class="earn-card">
+        <div class="icon">🔥</div>
+        <h3>Keep a daily streak</h3>
+        <p>Practice every day to collect a <span class="reward">+50 coin</span> streak bonus, growing the longer it lasts.</p>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn-primary" href="market.html">Visit the Market</a>
+    </div>
+
+    <p class="note">Preview note: coins, army strength and land shown here are sample data for design purposes. Once accounts and the question bank are connected, these will update from your real practice activity.</p>
+  </div>
+
+  <footer>
+    <div>
+      <a href="question-bank.html">Question Bank</a>
+      <a href="mocks.html">Mocks</a>
+      <a href="kingdom.html">Kingdom</a>
+      <a href="about.html">About Author</a>
+    </div>
+    <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
+  </footer>
+</body>
+</html>

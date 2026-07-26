@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice — SAT 1600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
+    --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-soft:#eef2ff;
+    --gold:#b45309; --gold-soft:#fffbeb; --danger:#dc2626; --danger-soft:#fef2f2; --success:#16a34a; --success-soft:#f0fdf4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg-soft); color: var(--text); min-height:100vh; }
+  h1,h2,h3{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
+  a{ color:inherit; }
+
+  .topbar{ background:white; border-bottom:1px solid var(--border); padding:14px 5%; display:flex; align-items:center;
+    justify-content:space-between; position:sticky; top:0; z-index:50; }
+  .back-link{ text-decoration:none; color:var(--text-dim); font-weight:600; font-size:.88rem; }
+  .back-link:hover{ color:var(--text); }
+  .title-block{ text-align:center; }
+  .title-block h1{ font-size:1.05rem; font-weight:800; }
+  .title-block .sub{ font-size:.75rem; color:var(--text-dim); }
+  .score-chip{ font-size:.82rem; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:.4rem .8rem; border-radius:999px; }
+
+  .progress-track{ height:4px; background:var(--border); }
+  .progress-fill{ height:100%; background:var(--accent); transition:width .25s; }
+
+  .wrap{ max-width:760px; margin:0 auto; padding:2rem 5% 4rem; }
+
+  .qcard{ background:white; border:1px solid var(--border); border-radius:16px; padding:1.8rem; }
+  .qmeta{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; }
+  .domain-tag{ font-size:.72rem; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:.3rem .7rem; border-radius:999px; }
+  .qnum{ font-size:.8rem; color:var(--text-faint); font-weight:600; }
+  .qimg{ max-width:100%; border:1px solid var(--border); border-radius:10px; margin-bottom:1.2rem; display:block; }
+  .qstem{ font-size:1.08rem; font-weight:600; line-height:1.55; margin-bottom:1.4rem; }
+
+  .choices{ display:flex; flex-direction:column; gap:.7rem; margin-bottom:1rem; }
+  .choice{ display:flex; align-items:center; gap:.8rem; border:1px solid var(--border-strong); border-radius:10px;
+    padding:.8rem 1rem; cursor:pointer; font-size:.98rem; transition:border-color .12s, background .12s; text-align:left; background:white; }
+  .choice:hover{ border-color:var(--accent); }
+  .choice .letter{ width:26px; height:26px; border-radius:50%; border:1px solid var(--border-strong); display:flex;
+    align-items:center; justify-content:center; font-size:.78rem; font-weight:700; color:var(--text-dim); flex-shrink:0; }
+  .choice.selected{ border-color:var(--accent); background:var(--accent-soft); }
+  .choice.selected .letter{ background:var(--accent); border-color:var(--accent); color:white; }
+  .choice.correct{ border-color:var(--success); background:var(--success-soft); }
+  .choice.correct .letter{ background:var(--success); border-color:var(--success); color:white; }
+  .choice.incorrect{ border-color:var(--danger); background:var(--danger-soft); }
+  .choice.incorrect .letter{ background:var(--danger); border-color:var(--danger); color:white; }
+
+  .grid-input{ display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; }
+  .grid-input input{ flex:1; max-width:220px; padding:.8rem 1rem; border-radius:10px; border:1px solid var(--border-strong);
+    font-size:1rem; font-family:inherit; }
+  .grid-input input.correct{ border-color:var(--success); background:var(--success-soft); }
+  .grid-input input.incorrect{ border-color:var(--danger); background:var(--danger-soft); }
+
+  .feedback{ font-size:.88rem; font-weight:600; padding:.7rem 1rem; border-radius:10px; margin-bottom:1rem; display:none; }
+  .feedback.show{ display:block; }
+  .feedback.correct{ background:var(--success-soft); color:var(--success); }
+  .feedback.incorrect{ background:var(--danger-soft); color:var(--danger); }
+
+  .actions{ display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; gap:.8rem; }
+  .btn{ padding:.75rem 1.4rem; border-radius:10px; border:none; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  .btn-ghost{ background:white; border:1px solid var(--border-strong); color:var(--text); }
+  .btn-ghost:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn-primary{ background:var(--text); color:white; }
+  .btn-primary:hover{ background:#000; }
+  .btn-primary:disabled{ opacity:.4; cursor:not-allowed; }
+
+  .end-screen{ text-align:center; background:white; border:1px solid var(--border); border-radius:16px; padding:3rem 2rem; }
+  .end-screen .big{ font-size:3rem; font-weight:800; color:var(--accent); font-family:'Plus Jakarta Sans'; }
+  .end-screen h2{ font-size:1.4rem; margin:1rem 0 .5rem; }
+  .end-screen p{ color:var(--text-dim); margin-bottom:1.6rem; }
+  .breakdown{ text-align:left; max-width:360px; margin:0 auto 1.6rem; }
+  .breakdown-row{ display:flex; justify-content:space-between; font-size:.88rem; padding:.4rem 0; border-bottom:1px solid var(--border); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="#" id="backLink" class="back-link">← Back</a>
+    <div class="title-block">
+      <h1 id="titleText">Practice</h1>
+      <div class="sub" id="subText">Loading…</div>
+    </div>
+    <div class="score-chip" id="scoreChip">0 / 0</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="wrap">
+    <div class="qcard" id="qcard"></div>
+    <div class="end-screen hidden" id="endScreen"></div>
+  </div>
+
+<script src="assets/qbank/questions.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const mode = params.get('mode') || 'bank';
+  const domainFilter = params.get('domain') || 'All';
+  const testNum = params.get('test');
+
+  let pool = [];
+  if(mode === 'mock' && testNum && QUESTIONS[testNum]){
+    document.getElementById('backLink').href = 'mocks.html';
+    document.getElementById('titleText').textContent = 'Mock Test ' + testNum;
+    QUESTIONS[testNum].M1.forEach(q => pool.push({...q, module:'Module 1'}));
+    QUESTIONS[testNum].M2.forEach(q => pool.push({...q, module:'Module 2'}));
+  } else {
+    document.getElementById('backLink').href = 'question-bank.html';
+    document.getElementById('titleText').textContent = domainFilter === 'All' ? 'All Questions' : domainFilter;
+    Object.keys(QUESTIONS).forEach(t=>{
+      ['M1','M2'].forEach(m=>{
+        QUESTIONS[t].M1 && QUESTIONS[t][m].forEach(q=>{
+          if(domainFilter === 'All' || q.domain === domainFilter){
+            pool.push({...q, module:m, test:t});
+          }
+        });
+      });
+    });
+    // shuffle for practice variety
+    for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+    pool = pool.slice(0, 60); // cap a practice session at 60 questions
+  }
+
+  document.getElementById('subText').textContent = `${pool.length} questions${mode==='mock' ? ' · Module 1 + Module 2' : ''}`;
+
+  let idx = 0;
+  const userAnswers = new Array(pool.length).fill(null);
+  const checkedState = new Array(pool.length).fill(false);
+  let score = 0;
+
+  function parseFraction(s){
+    if(s==null) return null;
+    s = String(s).trim();
+    if(/^-?\d+\/\d+$/.test(s)){ const [n,d]=s.split('/').map(Number); return n/d; }
+    const n = parseFloat(s);
+    return isNaN(n) ? null : n;
+  }
+  function checkGrid(input, correctRaw){
+    const accepted = String(correctRaw).split('|').map(s=>s.trim());
+    const userNum = parseFraction(input);
+    return accepted.some(a=>{
+      const accNum = parseFraction(a);
+      if(userNum!=null && accNum!=null) return Math.abs(userNum-accNum) < 1e-6;
+      return input.trim() === a;
+    });
+  }
+
+  function render(){
+    const q = pool[idx];
+    const card = document.getElementById('qcard');
+    document.getElementById('progressFill').style.width = ((idx)/(pool.length))*100 + '%';
+    document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
+
+    let html = `<div class="qmeta"><span class="domain-tag">${q.domain}${q.module ? ' · '+q.module : ''}</span><span class="qnum">Question ${idx+1} of ${pool.length}</span></div>`;
+    if(q.images && q.images.length){
+      q.images.forEach(src => { html += `<img class="qimg" src="${src}" alt="figure">`; });
+    }
+    html += `<div class="qstem">${escapeHtml(q.stem)}</div>`;
+
+    if(q.type === 'mc'){
+      html += `<div class="choices" id="choicesWrap">`;
+      ['A','B','C','D'].forEach(letter=>{
+        const sel = userAnswers[idx] === letter ? 'selected' : '';
+        html += `<button type="button" class="choice ${sel}" data-letter="${letter}" onclick="selectChoice('${letter}')">
+          <span class="letter">${letter}</span><span>${escapeHtml(q.choices[letter])}</span></button>`;
+      });
+      html += `</div>`;
+    } else {
+      const val = userAnswers[idx] || '';
+      html += `<div class="grid-input"><input type="text" id="gridInput" placeholder="Enter your answer" value="${val}" oninput="onGridInput(this.value)"></div>`;
+    }
+
+    html += `<div class="feedback" id="feedback"></div>`;
+    html += `<div class="actions">
+        <button class="btn btn-ghost" id="prevBtn" onclick="prevQ()" ${idx===0?'disabled':''}>← Previous</button>
+        ${mode==='bank' ? `<button class="btn btn-primary" id="checkBtn" onclick="checkAnswer()">Check Answer</button>` : ''}
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQ()">${idx===pool.length-1 ? 'Finish' : 'Next →'}</button>
+      </div>`;
+
+    card.innerHTML = html;
+
+    if(mode === 'bank' && checkedState[idx]){
+      showFeedback(true);
+    }
+
+    if(window.renderMathInElement){
+      renderMathInElement(card, { delimiters: [{left:'$', right:'$', display:false}] });
+    }
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function selectChoice(letter){
+    if(mode==='bank' && checkedState[idx]) return;
+    userAnswers[idx] = letter;
+    document.querySelectorAll('.choice').forEach(el=>{
+      el.classList.toggle('selected', el.dataset.letter === letter);
+    });
+  }
+  function onGridInput(val){
+    userAnswers[idx] = val;
+  }
+
+  function checkAnswer(){
+    if(checkedState[idx]) return;
+    const q = pool[idx];
+    let isCorrect = false;
+    if(q.type === 'mc'){
+      isCorrect = userAnswers[idx] === String(q.answer);
+      document.querySelectorAll('.choice').forEach(el=>{
+        const letter = el.dataset.letter;
+        if(letter === String(q.answer)) el.classList.add('correct');
+        else if(letter === userAnswers[idx]) el.classList.add('incorrect');
+      });
+    } else {
+      isCorrect = userAnswers[idx] != null && checkGrid(userAnswers[idx], q.answer);
+      const inp = document.getElementById('gridInput');
+      inp.classList.add(isCorrect ? 'correct' : 'incorrect');
+    }
+    if(isCorrect) score++;
+    checkedState[idx] = true;
+    checkedState.__correct = checkedState.__correct || {};
+    checkedState.__correct[idx] = isCorrect;
+    showFeedback(isCorrect, q.answer);
+    document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
+  }
+
+  function showFeedback(isCorrect, correctVal){
+    const fb = document.getElementById('feedback');
+    fb.classList.add('show', isCorrect ? 'correct' : 'incorrect');
+    fb.textContent = isCorrect ? '✓ Correct!' : `✗ Not quite. Correct answer: ${correctVal !== undefined ? correctVal : pool[idx].answer}`;
+  }
+
+  function prevQ(){ if(idx>0){ idx--; render(); } }
+  function nextQ(){
+    if(idx < pool.length-1){ idx++; render(); }
+    else { showEnd(); }
+  }
+
+  function showEnd(){
+    document.getElementById('qcard').classList.add('hidden');
+    const end = document.getElementById('endScreen');
+    end.classList.remove('hidden');
+    document.getElementById('progressFill').style.width = '100%';
+
+    let finalScore = score;
+    if(mode === 'mock'){
+      // in mock mode we didn't check per-question; grade everything now
+      finalScore = 0;
+      pool.forEach((q,i)=>{
+        const a = userAnswers[i];
+        if(a==null) return;
+        if(q.type==='mc'){ if(a === String(q.answer)) finalScore++; }
+        else { if(checkGrid(a, q.answer)) finalScore++; }
+      });
+    }
+    const pct = Math.round((finalScore/pool.length)*100);
+
+    let breakdownHtml = '';
+    if(mode === 'mock'){
+      const m1Count = pool.filter(q=>q.module==='Module 1').length;
+      const m2Count = pool.filter(q=>q.module==='Module 2').length;
+      let m1c=0,m2c=0;
+      pool.forEach((q,i)=>{
+        const a = userAnswers[i]; if(a==null) return;
+        const ok = q.type==='mc' ? a===String(q.answer) : checkGrid(a,q.answer);
+        if(ok){ if(q.module==='Module 1') m1c++; else m2c++; }
+      });
+      breakdownHtml = `<div class="breakdown">
+        <div class="breakdown-row"><span>Module 1</span><span>${m1c} / ${m1Count}</span></div>
+        <div class="breakdown-row"><span>Module 2</span><span>${m2c} / ${m2Count}</span></div>
+      </div>`;
+    } else {
+      const domains = {};
+      pool.forEach((q,i)=>{
+        domains[q.domain] = domains[q.domain] || {correct:0, total:0};
+        domains[q.domain].total++;
+        const a = userAnswers[i];
+        if(a!=null){
+          const ok = q.type==='mc' ? a===String(q.answer) : checkGrid(a,q.answer);
+          if(ok) domains[q.domain].correct++;
+        }
+      });
+      breakdownHtml = '<div class="breakdown">' + Object.entries(domains).map(([d,v])=>
+        `<div class="breakdown-row"><span>${d}</span><span>${v.correct} / ${v.total}</span></div>`).join('') + '</div>';
+    }
+
+    end.innerHTML = `
+      <div class="big">${pct}%</div>
+      <h2>${finalScore} / ${pool.length} correct</h2>
+      <p>${mode==='mock' ? 'Mock test complete — here is how you did by module.' : 'Practice session complete — here is your breakdown by domain.'}</p>
+      ${breakdownHtml}
+      <a href="${mode==='mock' ? 'mocks.html' : 'question-bank.html'}" class="btn btn-primary" style="text-decoration:none; display:inline-block;">Back</a>
+    `;
+  }
+
+  render();
+</script>
+</body>
+</html>
