@@ -14,6 +14,60 @@
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   window.sbClient = sb; // exposed so other pages/scripts (mocks.html, player.html) can reuse the same client
   window.currentAuthUser = null;
+  window.currentUserProfile = null; // { coins, streak_count }
+
+  function showToast(html, ms) {
+    var el = document.createElement('div');
+    el.innerHTML = html;
+    el.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);' +
+      'background:#18181b;color:#fff;padding:.85rem 1.3rem;border-radius:12px;font-family:Inter,-apple-system,sans-serif;' +
+      'font-size:.9rem;font-weight:600;box-shadow:0 12px 30px -8px rgba(0,0,0,.4);z-index:4000;opacity:0;' +
+      'transition:opacity .25s, transform .25s;display:flex;align-items:center;gap:.5rem;';
+    document.body.appendChild(el);
+    requestAnimationFrame(function () {
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(-50%) translateY(-6px)';
+    });
+    setTimeout(function () {
+      el.style.opacity = '0';
+      setTimeout(function () { el.remove(); }, 300);
+    }, ms || 3200);
+  }
+  window.sat1600Toast = showToast;
+
+  async function fetchProfile(userId) {
+    try {
+      var res = await sb.from('profiles').select('coins, streak_count').eq('id', userId).single();
+      if (res.error) return { coins: 0, streak_count: 0 };
+      return res.data || { coins: 0, streak_count: 0 };
+    } catch (e) {
+      return { coins: 0, streak_count: 0 };
+    }
+  }
+
+  async function bumpStreakIfNeeded() {
+    if (!window.currentAuthUser) return;
+    try {
+      var res = await sb.rpc('bump_daily_streak');
+      if (res.error) return;
+      var d = res.data;
+      if (d && d.changed) {
+        if (window.currentUserProfile) {
+          window.currentUserProfile.streak_count = d.streak;
+          window.currentUserProfile.coins = d.coins;
+        }
+        updateNavCoinDisplay();
+        showToast('🔥 Day ' + d.streak + ' streak — +' + d.reward + ' coin' + (d.reward === 1 ? '' : 's') + '!');
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  function updateNavCoinDisplay() {
+    var coinEl = document.getElementById('navCoinCount');
+    if (coinEl && window.currentUserProfile) coinEl.textContent = window.currentUserProfile.coins;
+  }
+  window.updateNavCoinDisplay = updateNavCoinDisplay;
+  window.sat1600FetchProfile = fetchProfile;
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -39,20 +93,27 @@
     var session = data.session;
     window.currentAuthUser = session ? session.user : null;
 
-    if (!navActions) return;
-
     if (window.currentAuthUser) {
-      navActions.innerHTML =
-        '<span class="nav-user">Hi, ' + escapeHtml(firstName(window.currentAuthUser)) + '</span>' +
-        '<button class="btn-login" onclick="handleSignOut()">Log out</button>';
+      window.currentUserProfile = await fetchProfile(window.currentAuthUser.id);
     } else {
-      navActions.innerHTML =
-        '<button class="btn-login" onclick="openModal(\'login\')">Log in</button>' +
-        '<button class="btn-signup" onclick="openModal(\'signup\')">Sign up</button>';
+      window.currentUserProfile = null;
     }
 
-    // let other scripts on the page (e.g. mocks.html) react to auth state
-    document.dispatchEvent(new CustomEvent('sat1600:authchange', { detail: { user: window.currentAuthUser } }));
+    if (navActions) {
+      if (window.currentAuthUser) {
+        navActions.innerHTML =
+          '<span class="nav-user">Hi, ' + escapeHtml(firstName(window.currentAuthUser)) + '</span>' +
+          '<span class="nav-coins">🪙 <span id="navCoinCount">' + (window.currentUserProfile ? window.currentUserProfile.coins : 0) + '</span></span>' +
+          '<button class="btn-login" onclick="handleSignOut()">Log out</button>';
+      } else {
+        navActions.innerHTML =
+          '<button class="btn-login" onclick="openModal(\'login\')">Log in</button>' +
+          '<button class="btn-signup" onclick="openModal(\'signup\')">Sign up</button>';
+      }
+    }
+
+    // let other scripts on the page (e.g. mocks.html, player.html) react to auth state
+    document.dispatchEvent(new CustomEvent('sat1600:authchange', { detail: { user: window.currentAuthUser, profile: window.currentUserProfile } }));
   }
 
   function openModal(type) {
@@ -162,8 +223,9 @@
   window.setMode = setMode;
   window.handleSignOut = handleSignOut;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    refreshAuthUI();
+  document.addEventListener('DOMContentLoaded', async function () {
+    await refreshAuthUI();
+    bumpStreakIfNeeded();
     var overlay = document.getElementById('modalOverlay');
     if (overlay) {
       overlay.addEventListener('click', function (e) {
