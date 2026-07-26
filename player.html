@@ -151,6 +151,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/auth.js"></script>
 <script src="assets/qbank/questions.js"></script>
+<script src="assets/qbank/bank_questions.js"></script>
 <script>
   const params = new URLSearchParams(location.search);
   const mode = params.get('mode') || 'bank';
@@ -167,6 +168,7 @@
   };
 
   function qKey(t, m, num){ return `${t}_${m}_${num}`; }
+  function bankQKey(domain, num){ return `bank_${String(domain).replace(/\s+/g,'_')}_${num}`; }
 
   let pool = [];
   let resumedFrom = null;
@@ -175,6 +177,7 @@
   let checkedState = [];
   let score = 0;
   let allSolved = false;
+  let noContent = false;
   let loggedInUser = null;
   let highlights = {}; // id -> [[start,end], ...]
   let pendingRange = null; // Range currently selected, awaiting highlight click
@@ -308,32 +311,36 @@
         resumedFrom = saved;
       }
     } else {
+      // Bank mode draws ONLY from BANK_QUESTIONS (assets/qbank/bank_questions.js) — a data source
+      // kept intentionally separate from the mock-test QUESTIONS object (assets/qbank/questions.js)
+      // so that practicing here can never expose a question that also appears in a paid mock test.
       document.getElementById('backLink').href = 'question-bank.html';
       document.getElementById('titleText').textContent = domainFilter === 'All' ? 'All Questions' : domainFilter;
       const solvedKeys = await getSolvedKeySet();
       let skippedSolved = 0;
-      Object.keys(QUESTIONS).forEach(t=>{
-        ['M1','M2'].forEach(m=>{
-          QUESTIONS[t].M1 && QUESTIONS[t][m].forEach(q=>{
-            const key = qKey(t, m, q.num);
-            if((domainFilter === 'All' || q.domain === domainFilter) &&
-               (difficultyFilter === 'All' || q.difficulty === difficultyFilter)){
-              if(solvedKeys.has(key)){ skippedSolved++; return; }
-              pool.push({...q, module:m, test:t, qkey:key});
-            }
-          });
+      const bank = (typeof BANK_QUESTIONS !== 'undefined') ? BANK_QUESTIONS : {};
+      const domains = domainFilter === 'All' ? Object.keys(bank) : [domainFilter];
+      domains.forEach(d=>{
+        (bank[d] || []).forEach(q=>{
+          const key = q.qkey || bankQKey(d, q.num);
+          if(difficultyFilter === 'All' || q.difficulty === difficultyFilter){
+            if(solvedKeys.has(key)){ skippedSolved++; return; }
+            pool.push({...q, module:null, test:null, qkey:key, domain:q.domain || d});
+          }
         });
       });
       // shuffle for practice variety
       for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-      if(pool.length === 0 && skippedSolved > 0){
-        allSolved = true;
+      if(pool.length === 0){
+        if(skippedSolved > 0){ allSolved = true; } else { noContent = true; }
       }
       pool = pool.slice(0, 60); // cap a practice session at 60 questions
     }
 
     document.getElementById('subText').textContent = allSolved
       ? 'All caught up here!'
+      : noContent
+      ? 'Coming soon'
       : `${pool.length} questions${mode==='mock' ? ' · Module 1 + Module 2' : ''}${difficultyFilter!=='All' ? ' · '+difficultyFilter : ''}`;
 
     idx = resumedFrom ? Math.min(resumedFrom.idx||0, pool.length-1) : 0;
@@ -347,6 +354,8 @@
 
     if(allSolved){
       renderAllSolved();
+    } else if(noContent){
+      renderNoContent();
     } else {
       render();
     }
@@ -358,6 +367,16 @@
         <div style="font-size:2.4rem; margin-bottom:.8rem;">🎉</div>
         <h2 style="margin-bottom:.6rem;">You've solved every question here!</h2>
         <p style="color:var(--text-dim); margin-bottom:1.4rem;">Try a different domain or difficulty from the Question Bank.</p>
+        <a href="question-bank.html" class="btn btn-primary" style="text-decoration:none; display:inline-block;">Back to Question Bank</a>
+      </div>`;
+  }
+
+  function renderNoContent(){
+    document.getElementById('qcard').innerHTML = `
+      <div style="text-align:center; padding:2rem 1rem;">
+        <div style="font-size:2.4rem; margin-bottom:.8rem;">🚧</div>
+        <h2 style="margin-bottom:.6rem;">Question Bank content is coming soon</h2>
+        <p style="color:var(--text-dim); margin-bottom:1.4rem;">We're adding fresh practice questions for this domain — check back soon.</p>
         <a href="question-bank.html" class="btn btn-primary" style="text-decoration:none; display:inline-block;">Back to Question Bank</a>
       </div>`;
   }
