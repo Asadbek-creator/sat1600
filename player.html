@@ -149,9 +149,28 @@
   .ref-facts{ margin-top:1.6rem; padding-top:1.1rem; border-top:1px solid var(--border); font-size:.85rem;
     color:var(--text); line-height:2; }
   .ref-facts .fact-num{ font-weight:800; color:var(--accent); margin-right:.4rem; }
+
+  .practice-banner{ background:#111827; color:#fff; text-align:center; font-weight:800; font-size:.74rem;
+    letter-spacing:.09em; padding:.5rem 0; text-transform:uppercase; }
+
+  .timer-wrap{ display:flex; align-items:center; gap:.5rem; }
+  .timer-chip{ display:flex; align-items:center; gap:.4rem; font-size:.88rem; font-weight:800; color:var(--text);
+    background:var(--bg-soft); border:1px solid var(--border-strong); padding:.45rem .85rem; border-radius:999px;
+    font-variant-numeric:tabular-nums; }
+  .timer-chip.low{ color:var(--danger); border-color:var(--danger); background:var(--danger-soft); }
+  .timer-icon{ font-size:.85rem; }
+  .timer-hide-btn{ background:none; border:1px solid var(--border-strong); border-radius:999px; padding:.35rem .7rem;
+    font-size:.72rem; font-weight:700; cursor:pointer; color:var(--text-dim); font-family:inherit; }
+  .timer-hide-btn:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .timeup-toast{ position:fixed; top:70px; left:50%; transform:translateX(-50%); background:var(--text); color:#fff;
+    padding:.7rem 1.2rem; border-radius:10px; font-weight:700; font-size:.85rem; z-index:3000;
+    box-shadow:0 12px 30px -8px rgba(0,0,0,.4); opacity:0; transition:opacity .25s; pointer-events:none; }
+  .timeup-toast.show{ opacity:1; }
 </style>
 </head>
 <body>
+  <div class="practice-banner hidden" id="practiceBanner">This is a practice test</div>
   <div class="topbar">
     <a href="#" id="backLink" class="back-link">← Back</a>
     <div class="title-block">
@@ -159,6 +178,10 @@
       <div class="sub" id="subText">Loading…</div>
     </div>
     <div class="topbar-actions">
+      <div class="timer-wrap hidden" id="timerWrap">
+        <div class="timer-chip" id="timerChip"><span class="timer-icon">🕐</span><span id="timerText">35:00</span></div>
+        <button type="button" class="timer-hide-btn" id="hideTimerBtn" onclick="toggleTimerVisibility()">Hide</button>
+      </div>
       <button type="button" class="btn-small tool-btn" id="calcBtn" onclick="toggleCalc()" title="Graphing calculator">🖩 Calculator</button>
       <button type="button" class="btn-small tool-btn" id="refBtn" onclick="openRef()" title="Reference sheet">📐 Reference</button>
       <button type="button" class="btn-small hidden" id="reviewBtn" onclick="openNav()">Review</button>
@@ -412,6 +435,9 @@
       if(saved && saved.status === 'in_progress' && Array.isArray(saved.userAnswers) && saved.userAnswers.length === pool.length){
         resumedFrom = saved;
       }
+      document.getElementById('practiceBanner').classList.remove('hidden');
+      document.getElementById('timerWrap').classList.remove('hidden');
+      moduleTimers = loadModuleTimers();
     } else {
       // Bank mode draws ONLY from BANK_QUESTIONS (assets/qbank/bank_questions.js) — a data source
       // kept intentionally separate from the mock-test QUESTIONS object (assets/qbank/questions.js)
@@ -460,6 +486,10 @@
       renderNoContent();
     } else {
       render();
+    }
+
+    if(mode === 'mock' && testNum && QUESTIONS[testNum]){
+      startTimerLoop();
     }
   }
 
@@ -510,6 +540,7 @@
     const card = document.getElementById('qcard');
     document.getElementById('progressFill').style.width = ((idx)/(pool.length))*100 + '%';
     document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
+    tickTimer();
 
     let html = `<div class="qmeta"><span class="domain-tag">${q.domain}${q.module ? ' · '+q.module : ''}${q.difficulty ? ' · '+q.difficulty : ''}</span><span class="qnum">Question ${idx+1} of ${pool.length}</span></div>`;
     if(q.images && q.images.length){
@@ -777,12 +808,98 @@
     }
   })();
 
+  // --- Per-module countdown timer (mock mode only, 35:00 per module — real Digital SAT Math timing) ---
+  const MODULE_TIME_SEC = 35 * 60;
+  let moduleTimers = {};
+  let expiredModules = new Set();
+  let timerHidden = false;
+  let timerInterval = null;
+
+  function timerStorageKey(){ return `sat1600_mock_${testNum}_timers`; }
+  function loadModuleTimers(){ try{ return JSON.parse(localStorage.getItem(timerStorageKey())) || {}; }catch(e){ return {}; } }
+  function saveModuleTimers(){ try{ localStorage.setItem(timerStorageKey(), JSON.stringify(moduleTimers)); }catch(e){} }
+  function ensureModuleTimer(moduleName){
+    if(!moduleName) return;
+    if(!moduleTimers[moduleName]){
+      moduleTimers[moduleName] = Date.now() + MODULE_TIME_SEC * 1000;
+      saveModuleTimers();
+    }
+  }
+  function formatTime(sec){
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${String(s).padStart(2,'0')}`;
+  }
+  function showTimeUpToast(msg){
+    let toast = document.getElementById('timeUpToast');
+    if(!toast){
+      toast = document.createElement('div');
+      toast.id = 'timeUpToast';
+      toast.className = 'timeup-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+  function handleModuleTimeUp(moduleName){
+    if(moduleName === 'Module 1'){
+      showTimeUpToast("Time's up for Module 1 — moving to Module 2.");
+      const nextIdx = pool.findIndex(q => q.module === 'Module 2');
+      setTimeout(() => {
+        if(nextIdx !== -1){ idx = nextIdx; saveMockProgress(); render(); }
+      }, 1400);
+    } else {
+      showTimeUpToast("Time's up — submitting your test.");
+      setTimeout(() => { submitTest(); }, 1400);
+    }
+  }
+  function tickTimer(){
+    const wrap = document.getElementById('timerWrap');
+    if(mode !== 'mock' || !testNum){ if(wrap) wrap.classList.add('hidden'); return; }
+    const q = pool[idx];
+    if(!q || !q.module){ if(wrap) wrap.classList.add('hidden'); return; }
+    if(wrap) wrap.classList.remove('hidden');
+    ensureModuleTimer(q.module);
+    const remainMs = moduleTimers[q.module] - Date.now();
+    const remainSec = Math.max(0, Math.round(remainMs / 1000));
+    const chip = document.getElementById('timerChip');
+    const textEl = document.getElementById('timerText');
+    if(textEl) textEl.textContent = timerHidden ? 'Hidden' : formatTime(remainSec);
+    if(chip) chip.classList.toggle('low', !timerHidden && remainSec <= 300);
+    if(remainSec <= 0 && !expiredModules.has(q.module)){
+      expiredModules.add(q.module);
+      handleModuleTimeUp(q.module);
+    }
+  }
+  function startTimerLoop(){
+    stopTimerLoop();
+    tickTimer();
+    timerInterval = setInterval(tickTimer, 1000);
+  }
+  function stopTimerLoop(){
+    if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
+  }
+  function toggleTimerVisibility(){
+    timerHidden = !timerHidden;
+    const btn = document.getElementById('hideTimerBtn');
+    if(btn) btn.textContent = timerHidden ? 'Show' : 'Hide';
+    tickTimer();
+  }
+
   function submitTest(){
     closeNav();
     showEnd();
   }
 
   function showEnd(){
+    stopTimerLoop();
+    const timerWrap = document.getElementById('timerWrap');
+    if(timerWrap) timerWrap.classList.add('hidden');
+    if(mode === 'mock' && testNum){
+      try{ localStorage.removeItem(timerStorageKey()); }catch(e){}
+    }
     document.getElementById('qcard').classList.add('hidden');
     const end = document.getElementById('endScreen');
     end.classList.remove('hidden');
