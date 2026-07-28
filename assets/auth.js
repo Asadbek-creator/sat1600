@@ -239,9 +239,32 @@
   window.handleSignOut = handleSignOut;
   window.handleGoogleSignIn = handleGoogleSignIn;
 
+  // --- Live "who's online" presence ---
+  // Every page that loads this script joins a shared Realtime presence channel.
+  // admin.html reads the same channel's presence state to show a live visitor count.
+  function startPresenceHeartbeat() {
+    try {
+      var sessionKey = 'sat1600_presence_id';
+      var myId = sessionStorage.getItem(sessionKey);
+      if (!myId) {
+        myId = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+        sessionStorage.setItem(sessionKey, myId);
+      }
+      var channel = sb.channel('site-online', { config: { presence: { key: myId } } });
+      channel.subscribe(function (status) {
+        if (status === 'SUBSCRIBED') {
+          channel.track({ page: window.location.pathname, online_at: new Date().toISOString() });
+        }
+      });
+      window.sat1600PresenceChannel = channel;
+    } catch (e) { /* presence is best-effort; never block the page on it */ }
+  }
+  window.sat1600StartPresence = startPresenceHeartbeat;
+
   document.addEventListener('DOMContentLoaded', async function () {
     await refreshAuthUI();
     bumpStreakIfNeeded();
+    startPresenceHeartbeat();
     var overlay = document.getElementById('modalOverlay');
     if (overlay) {
       overlay.addEventListener('click', function (e) {
