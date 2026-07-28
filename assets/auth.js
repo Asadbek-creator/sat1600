@@ -217,11 +217,27 @@
     await refreshAuthUI();
   }
 
+  async function handleGoogleSignIn() {
+    clearModalError();
+    try {
+      var res = await sb.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href }
+      });
+      if (res.error) throw res.error;
+      // browser will redirect to Google, then back here — refreshAuthUI() runs
+      // again on page load via the DOMContentLoaded handler below.
+    } catch (err) {
+      showModalError((err && err.message) || 'Could not start Google sign-in. Please try again.');
+    }
+  }
+
   // expose globally for inline onclick handlers
   window.openModal = openModal;
   window.closeModal = closeModal;
   window.setMode = setMode;
   window.handleSignOut = handleSignOut;
+  window.handleGoogleSignIn = handleGoogleSignIn;
 
   document.addEventListener('DOMContentLoaded', async function () {
     await refreshAuthUI();
