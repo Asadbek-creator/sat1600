@@ -14,7 +14,7 @@
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   window.sbClient = sb; // exposed so other pages/scripts (mocks.html, player.html) can reuse the same client
   window.currentAuthUser = null;
-  window.currentUserProfile = null; // { coins, streak_count }
+  window.currentUserProfile = null; // { coins, streak_count, role, full_name }
 
   function showToast(html, ms) {
     var el = document.createElement('div');
@@ -36,12 +36,13 @@
   window.sat1600Toast = showToast;
 
   async function fetchProfile(userId) {
+    var fallback = { coins: 0, streak_count: 0, role: 'student', full_name: null };
     try {
-      var res = await sb.from('profiles').select('coins, streak_count').eq('id', userId).single();
-      if (res.error) return { coins: 0, streak_count: 0 };
-      return res.data || { coins: 0, streak_count: 0 };
+      var res = await sb.from('profiles').select('coins, streak_count, role, full_name').eq('id', userId).single();
+      if (res.error) return fallback;
+      return res.data || fallback;
     } catch (e) {
-      return { coins: 0, streak_count: 0 };
+      return fallback;
     }
   }
 
@@ -101,9 +102,14 @@
 
     if (navActions) {
       if (window.currentAuthUser) {
+        var role = window.currentUserProfile ? window.currentUserProfile.role : null;
+        var adminLink = (role === 'super_admin' || role === 'teacher')
+          ? '<a href="admin.html" class="btn-login" style="text-decoration:none; display:inline-flex; align-items:center;">Admin</a>'
+          : '';
         navActions.innerHTML =
           '<span class="nav-user">Hi, ' + escapeHtml(firstName(window.currentAuthUser)) + '</span>' +
           '<span class="nav-coins">🪙 <span id="navCoinCount">' + (window.currentUserProfile ? window.currentUserProfile.coins : 0) + '</span></span>' +
+          adminLink +
           '<button class="btn-login" onclick="handleSignOut()">Log out</button>';
       } else {
         navActions.innerHTML =
