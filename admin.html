@@ -11,13 +11,13 @@
   :root {
     --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
     --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-soft:#eef2ff;
-    --success:#16a34a; --success-soft:#f0fdf4; --danger:#dc2626;
+    --success:#16a34a; --success-soft:#f0fdf4; --danger:#dc2626; --gold:#b45309; --gold-soft:#fef3c7;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     background: var(--bg-soft); color: var(--text); min-height:100vh; }
   h1,h2{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
-  .wrap{ max-width:720px; margin:0 auto; padding:4rem 5%; }
+  .wrap{ max-width:920px; margin:0 auto; padding:4rem 5%; }
   .logo { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; text-decoration:none; color:var(--text); font-family:'Plus Jakarta Sans'; display:block; margin-bottom:2.5rem; }
   .logo span{ color:var(--accent); }
   .card{ background:white; border:1px solid var(--border); border-radius:16px; padding:2.2rem; margin-bottom:1.4rem; }
@@ -37,6 +37,31 @@
   .page-list li{ display:flex; justify-content:space-between; padding:.55rem 0; border-bottom:1px solid var(--border); font-size:.88rem; }
   .page-list li:last-child{ border-bottom:none; }
   .page-list .cnt{ font-weight:700; color:var(--accent); }
+
+  .card h2.section-title{ font-size:1.05rem; margin-bottom:1.2rem; }
+  .search-box{ width:100%; padding:.7rem .9rem; border-radius:10px; border:1px solid var(--border-strong);
+    font-size:.9rem; font-family:inherit; margin-bottom:1.2rem; }
+  .search-box:focus{ outline:none; border-color:var(--accent); }
+  table.users-table{ width:100%; border-collapse:collapse; font-size:.86rem; }
+  table.users-table th{ text-align:left; color:var(--text-dim); font-weight:700; text-transform:uppercase;
+    font-size:.72rem; letter-spacing:.3px; padding:.5rem .4rem; border-bottom:1px solid var(--border-strong); }
+  table.users-table td{ padding:.65rem .4rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+  table.users-table tr:last-child td{ border-bottom:none; }
+  .role-badge{ display:inline-block; padding:.2rem .55rem; border-radius:999px; font-size:.72rem; font-weight:700; }
+  .role-badge.student{ background:var(--bg-soft); color:var(--text-dim); border:1px solid var(--border-strong); }
+  .role-badge.teacher{ background:var(--accent-soft); color:var(--accent); }
+  .role-badge.super_admin{ background:var(--gold-soft); color:var(--gold); }
+  .row-coins{ color:var(--gold); font-weight:700; }
+  .row-btn{ border:1px solid var(--border-strong); background:white; color:var(--text); padding:.4rem .8rem;
+    border-radius:8px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; }
+  .row-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .row-btn.revoke{ color:var(--danger); }
+  .row-btn.revoke:hover{ border-color:var(--danger); }
+  .row-btn:disabled{ opacity:.5; cursor:default; }
+  .empty-note{ color:var(--text-faint); font-size:.85rem; padding:1rem 0; }
+  .stat-row{ display:flex; gap:2rem; margin-bottom:1.4rem; }
+  .stat-mini .num{ font-size:1.6rem; font-weight:800; font-family:'Plus Jakarta Sans'; }
+  .stat-mini .lbl{ font-size:.75rem; color:var(--text-dim); font-weight:600; }
 </style>
 </head>
 <body>
@@ -45,7 +70,7 @@
 
     <div id="lockedArea" class="card locked">
       <h2>Admin only</h2>
-      <p>Log in with the owner account to view live site stats.</p>
+      <p>Log in with an admin account to view this page.</p>
       <button onclick="openModal('login')">Log in</button>
     </div>
 
@@ -58,6 +83,22 @@
       <div class="card">
         <div class="count-label">By page</div>
         <ul class="page-list" id="pageList"></ul>
+      </div>
+
+      <div class="card" id="usersCard" style="display:none;">
+        <h2 class="section-title">Foydalanuvchilar</h2>
+        <div class="stat-row">
+          <div class="stat-mini"><div class="num" id="statTotal">—</div><div class="lbl">Jami</div></div>
+          <div class="stat-mini"><div class="num" id="statTeachers">—</div><div class="lbl">Ustozlar</div></div>
+        </div>
+        <input type="text" id="userSearch" class="search-box" placeholder="Email yoki ism bo'yicha qidirish...">
+        <table class="users-table">
+          <thead>
+            <tr><th>Foydalanuvchi</th><th>Rol</th><th>Tanga</th><th>Qo'shildi</th><th></th></tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+        <div id="usersEmpty" class="empty-note" style="display:none;">Foydalanuvchi topilmadi.</div>
       </div>
     </div>
   </div>
@@ -92,8 +133,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-  var OWNER_EMAIL = 'asadbek1112009@gmail.com';
   var pollTimer = null;
+  var allUsers = [];
+  var searchDebounce = null;
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
 
   function renderPresence() {
     var ch = window.sat1600PresenceChannel;
@@ -122,9 +170,92 @@
     }
   }
 
+  function roleLabel(role) {
+    if (role === 'super_admin') return 'Katta admin';
+    if (role === 'teacher') return 'Ustoz';
+    return 'Talaba';
+  }
+
+  function renderUsers(list) {
+    var body = document.getElementById('usersTableBody');
+    var empty = document.getElementById('usersEmpty');
+    if (!list.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    body.innerHTML = list.map(function (u) {
+      var name = u.full_name ? escapeHtml(u.full_name) : '<span style="color:var(--text-faint);">Ism yo\'q</span>';
+      var joined = u.created_at ? new Date(u.created_at).toLocaleDateString() : '—';
+      var actionHtml = '';
+      if (u.role === 'student') {
+        actionHtml = '<button class="row-btn" onclick="setRole(\'' + encodeURIComponent(u.email) + '\',\'teacher\',this)">Ustoz qilish</button>';
+      } else if (u.role === 'teacher') {
+        actionHtml = '<button class="row-btn revoke" onclick="setRole(\'' + encodeURIComponent(u.email) + '\',\'student\',this)">Ustozlikni bekor qilish</button>';
+      } else {
+        actionHtml = '<span style="color:var(--text-faint); font-size:.78rem;">—</span>';
+      }
+      return '<tr>' +
+        '<td><div style="font-weight:600;">' + name + '</div><div style="color:var(--text-dim); font-size:.8rem;">' + escapeHtml(u.email) + '</div></td>' +
+        '<td><span class="role-badge ' + u.role + '">' + roleLabel(u.role) + '</span></td>' +
+        '<td class="row-coins">🪙 ' + (u.coins || 0) + '</td>' +
+        '<td style="color:var(--text-dim);">' + joined + '</td>' +
+        '<td>' + actionHtml + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  async function setRole(encodedEmail, newRole, btnEl) {
+    var email = decodeURIComponent(encodedEmail);
+    if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Kuting…'; }
+    try {
+      var res = await window.sbClient.rpc('admin_set_user_role', { target_email: email, new_role: newRole });
+      if (res.error) throw res.error;
+      var u = allUsers.find(function (x) { return x.email === email; });
+      if (u) u.role = newRole;
+      applySearchFilter();
+      if (window.sat1600Toast) window.sat1600Toast((newRole === 'teacher' ? '✅ Ustoz qilib tayinlandi' : 'Talaba roliga qaytarildi') + ': ' + email);
+    } catch (err) {
+      if (window.sat1600Toast) window.sat1600Toast('Xatolik: ' + ((err && err.message) || 'nomalum xatolik'));
+      if (btnEl) btnEl.disabled = false;
+      renderUsers(allUsers);
+    }
+  }
+  window.setRole = setRole;
+
+  function applySearchFilter() {
+    var q = (document.getElementById('userSearch').value || '').trim().toLowerCase();
+    var filtered = !q ? allUsers : allUsers.filter(function (u) {
+      return (u.email && u.email.toLowerCase().indexOf(q) !== -1) ||
+             (u.full_name && u.full_name.toLowerCase().indexOf(q) !== -1);
+    });
+    renderUsers(filtered);
+  }
+
+  async function loadUsers() {
+    try {
+      var res = await window.sbClient.from('profiles')
+        .select('id,email,full_name,role,coins,created_at')
+        .order('created_at', { ascending: false })
+        .limit(500);
+      if (res.error) throw res.error;
+      allUsers = res.data || [];
+      document.getElementById('statTotal').textContent = allUsers.length;
+      document.getElementById('statTeachers').textContent = allUsers.filter(function (u) { return u.role === 'teacher'; }).length;
+      applySearchFilter();
+    } catch (err) {
+      document.getElementById('usersTableBody').innerHTML = '';
+      document.getElementById('usersEmpty').textContent = 'Yuklashda xatolik: ' + ((err && err.message) || 'nomalum xatolik');
+      document.getElementById('usersEmpty').style.display = 'block';
+    }
+  }
+
   function initAdminView() {
     document.getElementById('lockedArea').style.display = 'none';
     document.getElementById('appArea').style.display = 'block';
+    document.getElementById('usersCard').style.display = 'block';
+    loadUsers();
     var tryBind = setInterval(function () {
       if (window.sat1600PresenceChannel) {
         clearInterval(tryBind);
@@ -137,17 +268,23 @@
   }
 
   function checkAccess() {
-    if (window.currentAuthUser && window.currentAuthUser.email === OWNER_EMAIL) {
+    var role = window.currentUserProfile ? window.currentUserProfile.role : null;
+    if (window.currentAuthUser && role === 'super_admin') {
       initAdminView();
     } else {
       document.getElementById('lockedArea').style.display = 'block';
       document.getElementById('appArea').style.display = 'none';
+      document.getElementById('usersCard').style.display = 'none';
       if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
     }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     setTimeout(checkAccess, 500);
+    document.getElementById('userSearch').addEventListener('input', function () {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(applySearchFilter, 150);
+    });
   });
   document.addEventListener('sat1600:authchange', checkAccess);
 </script>
