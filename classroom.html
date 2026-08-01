@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom — SAT 1600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
+    --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-soft:#eef2ff;
+    --gold:#b45309; --gold-soft:#fffbeb; --danger:#dc2626; --success:#16a34a; --success-soft:#f0fdf4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg); color: var(--text); min-height:100vh; }
+  h1,h2,h3{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
+  a{ color:inherit; }
+  nav { position: sticky; top:0; z-index:1000; display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 5%; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border-bottom:1px solid var(--border); }
+  .logo { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; text-decoration:none; color:var(--text); font-family:'Plus Jakarta Sans'; }
+  .logo span{ color:var(--accent); }
+  .nav-links { display:flex; gap:2.2rem; list-style:none; }
+  .nav-links a { text-decoration:none; color: var(--text-dim); font-size:0.925rem; font-weight:500; transition:.15s; display:inline-flex; align-items:center; gap:.4rem; }
+  .nav-links a.active, .nav-links a:hover { color: var(--text); }
+  .nav-actions { display:flex; gap:0.6rem; align-items:center; }
+  .btn-login { background:none; border:none; color:var(--text); font-weight:600; cursor:pointer; font-size:.9rem; padding:.55rem 1rem; font-family:inherit; border-radius:8px; }
+  .btn-login:hover{ background:var(--bg-soft); }
+  .btn-signup { background: var(--text); border:none; color:white; font-weight:600;
+    padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+  .nav-user{ font-size:.88rem; font-weight:600; color:var(--text-dim); padding:.55rem .3rem; }
+  .nav-coins{ font-size:.85rem; font-weight:700; color:var(--gold); background:var(--gold-soft); padding:.4rem .7rem; border-radius:999px; }
+  @media (max-width:900px){ .nav-links{ display:none; } }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.4); backdrop-filter:blur(2px);
+    display:none; align-items:center; justify-content:center; z-index:2000; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:white; border:1px solid var(--border); border-radius:16px; padding:2.2rem;
+    width:90%; max-width:380px; position:relative; box-shadow:0 30px 60px -20px rgba(0,0,0,.25); }
+  .modal h3{ font-size:1.3rem; margin-bottom:1.4rem; font-weight:700; color:var(--text); }
+  .modal input{ width:100%; padding:.75rem .9rem; margin-bottom:.9rem; border-radius:8px;
+    border:1px solid var(--border-strong); background:white; color:var(--text); font-size:.92rem; font-family:inherit; }
+  .modal input:focus{ outline:none; border-color:var(--accent); }
+  .modal .btn-primary{ width:100%; background:var(--text); color:white; border:none; padding:.75rem 1.3rem; border-radius:10px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  .modal .btn-primary:hover{ background:#000; }
+  .modal-close{ position:absolute; top:1.1rem; right:1.3rem; background:none; border:none; color:var(--text-faint);
+    font-size:1.3rem; cursor:pointer; }
+  .modal-switch{ text-align:center; margin-top:1.1rem; color:var(--text-dim); font-size:.88rem; }
+  .modal-switch a{ color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
+  .modal-note{ font-size:.78rem; color:var(--text-faint); text-align:center; margin-top:1rem; }
+
+  .wrap{ max-width:1000px; margin:0 auto; padding:3rem 5% 5rem; }
+  .page-head{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1.6rem; flex-wrap:wrap; gap:1rem; }
+  .page-head h1{ font-size:clamp(2rem,5vw,2.6rem); font-weight:800; letter-spacing:-1px; margin-bottom:.4rem; }
+  .page-head p{ color:var(--text-dim); font-size:1rem; }
+
+  .card{ background:white; border:1px solid var(--border); border-radius:16px; padding:1.8rem; margin-bottom:1.2rem; }
+  .empty-state{ text-align:center; padding:3.5rem 1.5rem; border:1px dashed var(--border-strong); border-radius:16px; }
+  .empty-state .emoji{ font-size:2.6rem; margin-bottom:1rem; }
+  .empty-state h3{ font-size:1.2rem; margin-bottom:.5rem; }
+  .empty-state p{ color:var(--text-dim); font-size:.92rem; max-width:420px; margin:0 auto; }
+
+  .locked{ text-align:center; padding:3.5rem 1.5rem; }
+  .locked h2{ margin-bottom:.6rem; }
+  .locked p{ color:var(--text-dim); }
+  .locked button{ margin-top:1.4rem; background:var(--text); color:white; border:none; padding:.75rem 1.4rem;
+    border-radius:10px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; }
+
+  .classroom-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1.1rem; margin-bottom:1.5rem; }
+  .classroom-card{ border:1px solid var(--border); border-radius:14px; padding:1.3rem; cursor:pointer; transition:.15s; }
+  .classroom-card:hover{ border-color:var(--accent); box-shadow:0 8px 20px -10px rgba(0,0,0,.1); }
+  .classroom-card h3{ font-size:1.05rem; font-weight:700; margin-bottom:.4rem; }
+  .classroom-card p{ color:var(--text-dim); font-size:.85rem; margin-bottom:.9rem; min-height:1.2em; }
+  .classroom-card .meta{ display:flex; justify-content:space-between; align-items:center; font-size:.8rem; color:var(--text-faint); }
+  .classroom-card .meta .cnt{ font-weight:700; color:var(--accent); }
+
+  .btn-new{ background:var(--text); color:white; border:none; padding:.7rem 1.2rem; border-radius:10px; font-weight:700; font-size:.88rem; cursor:pointer; font-family:inherit; }
+  .btn-new:hover{ background:#000; }
+  .btn-secondary{ background:white; border:1px solid var(--border-strong); color:var(--text); padding:.6rem 1.1rem; border-radius:9px; font-weight:600; font-size:.85rem; cursor:pointer; font-family:inherit; }
+  .btn-secondary:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .form-row label{ display:block; font-size:.8rem; font-weight:700; color:var(--text-dim); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.3px; }
+  .form-row input, .form-row textarea{ width:100%; padding:.7rem .9rem; border-radius:9px; border:1px solid var(--border-strong);
+    font-size:.9rem; font-family:inherit; margin-bottom:1rem; }
+  .form-row input:focus, .form-row textarea:focus{ outline:none; border-color:var(--accent); }
+  .form-row textarea{ resize:vertical; min-height:70px; }
+  .form-actions{ display:flex; gap:.6rem; }
+
+  .back-link{ display:inline-flex; align-items:center; gap:.4rem; color:var(--text-dim); font-size:.88rem; font-weight:600;
+    text-decoration:none; margin-bottom:1.2rem; cursor:pointer; }
+  .back-link:hover{ color:var(--text); }
+
+  .detail-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; margin-bottom:1.6rem; flex-wrap:wrap; }
+  .detail-head h2{ font-size:1.5rem; margin-bottom:.3rem; }
+  .detail-head p{ color:var(--text-dim); font-size:.92rem; }
+
+  .search-row{ display:flex; gap:.6rem; margin-bottom:.9rem; }
+  .search-row input{ flex:1; padding:.7rem .9rem; border-radius:9px; border:1px solid var(--border-strong); font-size:.9rem; font-family:inherit; }
+  .search-row input:focus{ outline:none; border-color:var(--accent); }
+
+  .lookup-result{ display:none; border:1px solid var(--border); background:var(--bg-soft); border-radius:12px; padding:1rem 1.2rem;
+    margin-bottom:1rem; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+  .lookup-result.show{ display:flex; }
+  .lookup-result .who{ font-weight:700; font-size:.92rem; }
+  .lookup-result .sub{ color:var(--text-dim); font-size:.8rem; }
+  .lookup-error{ display:none; color:var(--danger); font-size:.84rem; margin-bottom:1rem; }
+  .lookup-error.show{ display:block; }
+
+  table.roster-table{ width:100%; border-collapse:collapse; font-size:.86rem; }
+  table.roster-table th{ text-align:left; color:var(--text-dim); font-weight:700; text-transform:uppercase;
+    font-size:.72rem; letter-spacing:.3px; padding:.5rem .4rem; border-bottom:1px solid var(--border-strong); }
+  table.roster-table td{ padding:.65rem .4rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+  table.roster-table tr:last-child td{ border-bottom:none; }
+  .row-coins{ color:var(--gold); font-weight:700; }
+  .row-btn{ border:1px solid var(--border-strong); background:white; color:var(--danger); padding:.4rem .8rem;
+    border-radius:8px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; }
+  .row-btn:hover{ border-color:var(--danger); }
+  .row-btn:disabled{ opacity:.5; cursor:default; }
+  .empty-note{ color:var(--text-faint); font-size:.85rem; padding:1rem 0; }
+
+  .placeholder-note{ display:flex; gap:.7rem; align-items:center; border:1px solid var(--border); background:var(--accent-soft);
+    border-radius:12px; padding:1rem 1.2rem; font-size:.86rem; color:var(--text); margin-top:1.4rem; }
+
+  .msg{ font-size:.8rem; margin-top:.4rem; display:none; }
+  .msg.show{ display:block; }
+  .msg.error{ color:var(--danger); }
+  .msg.success{ color:var(--success); }
+
+  footer{ padding:2.6rem 5%; text-align:center; color:var(--text-faint); border-top:1px solid var(--border); font-size:.88rem; }
+  footer a{ text-decoration:none; color:var(--text-dim); margin:0 .6rem; }
+  footer a:hover{ color:var(--text); }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">SAT<span>1600</span></a>
+    <ul class="nav-links">
+      <li><a href="question-bank.html">Question Bank</a></li>
+      <li><a href="mocks.html">SAT Mocks</a></li>
+      <li><a href="missions.html">Missions</a></li>
+      <li><a href="market.html">Market</a></li>
+      <li><a href="classroom.html" class="active">Classroom</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-login" onclick="openModal('login')">Log in</button>
+      <button class="btn-signup" onclick="openModal('signup')">Sign up</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+
+    <div id="lockedView" class="card locked" style="display:none;">
+      <h2>Classroom — faqat ro'yxatdan o'tganlar uchun</h2>
+      <p>Guruhingizni ko'rish yoki boshqarish uchun tizimga kiring.</p>
+      <button onclick="openModal('login')">Log in</button>
+    </div>
+
+    <div id="appView" style="display:none;">
+      <div class="page-head">
+        <div>
+          <h1>Classroom</h1>
+          <p id="pageSubtitle">Yuklanmoqda…</p>
+        </div>
+      </div>
+
+      <!-- STUDENT VIEW -->
+      <div id="studentView" style="display:none;"></div>
+
+      <!-- TEACHER / SUPER ADMIN VIEW -->
+      <div id="teacherView" style="display:none;">
+
+        <div id="teacherListPane">
+          <div class="page-head" style="margin-bottom:1rem;">
+            <div></div>
+            <button class="btn-new" onclick="toggleNewClassroomForm()">+ Yangi guruh</button>
+          </div>
+
+          <div id="newClassroomForm" class="card" style="display:none;">
+            <h3 style="margin-bottom:1.1rem; font-size:1.05rem;">Yangi guruh yaratish</h3>
+            <div class="form-row">
+              <label>Guruh nomi</label>
+              <input type="text" id="newClassroomName" placeholder="Masalan: 11-sinf SAT guruhi">
+              <label>Tavsif (ixtiyoriy)</label>
+              <textarea id="newClassroomDesc" placeholder="Guruh haqida qisqacha ma'lumot..."></textarea>
+            </div>
+            <div class="form-actions">
+              <button class="btn-new" onclick="submitNewClassroom()" id="createClassroomBtn">Yaratish</button>
+              <button class="btn-secondary" onclick="toggleNewClassroomForm(false)">Bekor qilish</button>
+            </div>
+            <p class="msg" id="createClassroomMsg"></p>
+          </div>
+
+          <div id="teacherClassroomGrid" class="classroom-grid"></div>
+          <div id="teacherClassroomEmpty" class="empty-state" style="display:none;">
+            <div class="emoji">🏫</div>
+            <h3>Hali guruhingiz yo'q</h3>
+            <p>"+ Yangi guruh" tugmasini bosib birinchi guruhingizni yarating va o'quvchilarni email orqali qo'shing.</p>
+          </div>
+        </div>
+
+        <div id="classroomDetailPane" style="display:none;">
+          <a class="back-link" onclick="showTeacherList()">&larr; Guruhlarimga qaytish</a>
+          <div class="card">
+            <div class="detail-head">
+              <div>
+                <h2 id="detailName"></h2>
+                <p id="detailDesc"></p>
+              </div>
+              <button class="btn-secondary" onclick="toggleEditClassroomForm()">Tahrirlash</button>
+            </div>
+
+            <div id="editClassroomForm" style="display:none; margin-bottom:1.6rem; padding-top:1rem; border-top:1px solid var(--border);">
+              <div class="form-row">
+                <label>Guruh nomi</label>
+                <input type="text" id="editClassroomName">
+                <label>Tavsif</label>
+                <textarea id="editClassroomDesc"></textarea>
+              </div>
+              <div class="form-actions">
+                <button class="btn-new" onclick="submitEditClassroom()" id="editClassroomBtn">Saqlash</button>
+                <button class="btn-secondary" onclick="toggleEditClassroomForm(false)">Bekor qilish</button>
+              </div>
+              <p class="msg" id="editClassroomMsg"></p>
+            </div>
+
+            <h3 style="font-size:1rem; margin-bottom:1rem;">O'quvchi qo'shish</h3>
+            <div class="search-row">
+              <input type="email" id="studentEmailInput" placeholder="O'quvchining email manzili">
+              <button class="btn-secondary" onclick="lookupStudent()" id="lookupBtn">Qidirish</button>
+            </div>
+            <p class="lookup-error" id="lookupError"></p>
+            <div class="lookup-result" id="lookupResult">
+              <div>
+                <div class="who" id="lookupWho"></div>
+                <div class="sub" id="lookupSub"></div>
+              </div>
+              <button class="btn-new" onclick="confirmAddStudent()" id="confirmAddBtn">Guruhga qo'shish</button>
+            </div>
+
+            <h3 style="font-size:1rem; margin:1.8rem 0 1rem;">O'quvchilar ro'yxati</h3>
+            <table class="roster-table">
+              <thead>
+                <tr><th>O'quvchi</th><th>Tanga</th><th></th></tr>
+              </thead>
+              <tbody id="rosterTableBody"></tbody>
+            </table>
+            <div id="rosterEmpty" class="empty-note" style="display:none;">Bu guruhda hali o'quvchi yo'q.</div>
+
+            <div class="placeholder-note">
+              📚 Uyga vazifalar va testlar tez orada shu yerda qo'shiladi.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">Home</a>
+    <a href="question-bank.html">Question Bank</a>
+    <a href="mocks.html">Mocks</a>
+    <a href="market.html">Market</a>
+  </footer>
+
+  <!-- Login modal (reused from the rest of the site) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Log in</h3>
+      <button type="button" class="btn-google" onclick="handleGoogleSignIn()" style="width:100%; display:flex; align-items:center; justify-content:center; gap:.6rem; background:#fff; border:1px solid #dcdfe4; border-radius:10px; padding:.7rem 1rem; font-weight:600; font-size:.92rem; color:#1f1f1f; cursor:pointer; margin-bottom:1rem;">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.09-1.8 2.73v2.27h2.91c1.7-1.57 2.69-3.88 2.69-6.64z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.17l-2.91-2.27c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.34C2.44 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.96 10.71c-.18-.54-.28-1.11-.28-1.71s.1-1.17.28-1.71V4.95H.96C.35 6.17 0 7.55 0 9s.35 2.83.96 4.05l3-2.34z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.95l3 2.34C4.67 5.16 6.66 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+      <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;">
+        <div style="flex:1; height:1px; background:#e5e7eb;"></div>
+        <span style="font-size:.78rem; color:#9ca3af;">or</span>
+        <div style="flex:1; height:1px; background:#e5e7eb;"></div>
+      </div>
+      <form onsubmit="return false;">
+        <input type="text" id="modalNameField" placeholder="Full name" style="display:none;">
+        <input type="email" id="modalEmailField" placeholder="Email address" autocomplete="email">
+        <input type="password" id="modalPasswordField" placeholder="Password" autocomplete="current-password">
+        <p id="modalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
+        <button class="btn-primary" type="submit" id="modalSubmit">Log in</button>
+      </form>
+      <div class="modal-switch">
+        <span id="modalSwitchText">Don't have an account? <a onclick="openModal('signup')">Sign up</a></span>
+      </div>
+      <p class="modal-note">Your account works across Question Bank, Mocks and progress tracking.</p>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  var myClassrooms = [];
+  var currentDetailClassroom = null;
+  var currentLookupResult = null;
+  var rosterCache = [];
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function showMsg(id, text, type) {
+    var el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'msg show ' + (type || '');
+  }
+  function hideMsg(id) {
+    var el = document.getElementById(id);
+    el.className = 'msg';
+  }
+
+  /* ---------------- STUDENT VIEW ---------------- */
+
+  async function loadStudentView() {
+    var wrap = document.getElementById('studentView');
+    wrap.innerHTML = '<p style="color:var(--text-dim);">Yuklanmoqda…</p>';
+    try {
+      var res = await window.sbClient.from('classrooms').select('id,name,description,teacher_id,created_at').order('created_at', { ascending: false });
+      if (res.error) throw res.error;
+      var classrooms = res.data || [];
+      if (!classrooms.length) {
+        wrap.innerHTML =
+          '<div class="empty-state">' +
+            '<div class="emoji">🎒</div>' +
+            '<h3>Sizda hali guruh yo\'q</h3>' +
+            '<p>Ustozingiz sizni email manzilingiz orqali o\'z guruhiga qo\'shganda, u shu yerda ko\'rinadi.</p>' +
+          '</div>';
+        return;
+      }
+      var teacherIds = classrooms.map(function (c) { return c.teacher_id; });
+      var teachersRes = await window.sbClient.from('profiles').select('id,full_name,email').in('id', teacherIds);
+      var teacherMap = {};
+      (teachersRes.data || []).forEach(function (t) { teacherMap[t.id] = t; });
+
+      wrap.innerHTML = '<div class="classroom-grid">' + classrooms.map(function (c) {
+        var t = teacherMap[c.teacher_id];
+        var teacherName = t ? (t.full_name || t.email) : 'Ustoz';
+        return '<div class="classroom-card" style="cursor:default;">' +
+          '<h3>' + escapeHtml(c.name) + '</h3>' +
+          '<p>' + (c.description ? escapeHtml(c.description) : 'Tavsif yo\'q') + '</p>' +
+          '<div class="meta"><span>Ustoz: ' + escapeHtml(teacherName) + '</span></div>' +
+        '</div>';
+      }).join('') + '</div>' +
+      '<div class="placeholder-note">📚 Uyga vazifalar va testlar tez orada shu yerda qo\'shiladi.</div>';
+    } catch (err) {
+      wrap.innerHTML = '<p style="color:var(--danger);">Xatolik: ' + escapeHtml((err && err.message) || 'nomalum xatolik') + '</p>';
+    }
+  }
+
+  /* ---------------- TEACHER VIEW ---------------- */
+
+  function toggleNewClassroomForm(show) {
+    var form = document.getElementById('newClassroomForm');
+    var willShow = show === undefined ? (form.style.display === 'none') : show;
+    form.style.display = willShow ? 'block' : 'none';
+    if (willShow) {
+      document.getElementById('newClassroomName').value = '';
+      document.getElementById('newClassroomDesc').value = '';
+      hideMsg('createClassroomMsg');
+    }
+  }
+  window.toggleNewClassroomForm = toggleNewClassroomForm;
+
+  async function submitNewClassroom() {
+    var name = document.getElementById('newClassroomName').value.trim();
+    if (!name) { showMsg('createClassroomMsg', 'Guruh nomini kiriting.', 'error'); return; }
+    var desc = document.getElementById('newClassroomDesc').value.trim();
+    var btn = document.getElementById('createClassroomBtn');
+    btn.disabled = true; btn.textContent = 'Yaratilmoqda…';
+    try {
+      var res = await window.sbClient.rpc('create_classroom', { p_name: name, p_description: desc || null });
+      if (res.error) throw res.error;
+      toggleNewClassroomForm(false);
+      if (window.sat1600Toast) window.sat1600Toast('✅ Guruh yaratildi: ' + name);
+      await loadTeacherClassrooms();
+    } catch (err) {
+      showMsg('createClassroomMsg', (err && err.message) || 'Xatolik yuz berdi.', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Yaratish';
+    }
+  }
+  window.submitNewClassroom = submitNewClassroom;
+
+  function renderTeacherClassrooms(list) {
+    var grid = document.getElementById('teacherClassroomGrid');
+    var empty = document.getElementById('teacherClassroomEmpty');
+    if (!list.length) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    grid.innerHTML = list.map(function (c) {
+      return '<div class="classroom-card" onclick="openClassroomDetail(\'' + c.id + '\')">' +
+        '<h3>' + escapeHtml(c.name) + '</h3>' +
+        '<p>' + (c.description ? escapeHtml(c.description) : 'Tavsif yo\'q') + '</p>' +
+        '<div class="meta"><span>Yaratilgan: ' + new Date(c.created_at).toLocaleDateString() + '</span></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  async function loadTeacherClassrooms() {
+    try {
+      var res = await window.sbClient.from('classrooms').select('id,name,description,teacher_id,created_at')
+        .eq('teacher_id', window.currentAuthUser.id)
+        .order('created_at', { ascending: false });
+      if (res.error) throw res.error;
+      myClassrooms = res.data || [];
+      renderTeacherClassrooms(myClassrooms);
+    } catch (err) {
+      document.getElementById('teacherClassroomGrid').innerHTML = '';
+      document.getElementById('teacherClassroomEmpty').style.display = 'block';
+      document.getElementById('teacherClassroomEmpty').innerHTML = '<p style="color:var(--danger);">Yuklashda xatolik: ' + escapeHtml((err && err.message) || 'nomalum xatolik') + '</p>';
+    }
+  }
+
+  function showTeacherList() {
+    document.getElementById('classroomDetailPane').style.display = 'none';
+    document.getElementById('teacherListPane').style.display = 'block';
+    currentDetailClassroom = null;
+  }
+  window.showTeacherList = showTeacherList;
+
+  async function openClassroomDetail(id) {
+    var c = myClassrooms.find(function (x) { return x.id === id; });
+    if (!c) return;
+    currentDetailClassroom = c;
+    document.getElementById('teacherListPane').style.display = 'none';
+    document.getElementById('classroomDetailPane').style.display = 'block';
+    document.getElementById('detailName').textContent = c.name;
+    document.getElementById('detailDesc').textContent = c.description || 'Tavsif yo\'q';
+    document.getElementById('editClassroomForm').style.display = 'none';
+    document.getElementById('studentEmailInput').value = '';
+    hideLookupResult();
+    await loadRoster(c.id);
+  }
+  window.openClassroomDetail = openClassroomDetail;
+
+  function toggleEditClassroomForm(show) {
+    var form = document.getElementById('editClassroomForm');
+    var willShow = show === undefined ? (form.style.display === 'none') : show;
+    form.style.display = willShow ? 'block' : 'none';
+    if (willShow && currentDetailClassroom) {
+      document.getElementById('editClassroomName').value = currentDetailClassroom.name;
+      document.getElementById('editClassroomDesc').value = currentDetailClassroom.description || '';
+      hideMsg('editClassroomMsg');
+    }
+  }
+  window.toggleEditClassroomForm = toggleEditClassroomForm;
+
+  async function submitEditClassroom() {
+    if (!currentDetailClassroom) return;
+    var name = document.getElementById('editClassroomName').value.trim();
+    if (!name) { showMsg('editClassroomMsg', 'Guruh nomini kiriting.', 'error'); return; }
+    var desc = document.getElementById('editClassroomDesc').value.trim();
+    var btn = document.getElementById('editClassroomBtn');
+    btn.disabled = true; btn.textContent = 'Saqlanmoqda…';
+    try {
+      var res = await window.sbClient.rpc('update_classroom', { p_classroom_id: currentDetailClassroom.id, p_name: name, p_description: desc || null });
+      if (res.error) throw res.error;
+      currentDetailClassroom.name = name;
+      currentDetailClassroom.description = desc;
+      document.getElementById('detailName').textContent = name;
+      document.getElementById('detailDesc').textContent = desc || 'Tavsif yo\'q';
+      var idx = myClassrooms.findIndex(function (x) { return x.id === currentDetailClassroom.id; });
+      if (idx !== -1) { myClassrooms[idx].name = name; myClassrooms[idx].description = desc; }
+      toggleEditClassroomForm(false);
+      if (window.sat1600Toast) window.sat1600Toast('✅ Guruh yangilandi');
+    } catch (err) {
+      showMsg('editClassroomMsg', (err && err.message) || 'Xatolik yuz berdi.', 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Saqlash';
+    }
+  }
+  window.submitEditClassroom = submitEditClassroom;
+
+  function hideLookupResult() {
+    document.getElementById('lookupResult').classList.remove('show');
+    document.getElementById('lookupError').classList.remove('show');
+    currentLookupResult = null;
+  }
+
+  async function lookupStudent() {
+    var email = document.getElementById('studentEmailInput').value.trim();
+    hideLookupResult();
+    if (!email) { showLookupError('Email manzilini kiriting.'); return; }
+    var btn = document.getElementById('lookupBtn');
+    btn.disabled = true; btn.textContent = 'Qidirilmoqda…';
+    try {
+      var res = await window.sbClient.rpc('teacher_lookup_student', { p_email: email });
+      if (res.error) throw res.error;
+      var rows = res.data || [];
+      if (!rows.length) { showLookupError('Bu email bilan talaba topilmadi.'); return; }
+      currentLookupResult = rows[0];
+      document.getElementById('lookupWho').textContent = currentLookupResult.full_name || currentLookupResult.email;
+      document.getElementById('lookupSub').textContent = currentLookupResult.email + ' · 🪙 ' + (currentLookupResult.coins || 0) + ' tanga';
+      document.getElementById('lookupResult').classList.add('show');
+    } catch (err) {
+      showLookupError((err && err.message) || 'Qidirishda xatolik yuz berdi.');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Qidirish';
+    }
+  }
+  window.lookupStudent = lookupStudent;
+
+  function showLookupError(msg) {
+    var el = document.getElementById('lookupError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  async function confirmAddStudent() {
+    if (!currentLookupResult || !currentDetailClassroom) return;
+    var btn = document.getElementById('confirmAddBtn');
+    btn.disabled = true; btn.textContent = 'Qo\'shilmoqda…';
+    try {
+      var res = await window.sbClient.rpc('add_student_to_classroom', { p_classroom_id: currentDetailClassroom.id, p_student_email: currentLookupResult.email });
+      if (res.error) throw res.error;
+      if (window.sat1600Toast) window.sat1600Toast('✅ ' + (currentLookupResult.full_name || currentLookupResult.email) + ' guruhga qo\'shildi');
+      document.getElementById('studentEmailInput').value = '';
+      hideLookupResult();
+      await loadRoster(currentDetailClassroom.id);
+    } catch (err) {
+      showLookupError((err && err.message) || 'Qo\'shishda xatolik yuz berdi.');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Guruhga qo\'shish';
+    }
+  }
+  window.confirmAddStudent = confirmAddStudent;
+
+  async function loadRoster(classroomId) {
+    var body = document.getElementById('rosterTableBody');
+    var empty = document.getElementById('rosterEmpty');
+    body.innerHTML = '<tr><td colspan="3" style="color:var(--text-faint);">Yuklanmoqda…</td></tr>';
+    empty.style.display = 'none';
+    try {
+      var memRes = await window.sbClient.from('classroom_members').select('student_id,joined_at').eq('classroom_id', classroomId);
+      if (memRes.error) throw memRes.error;
+      var members = memRes.data || [];
+      if (!members.length) {
+        body.innerHTML = '';
+        rosterCache = [];
+        empty.style.display = 'block';
+        return;
+      }
+      var ids = members.map(function (m) { return m.student_id; });
+      var profRes = await window.sbClient.from('profiles').select('id,full_name,email,coins').in('id', ids);
+      if (profRes.error) throw profRes.error;
+      var profMap = {};
+      (profRes.data || []).forEach(function (p) { profMap[p.id] = p; });
+      rosterCache = members.map(function (m) { return profMap[m.student_id] || { id: m.student_id, full_name: null, email: '—', coins: 0 }; });
+      renderRoster();
+    } catch (err) {
+      body.innerHTML = '<tr><td colspan="3" style="color:var(--danger);">Xatolik: ' + escapeHtml((err && err.message) || 'nomalum xatolik') + '</td></tr>';
+    }
+  }
+
+  function renderRoster() {
+    var body = document.getElementById('rosterTableBody');
+    var empty = document.getElementById('rosterEmpty');
+    if (!rosterCache.length) {
+      body.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    body.innerHTML = rosterCache.map(function (s) {
+      var name = s.full_name ? escapeHtml(s.full_name) : '<span style="color:var(--text-faint);">Ism yo\'q</span>';
+      return '<tr>' +
+        '<td><div style="font-weight:600;">' + name + '</div><div style="color:var(--text-dim); font-size:.8rem;">' + escapeHtml(s.email) + '</div></td>' +
+        '<td class="row-coins">🪙 ' + (s.coins || 0) + '</td>' +
+        '<td><button class="row-btn" onclick="removeStudent(\'' + escapeHtml(s.email).replace(/'/g, "\\'") + '\', this)">O\'chirish</button></td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  async function removeStudent(email, btnEl) {
+    if (!currentDetailClassroom) return;
+    if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Kuting…'; }
+    try {
+      var res = await window.sbClient.rpc('remove_student_from_classroom', { p_classroom_id: currentDetailClassroom.id, p_student_email: email });
+      if (res.error) throw res.error;
+      if (window.sat1600Toast) window.sat1600Toast('O\'quvchi guruhdan chiqarildi');
+      await loadRoster(currentDetailClassroom.id);
+    } catch (err) {
+      if (window.sat1600Toast) window.sat1600Toast('Xatolik: ' + ((err && err.message) || 'nomalum xatolik'));
+      if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'O\'chirish'; }
+    }
+  }
+  window.removeStudent = removeStudent;
+
+  /* ---------------- ACCESS CONTROL ---------------- */
+
+  function checkAccess() {
+    var authed = !!window.currentAuthUser;
+    var role = window.currentUserProfile ? window.currentUserProfile.role : null;
+
+    document.getElementById('lockedView').style.display = authed ? 'none' : 'block';
+    document.getElementById('appView').style.display = authed ? 'block' : 'none';
+    if (!authed) return;
+
+    var isTeacher = (role === 'teacher' || role === 'super_admin');
+    document.getElementById('studentView').style.display = isTeacher ? 'none' : 'block';
+    document.getElementById('teacherView').style.display = isTeacher ? 'block' : 'none';
+
+    if (isTeacher) {
+      document.getElementById('pageSubtitle').textContent = 'Guruhlaringizni boshqaring, o\'quvchilar qo\'shing.';
+      showTeacherList();
+      loadTeacherClassrooms();
+    } else {
+      document.getElementById('pageSubtitle').textContent = 'Guruhingiz va ustozingiz haqida ma\'lumot.';
+      loadStudentView();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(checkAccess, 500);
+  });
+  document.addEventListener('sat1600:authchange', checkAccess);
+</script>
+</body>
+</html>
