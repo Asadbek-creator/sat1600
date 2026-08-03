@@ -416,6 +416,9 @@
       window.currentUserProfile.dream_university = uni || null;
       window.currentUserProfile.target_score = target || null;
       window.currentUserProfile.sat_exam_date = examDate;
+      pageState.profile.dream_university = uni || null;
+      pageState.profile.target_score = target || null;
+      pageState.profile.sat_exam_date = examDate;
       closeGoalModal();
       renderAll();
       if (window.sat1600Toast) window.sat1600Toast('✅ Maqsad saqlandi!');
