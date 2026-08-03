@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="https://www.desmos.com/api/v1.9/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 <style>
   :root {
     --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
@@ -149,6 +150,44 @@
   .focus-guard-banner{ display:none; align-items:center; gap:.6rem; background:#fef2f2; border:1px solid var(--danger);
     color:var(--danger); border-radius:10px; padding:.7rem 1rem; font-size:.82rem; font-weight:600; margin-bottom:1rem; }
   .focus-guard-banner.show{ display:flex; }
+
+  /* Exam tools: graphing calculator + reference sheet, shown while taking a test */
+  .taker-tools{ display:flex; align-items:center; gap:.5rem; }
+  .tool-btn{ display:flex; align-items:center; gap:.35rem; padding:.4rem .75rem; border-radius:999px;
+    border:1px solid var(--border-strong); background:white; color:var(--text-dim); font-weight:700; font-size:.75rem;
+    cursor:pointer; font-family:inherit; }
+  .tool-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .tool-btn.active{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+
+  .taker-calc-panel{ position:fixed; top:90px; right:4%; width:400px; height:480px; background:white;
+    border:1px solid var(--border-strong); border-radius:12px; box-shadow:0 24px 60px -14px rgba(0,0,0,.4);
+    z-index:2400; display:flex; flex-direction:column; overflow:hidden; resize:both; min-width:300px; min-height:340px;
+    max-width:96vw; max-height:88vh; }
+  .taker-calc-panel.hidden{ display:none; }
+  .taker-calc-header{ display:flex; align-items:center; justify-content:space-between; padding:.55rem .5rem .55rem .9rem;
+    background:var(--text); color:white; cursor:move; user-select:none; font-weight:700; font-size:.85rem; flex-shrink:0; }
+  .taker-calc-header button{ background:none; border:none; color:white; font-size:1rem; cursor:pointer; padding:.3rem .55rem;
+    line-height:1; border-radius:6px; }
+  .taker-calc-header button:hover{ background:rgba(255,255,255,.15); }
+  #takerCalcContainer{ flex:1; width:100%; min-height:0; }
+  #takerCalcFallback{ padding:1.2rem; font-size:.85rem; color:var(--text-dim); text-align:center; }
+
+  .taker-ref-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.55); z-index:2500; display:flex;
+    align-items:center; justify-content:center; padding:2rem; }
+  .taker-ref-overlay.hidden{ display:none; }
+  .taker-ref-panel{ background:white; border-radius:16px; max-width:760px; width:100%; max-height:85vh; overflow-y:auto; padding:1.8rem; }
+  .taker-ref-panel h2{ font-size:1.15rem; margin-bottom:.3rem; }
+  .taker-ref-panel .ref-sub{ color:var(--text-dim); font-size:.85rem; margin-bottom:1.2rem; }
+  .ref-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:1.4rem 1rem; margin-top:1.2rem; }
+  .ref-item{ text-align:center; }
+  .ref-item svg{ display:block; margin:0 auto .5rem; }
+  .ref-item .ref-label{ font-size:.72rem; color:var(--text-dim); font-weight:600; margin-bottom:.15rem; }
+  .ref-item .ref-formula{ font-weight:700; font-size:.82rem; line-height:1.5; }
+  .ref-special{ text-align:center; }
+  .ref-facts{ margin-top:1.6rem; padding-top:1.1rem; border-top:1px solid var(--border); font-size:.85rem;
+    color:var(--text); line-height:2; }
+  .ref-facts .fact-num{ font-weight:800; color:var(--accent); margin-right:.4rem; }
+  .taker-ref-panel .nav-actions-row{ display:flex; justify-content:flex-end; margin-top:1.5rem; }
   .qcard{ border:1px solid var(--border); border-radius:12px; padding:1.2rem 1.3rem; margin-bottom:1rem; }
   .qcard .qnum{ font-size:.78rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.3px; margin-bottom:.5rem; }
   .qcard .qstem{ font-size:.95rem; line-height:1.55; margin-bottom:.9rem; }
@@ -377,6 +416,81 @@
     </div>
   </div>
 
+  <!-- Exam tools: graphing calculator (Desmos) -->
+  <div class="taker-calc-panel hidden" id="takerCalcPanel">
+    <div class="taker-calc-header" id="takerCalcHeader">
+      <span>🖩 Calculator</span>
+      <button type="button" onclick="closeTakerCalc()" aria-label="Close calculator">✕</button>
+    </div>
+    <div id="takerCalcContainer"></div>
+  </div>
+
+  <!-- Exam tools: reference sheet -->
+  <div class="taker-ref-overlay hidden" id="takerRefOverlay" onclick="if(event.target===this) closeTakerRef();">
+    <div class="taker-ref-panel">
+      <h2>Reference</h2>
+      <p class="ref-sub">Standard formulas for the Digital SAT Math section.</p>
+      <div class="ref-grid">
+        <div class="ref-item">
+          <svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="35" r="26" fill="none" stroke="#18181b" stroke-width="2"/><line x1="35" y1="35" x2="61" y2="35" stroke="#18181b" stroke-width="2"/><circle cx="35" cy="35" r="2" fill="#18181b"/><text x="46" y="31" font-size="11" font-family="sans-serif">r</text></svg>
+          <div class="ref-formula">A = &pi;r&sup2;<br>C = 2&pi;r</div>
+        </div>
+        <div class="ref-item">
+          <svg width="76" height="56" viewBox="0 0 76 56"><rect x="8" y="10" width="60" height="36" fill="none" stroke="#18181b" stroke-width="2"/><text x="34" y="8" font-size="11" font-family="sans-serif">&#8467;</text><text x="0" y="32" font-size="11" font-family="sans-serif">w</text></svg>
+          <div class="ref-formula">A = &#8467;w</div>
+        </div>
+        <div class="ref-item">
+          <svg width="76" height="60" viewBox="0 0 76 60"><polygon points="8,50 68,50 30,6" fill="none" stroke="#18181b" stroke-width="2"/><line x1="30" y1="6" x2="30" y2="50" stroke="#18181b" stroke-width="1.4" stroke-dasharray="3,3"/><text x="30" y="58" font-size="11" font-family="sans-serif" text-anchor="middle">b</text><text x="34" y="30" font-size="11" font-family="sans-serif">h</text></svg>
+          <div class="ref-formula">A = &frac12;bh</div>
+        </div>
+        <div class="ref-item">
+          <svg width="76" height="60" viewBox="0 0 76 60"><polygon points="10,50 68,50 10,10" fill="none" stroke="#18181b" stroke-width="2"/><polyline points="10,42 18,42 18,50" fill="none" stroke="#18181b" stroke-width="1.4"/><text x="6" y="34" font-size="11" font-family="sans-serif">a</text><text x="36" y="58" font-size="11" font-family="sans-serif">b</text><text x="44" y="26" font-size="11" font-family="sans-serif">c</text></svg>
+          <div class="ref-formula">c&sup2; = a&sup2; + b&sup2;</div>
+        </div>
+        <div class="ref-item ref-special" style="grid-column: span 2;">
+          <div style="display:flex; justify-content:center; gap:2.2rem; align-items:flex-end;">
+            <svg width="90" height="70" viewBox="0 0 90 70"><polygon points="10,60 80,60 80,10" fill="none" stroke="#18181b" stroke-width="2"/><text x="38" y="68" font-size="10" font-family="sans-serif">x&radic;3</text><text x="82" y="38" font-size="10" font-family="sans-serif">x</text><text x="38" y="32" font-size="10" font-family="sans-serif">2x</text><text x="18" y="56" font-size="9" font-family="sans-serif">60&deg;</text><text x="66" y="55" font-size="9" font-family="sans-serif">30&deg;</text></svg>
+            <svg width="90" height="70" viewBox="0 0 90 70"><polygon points="10,60 80,60 80,10" fill="none" stroke="#18181b" stroke-width="2"/><text x="38" y="68" font-size="10" font-family="sans-serif">s</text><text x="82" y="38" font-size="10" font-family="sans-serif">s</text><text x="34" y="32" font-size="10" font-family="sans-serif">s&radic;2</text><text x="18" y="56" font-size="9" font-family="sans-serif">45&deg;</text><text x="63" y="55" font-size="9" font-family="sans-serif">45&deg;</text></svg>
+          </div>
+          <div class="ref-formula" style="margin-top:.4rem;">Special right triangles</div>
+        </div>
+        <div class="ref-item">
+          <svg width="74" height="70" viewBox="0 0 74 70"><path d="M10,16 A27,8 0 0 1 64,16 L64,54 A27,8 0 0 1 10,54 Z" fill="none" stroke="#18181b" stroke-width="2"/><ellipse cx="37" cy="16" rx="27" ry="8" fill="none" stroke="#18181b" stroke-width="2"/><line x1="37" y1="16" x2="37" y2="54" stroke="#18181b" stroke-width="1.4" stroke-dasharray="3,3"/><text x="42" y="60" font-size="10" font-family="sans-serif">h</text><text x="40" y="14" font-size="10" font-family="sans-serif">r</text></svg>
+          <div class="ref-formula">V = &#8467;wh</div>
+          <div class="ref-label" style="margin-top:.15rem;">rectangular prism</div>
+        </div>
+        <div class="ref-item">
+          <svg width="74" height="70" viewBox="0 0 74 70"><ellipse cx="37" cy="16" rx="27" ry="8" fill="none" stroke="#18181b" stroke-width="2"/><line x1="10" y1="16" x2="10" y2="54" stroke="#18181b" stroke-width="2"/><line x1="64" y1="16" x2="64" y2="54" stroke="#18181b" stroke-width="2"/><path d="M10,54 A27,8 0 0 0 64,54" fill="none" stroke="#18181b" stroke-width="2"/><line x1="37" y1="16" x2="37" y2="54" stroke="#18181b" stroke-width="1.4" stroke-dasharray="3,3"/><text x="42" y="60" font-size="10" font-family="sans-serif">h</text><text x="40" y="14" font-size="10" font-family="sans-serif">r</text></svg>
+          <div class="ref-formula">V = &pi;r&sup2;h</div>
+          <div class="ref-label" style="margin-top:.15rem;">cylinder</div>
+        </div>
+        <div class="ref-item">
+          <svg width="74" height="70" viewBox="0 0 74 70"><circle cx="37" cy="35" r="26" fill="none" stroke="#18181b" stroke-width="2"/><ellipse cx="37" cy="35" rx="26" ry="9" fill="none" stroke="#18181b" stroke-width="1.2" stroke-dasharray="3,3"/><line x1="37" y1="35" x2="60" y2="35" stroke="#18181b" stroke-width="1.4"/><text x="46" y="32" font-size="10" font-family="sans-serif">r</text></svg>
+          <div class="ref-formula">V = <sup>4</sup>&frasl;<sub>3</sub>&pi;r&sup3;</div>
+          <div class="ref-label" style="margin-top:.15rem;">sphere</div>
+        </div>
+        <div class="ref-item">
+          <svg width="74" height="70" viewBox="0 0 74 70"><ellipse cx="37" cy="54" rx="27" ry="8" fill="none" stroke="#18181b" stroke-width="2"/><line x1="10" y1="54" x2="37" y2="8" stroke="#18181b" stroke-width="2"/><line x1="64" y1="54" x2="37" y2="8" stroke="#18181b" stroke-width="2"/><line x1="37" y1="8" x2="37" y2="54" stroke="#18181b" stroke-width="1.4" stroke-dasharray="3,3"/><text x="42" y="34" font-size="10" font-family="sans-serif">h</text><text x="40" y="52" font-size="10" font-family="sans-serif">r</text></svg>
+          <div class="ref-formula">V = &frac13;&pi;r&sup2;h</div>
+          <div class="ref-label" style="margin-top:.15rem;">cone</div>
+        </div>
+        <div class="ref-item">
+          <svg width="74" height="70" viewBox="0 0 74 70"><polygon points="10,54 64,54 44,44 20,44" fill="none" stroke="#18181b" stroke-width="1.6"/><line x1="37" y1="8" x2="20" y2="44" stroke="#18181b" stroke-width="2"/><line x1="37" y1="8" x2="44" y2="44" stroke="#18181b" stroke-width="2"/><line x1="37" y1="8" x2="10" y2="54" stroke="#18181b" stroke-width="2"/><line x1="37" y1="8" x2="64" y2="54" stroke="#18181b" stroke-width="2"/><line x1="37" y1="8" x2="37" y2="49" stroke="#18181b" stroke-width="1.4" stroke-dasharray="3,3"/><text x="42" y="30" font-size="10" font-family="sans-serif">h</text></svg>
+          <div class="ref-formula">V = &frac13;&#8467;wh</div>
+          <div class="ref-label" style="margin-top:.15rem;">pyramid</div>
+        </div>
+      </div>
+      <div class="ref-facts">
+        <div><span class="fact-num">1.</span>The number of degrees of arc in a circle is 360.</div>
+        <div><span class="fact-num">2.</span>The number of radians of arc in a circle is 2&pi;.</div>
+        <div><span class="fact-num">3.</span>The sum of the measures in degrees of the angles of a triangle is 180.</div>
+      </div>
+      <div class="nav-actions-row">
+        <button type="button" class="btn-secondary" onclick="closeTakerRef()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <a href="index.html">Home</a>
     <a href="question-bank.html">Question Bank</a>
@@ -433,6 +547,10 @@
   var takerVisibilityHandler = null;
   var takerBlurHandler = null;
   var MAX_FOCUS_VIOLATIONS = 3;
+  var takerCalcInstance = null;
+  var takerCalcOpen = false;
+  var takerCalcDragSetup = false;
+  var takerRefOpen = false;
 
   function parseFraction(s) {
     if (s == null) return null;
@@ -506,7 +624,7 @@
       studentAttemptsByTestId = {};
       if (testIds.length) {
         var attemptsRes = await window.sbClient.from('classroom_test_attempts')
-          .select('test_id,score,total,submitted_at')
+          .select('test_id,score,total,submitted_at,answers')
           .eq('student_id', window.currentAuthUser.id)
           .in('test_id', testIds);
         (attemptsRes.data || []).forEach(function (a) { studentAttemptsByTestId[a.test_id] = a; });
@@ -524,11 +642,12 @@
               var resultHtml = attempt
                 ? '<div class="sub">Natija: <b style="color:var(--accent);">' + attempt.score + '/' + attempt.total + '</b> (' + pct + '%)</div>'
                 : '<div class="sub">' + (test.questions ? test.questions.length : 0) + ' ta savol' + timeHint + '</div>';
-              var btnLabel = attempt ? 'Qayta yechish' : 'Testni yechish';
+              var btnLabel = attempt ? 'Natijani ko\'rish' : 'Testni yechish';
+              var btnHandler = attempt ? 'openStudentResultView' : 'openTestTaker';
               return '<div class="test-row" style="padding:.6rem .8rem;">' +
                 '<div><div class="who" style="font-size:.85rem;">' + escapeHtml(test.title) + '</div>' +
                 resultHtml + '</div>' +
-                '<button class="btn-secondary" onclick="event.stopPropagation(); openTestTaker(\'' + test.id + '\')">' + btnLabel + '</button>' +
+                '<button class="btn-secondary" onclick="event.stopPropagation(); ' + btnHandler + '(\'' + test.id + '\')">' + btnLabel + '</button>' +
               '</div>';
             }).join('')
           : '<p style="color:var(--text-faint); font-size:.82rem;">Hali vazifa yo\'q.</p>';
@@ -934,6 +1053,8 @@
     document.getElementById('testViewerOverlay').classList.remove('taker-fullscreen');
     stopTakerTimer();
     stopFocusGuard();
+    closeTakerCalc();
+    closeTakerRef();
     currentTakerTest = null;
     currentTakerAnswers = {};
     takerIdx = 0;
@@ -941,15 +1062,35 @@
   }
   window.closeTestViewer = closeTestViewer;
 
+  /* Read-only view of a test the student has already submitted — no retakes allowed. */
+  function openStudentResultView(id) {
+    var test = allTestsById[id];
+    var attempt = studentAttemptsByTestId[id];
+    if (!test || !attempt) return;
+    stopFocusGuard();
+    document.getElementById('testViewerOverlay').classList.remove('taker-fullscreen');
+    document.getElementById('viewerTitle').textContent = test.title;
+    document.getElementById('testViewerOverlay').classList.add('open');
+    renderTakerResult(attempt.score, attempt.total, test.questions || [], attempt.answers || {});
+  }
+  window.openStudentResultView = openStudentResultView;
+
   /* ---------------- STUDENT: TAKE TEST ---------------- */
 
   function openTestTaker(id) {
     var test = allTestsById[id];
     if (!test) return;
+    if (studentAttemptsByTestId[id]) {
+      if (window.sat1600Toast) window.sat1600Toast('Siz bu testni allaqachon topshirgansiz — uni qayta yechib bo\'lmaydi.');
+      openStudentResultView(id);
+      return;
+    }
     currentTakerTest = test;
     currentTakerAnswers = {};
     takerIdx = 0;
     takerTimerHidden = false;
+    takerCalcOpen = false;
+    takerRefOpen = false;
     document.getElementById('viewerTitle').textContent = test.title;
     takerDeadline = test.time_limit_minutes ? (Date.now() + test.time_limit_minutes * 60000) : null;
     renderTestTaker();
@@ -971,12 +1112,16 @@
       ? '<div class="taker-timer"><div class="timer-chip" id="takerTimerChip"><span>🕐</span><span id="takerTimerText">--:--</span></div>' +
         '<button type="button" class="timer-hide-btn" id="takerTimerHideBtn" onclick="toggleTakerTimer()">Hide</button></div>'
       : '';
+    var toolsHtml = '<div class="taker-tools">' +
+        '<button type="button" class="tool-btn' + (takerCalcOpen ? ' active' : '') + '" id="takerCalcBtn" onclick="toggleTakerCalc()" title="Graphing calculator">🖩 Calculator</button>' +
+        '<button type="button" class="tool-btn' + (takerRefOpen ? ' active' : '') + '" id="takerRefBtn" onclick="openTakerRef()" title="Reference sheet">📐 Reference</button>' +
+      '</div>';
     var banner = takerFocusViolations > 0
       ? '<div class="focus-guard-banner show">⚠️ Diqqat! Testdan chiqmang — sahifadan chiqib ketsangiz ogohlantirish beriladi (' + takerFocusViolations + '/' + MAX_FOCUS_VIOLATIONS + '). ' + MAX_FOCUS_VIOLATIONS + '-marta chiqsangiz, test avtomatik topshiriladi.</div>'
       : '';
     var topHtml = banner + '<div class="taker-topbar">' +
         '<div class="taker-progress-info">Savol ' + (takerIdx + 1) + ' / ' + questions.length + '</div>' +
-        timerHtml +
+        '<div class="taker-timer">' + toolsHtml + timerHtml + '</div>' +
       '</div>' +
       '<div class="taker-progress-track"><div class="taker-progress-fill" style="width:' + pct + '%;"></div></div>';
 
@@ -1109,10 +1254,96 @@
     }
   }
 
+  /* ---------------- STUDENT: EXAM TOOLS (Desmos calculator + reference sheet) ---------------- */
+
+  function toggleTakerCalc() { takerCalcOpen ? closeTakerCalc() : openTakerCalc(); }
+  window.toggleTakerCalc = toggleTakerCalc;
+
+  function openTakerCalc() {
+    var panel = document.getElementById('takerCalcPanel');
+    panel.classList.remove('hidden');
+    takerCalcOpen = true;
+    var btn = document.getElementById('takerCalcBtn');
+    if (btn) btn.classList.add('active');
+    if (!takerCalcInstance) {
+      var elt = document.getElementById('takerCalcContainer');
+      try {
+        if (window.Desmos && Desmos.GraphingCalculator) {
+          takerCalcInstance = Desmos.GraphingCalculator(elt, {
+            keypad: true, expressionsCollapsed: false, settingsMenu: true, zoomButtons: true,
+            border: false, lockViewport: false
+          });
+        } else {
+          elt.innerHTML = '<div id="takerCalcFallback">Calculator could not load (no connection to Desmos). Try again once you\'re back online.</div>';
+        }
+      } catch (e) {
+        elt.innerHTML = '<div id="takerCalcFallback">Calculator could not load.</div>';
+      }
+    } else if (takerCalcInstance.resize) {
+      takerCalcInstance.resize();
+    }
+    setupTakerCalcDrag();
+  }
+  window.openTakerCalc = openTakerCalc;
+
+  function closeTakerCalc() {
+    document.getElementById('takerCalcPanel').classList.add('hidden');
+    takerCalcOpen = false;
+    var btn = document.getElementById('takerCalcBtn');
+    if (btn) btn.classList.remove('active');
+  }
+  window.closeTakerCalc = closeTakerCalc;
+
+  function setupTakerCalcDrag() {
+    if (takerCalcDragSetup) return;
+    takerCalcDragSetup = true;
+    var header = document.getElementById('takerCalcHeader');
+    var panel = document.getElementById('takerCalcPanel');
+    if (!header || !panel) return;
+    var dragging = false, offX = 0, offY = 0;
+    header.addEventListener('mousedown', function (e) {
+      if (e.target.closest('button')) return;
+      dragging = true;
+      var rect = panel.getBoundingClientRect();
+      offX = e.clientX - rect.left;
+      offY = e.clientY - rect.top;
+      panel.style.right = 'auto';
+      panel.style.left = rect.left + 'px';
+      panel.style.top = rect.top + 'px';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var left = e.clientX - offX;
+      var top = e.clientY - offY;
+      panel.style.left = Math.max(0, left) + 'px';
+      panel.style.top = Math.max(0, top) + 'px';
+    });
+    document.addEventListener('mouseup', function () { dragging = false; });
+  }
+
+  function openTakerRef() {
+    document.getElementById('takerRefOverlay').classList.remove('hidden');
+    takerRefOpen = true;
+    var btn = document.getElementById('takerRefBtn');
+    if (btn) btn.classList.add('active');
+  }
+  window.openTakerRef = openTakerRef;
+
+  function closeTakerRef() {
+    document.getElementById('takerRefOverlay').classList.add('hidden');
+    takerRefOpen = false;
+    var btn = document.getElementById('takerRefBtn');
+    if (btn) btn.classList.remove('active');
+  }
+  window.closeTakerRef = closeTakerRef;
+
   async function submitTestAttempt() {
     if (!currentTakerTest) return;
     stopTakerTimer();
     stopFocusGuard();
+    closeTakerCalc();
+    closeTakerRef();
     var test = currentTakerTest;
     currentTakerTest = null;
     var questions = test.questions || [];
@@ -1138,7 +1369,7 @@
         submitted_at: new Date().toISOString()
       }, { onConflict: 'test_id,student_id' });
       if (res.error) throw res.error;
-      studentAttemptsByTestId[test.id] = { test_id: test.id, score: score, total: questions.length, submitted_at: new Date().toISOString() };
+      studentAttemptsByTestId[test.id] = { test_id: test.id, score: score, total: questions.length, submitted_at: new Date().toISOString(), answers: answersOut };
       renderTakerResult(score, questions.length, questions, answersOut);
     } catch (err) {
       currentTakerTest = test;
