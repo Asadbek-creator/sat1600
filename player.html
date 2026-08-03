@@ -985,11 +985,14 @@
         window.sbClient.from('mock_attempts').insert({
           user_id: loggedInUser.id,
           test_num: testNum,
-          raw_score: finalScore,
-          total_questions: pool.length,
+          status: 'completed',
+          score: finalScore,
+          total: pool.length,
+          pct: pct,
           scaled_score: scaled,
+          completed_at: new Date().toISOString(),
           module_breakdown: { module1:{correct:m1ok,total:m1Total}, module2:{correct:m2ok,total:m2Total} }
-        }).then(()=>{}).catch(()=>{});
+        }).then(()=>{}).catch(function(e){ console.error('mock_attempts insert failed', e); });
       }
     }
 

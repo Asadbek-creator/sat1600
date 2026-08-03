@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress — SAT 1600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#fafaf9; --surface:#ffffff; --border:#e4e4e7; --border-strong:#d4d4d8;
+    --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-hover:#3730a3; --accent-soft:#eef2ff;
+    --gold:#b45309; --gold-soft:#fffbeb; --danger:#dc2626; --success:#16a34a; --success-soft:#f0fdf4;
+    --shadow-sm: 0 1px 3px rgba(24,24,27,.06);
+    --shadow-md: 0 10px 24px -14px rgba(24,24,27,.16);
+    --shadow-lg: 0 24px 48px -20px rgba(24,24,27,.22);
+    --grad-hero: linear-gradient(135deg, #4338ca 0%, #6d28d9 48%, #db2777 100%);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0b0b0d; --bg-soft:#131316; --surface:#17171b; --border:#26262b; --border-strong:#333338;
+      --text:#f4f4f5; --text-dim:#a1a1aa; --text-faint:#71717a; --accent:#818cf8; --accent-hover:#a5b4fc; --accent-soft:rgba(129,140,248,.14);
+      --gold:#fbbf24; --gold-soft:rgba(251,191,36,.12); --danger:#f87171; --success:#4ade80; --success-soft:rgba(74,222,128,.1);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+      --shadow-md: 0 10px 24px -14px rgba(0,0,0,.5);
+      --shadow-lg: 0 24px 48px -20px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg); color: var(--text); min-height:100vh; transition:background .2s,color .2s; }
+  h1,h2,h3{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
+  a{ color:inherit; }
+  ::selection{ background: var(--accent); color:#fff; }
+
+  /* ---------- Nav ---------- */
+  nav { position: sticky; top:0; z-index:1000; display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 5%; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom:1px solid var(--border); }
+  .logo { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; text-decoration:none; color:var(--text); font-family:'Plus Jakarta Sans'; }
+  .logo span{ color:var(--accent); }
+  .nav-links { display:flex; gap:2.2rem; list-style:none; }
+  .nav-links a { text-decoration:none; color: var(--text-dim); font-size:0.925rem; font-weight:500; transition:.15s; display:inline-flex; align-items:center; gap:.4rem; }
+  .nav-links a.active, .nav-links a:hover { color: var(--text); }
+  .nav-actions { display:flex; gap:0.6rem; align-items:center; }
+  .btn-login { background:none; border:none; color:var(--text); font-weight:600; cursor:pointer; font-size:.9rem; padding:.55rem 1rem; font-family:inherit; border-radius:8px; }
+  .btn-login:hover{ background:var(--bg-soft); }
+  .btn-signup { background: var(--text); border:none; color:var(--bg); font-weight:600;
+    padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+  .nav-user{ font-size:.88rem; font-weight:600; color:var(--text-dim); padding:.55rem .3rem; }
+  .nav-coins{ font-size:.85rem; font-weight:700; color:var(--gold); background:var(--gold-soft); padding:.4rem .7rem; border-radius:999px; }
+  @media (max-width:900px){ .nav-links{ display:none; } }
+
+  /* ---------- Modal (shared) ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(10,10,12,.5); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; z-index:2000; padding:1rem; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:2.2rem;
+    width:90%; max-width:380px; position:relative; box-shadow:var(--shadow-lg); }
+  .modal h3{ font-size:1.3rem; margin-bottom:1.4rem; font-weight:700; color:var(--text); }
+  .modal input, .modal select{ width:100%; padding:.75rem .9rem; margin-bottom:.9rem; border-radius:10px;
+    border:1px solid var(--border-strong); background:var(--bg); color:var(--text); font-size:.92rem; font-family:inherit; }
+  .modal input:focus, .modal select:focus{ outline:none; border-color:var(--accent); }
+  .modal .btn-primary{ width:100%; background:var(--text); color:var(--bg); border:none; padding:.8rem 1.3rem; border-radius:12px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; transition:transform .12s, opacity .12s; }
+  .modal .btn-primary:hover{ opacity:.88; transform:translateY(-1px); }
+  .modal-close{ position:absolute; top:1.1rem; right:1.3rem; background:none; border:none; color:var(--text-faint);
+    font-size:1.3rem; cursor:pointer; line-height:1; }
+  .modal-switch{ text-align:center; margin-top:1.1rem; color:var(--text-dim); font-size:.88rem; }
+  .modal-switch a{ color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
+  .modal-note{ font-size:.78rem; color:var(--text-faint); text-align:center; margin-top:1rem; }
+  .btn-google{ width:100%; display:flex; align-items:center; justify-content:center; gap:.6rem; background:var(--bg); border:1px solid var(--border-strong); border-radius:10px; padding:.7rem 1rem; font-weight:600; font-size:.92rem; color:var(--text); cursor:pointer; margin-bottom:1rem; }
+
+  /* ---------- Goal modal specifics ---------- */
+  .uni-search-wrap{ position:relative; }
+  .uni-dropdown{ position:absolute; top:calc(100% - .7rem); left:0; right:0; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; box-shadow:var(--shadow-md); max-height:230px; overflow-y:auto; display:none; z-index:10; }
+  .uni-dropdown.show{ display:block; }
+  .uni-option{ padding:.65rem .9rem; cursor:pointer; font-size:.88rem; display:flex; align-items:center; gap:.55rem; }
+  .uni-option:hover{ background:var(--accent-soft); color:var(--accent); }
+  .uni-option .flag{ font-size:1.05rem; }
+  .modal label{ display:block; font-size:.76rem; font-weight:700; color:var(--text-dim); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.4px; }
+
+  /* ---------- Layout ---------- */
+  .wrap{ max-width:1080px; margin:0 auto; padding:2.6rem 5% 6rem; }
+  .locked{ text-align:center; padding:5rem 1.5rem; }
+  .locked h2{ margin-bottom:.6rem; }
+  .locked p{ color:var(--text-dim); }
+  .locked button{ margin-top:1.4rem; background:var(--text); color:var(--bg); border:none; padding:.8rem 1.5rem;
+    border-radius:12px; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit; }
+
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:translateY(0);} }
+  .anim{ animation: fadeUp .5s cubic-bezier(.16,1,.3,1) both; }
+  .anim-1{ animation-delay:.02s; } .anim-2{ animation-delay:.08s; } .anim-3{ animation-delay:.14s; }
+  .anim-4{ animation-delay:.2s; } .anim-5{ animation-delay:.26s; } .anim-6{ animation-delay:.32s; }
+
+  /* ---------- Hero ---------- */
+  .hero-banner{ position:relative; border-radius:24px; padding:2.6rem 2.4rem; margin-bottom:1.2rem; overflow:hidden;
+    background: var(--grad-hero); color:#fff; box-shadow:var(--shadow-lg); }
+  .hero-banner::before{ content:''; position:absolute; inset:0; background:radial-gradient(circle at 82% -10%, rgba(255,255,255,.35), transparent 55%); pointer-events:none; }
+  .hero-banner::after{ content:''; position:absolute; right:-60px; bottom:-90px; width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%); pointer-events:none; }
+  .hero-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; position:relative; z-index:1; flex-wrap:wrap; }
+  .hero-greeting{ font-size:clamp(1.5rem,3.6vw,2.1rem); font-weight:800; letter-spacing:-.6px; margin-bottom:.5rem; }
+  .hero-sub{ font-size:.98rem; opacity:.88; max-width:480px; }
+  .btn-edit-goal{ background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3); color:#fff; padding:.6rem 1.05rem;
+    border-radius:11px; font-weight:600; font-size:.84rem; cursor:pointer; font-family:inherit; backdrop-filter:blur(6px); transition:.15s; white-space:nowrap; }
+  .btn-edit-goal:hover{ background:rgba(255,255,255,.26); }
+  .hero-countdown{ margin-top:1.8rem; position:relative; z-index:1; display:flex; align-items:flex-end; gap:1.6rem; flex-wrap:wrap; }
+  .countdown-num{ font-family:'Plus Jakarta Sans'; font-size:clamp(3rem,8vw,4.6rem); font-weight:800; letter-spacing:-2px; line-height:.9; }
+  .countdown-label{ font-size:.92rem; opacity:.85; font-weight:600; margin-bottom:.5rem; }
+  .hero-chips{ display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.4rem; position:relative; z-index:1; }
+  .hero-chip{ background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.24); padding:.45rem .85rem; border-radius:999px; font-size:.8rem; font-weight:600; display:flex; align-items:center; gap:.4rem; }
+  .hero-empty-cta{ margin-top:1.6rem; position:relative; z-index:1; }
+  .hero-empty-cta button{ background:#fff; color:var(--accent); border:none; padding:.85rem 1.5rem; border-radius:12px; font-weight:800; font-size:.92rem; cursor:pointer; font-family:inherit; box-shadow:0 12px 24px -10px rgba(0,0,0,.3); transition:transform .12s; }
+  .hero-empty-cta button:hover{ transform:translateY(-2px); }
+
+  /* ---------- Cards ---------- */
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:1.8rem; margin-bottom:1.2rem;
+    box-shadow:var(--shadow-sm); transition:box-shadow .2s, border-color .2s; }
+  .card-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1.3rem; gap:1rem; flex-wrap:wrap; }
+  .card-head h2{ font-size:1.15rem; font-weight:800; letter-spacing:-.3px; }
+  .card-head .sub{ font-size:.82rem; color:var(--text-faint); font-weight:500; }
+
+  /* ---------- Target score progress ---------- */
+  .target-row{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:.9rem; }
+  .target-block .num{ font-family:'Plus Jakarta Sans'; font-size:2.1rem; font-weight:800; letter-spacing:-1px; }
+  .target-block .lbl{ font-size:.78rem; color:var(--text-faint); font-weight:700; text-transform:uppercase; letter-spacing:.4px; }
+  .target-block.right{ text-align:right; }
+  .progress-track{ height:14px; background:var(--bg-soft); border-radius:999px; overflow:hidden; position:relative; border:1px solid var(--border); }
+  .progress-fill{ height:100%; border-radius:999px; background:linear-gradient(90deg,#4338ca,#7c3aed); width:0%; transition:width 1.1s cubic-bezier(.16,1,.3,1); position:relative; }
+  .progress-fill::after{ content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); background-size:200% 100%; animation:shimmer 2.2s linear infinite; }
+  @keyframes shimmer{ from{ background-position:200% 0;} to{ background-position:-200% 0;} }
+  .progress-pct{ text-align:right; font-size:.82rem; font-weight:700; color:var(--accent); margin-top:.5rem; }
+
+  /* ---------- Statistics grid ---------- */
+  .stats-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:1rem; margin-bottom:1.2rem; }
+  .stat-card{ background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:1.35rem 1.4rem;
+    box-shadow:var(--shadow-sm); transition:transform .18s, box-shadow .18s, border-color .18s; cursor:default; }
+  .stat-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--border-strong); }
+  .stat-icon{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.15rem; margin-bottom:.85rem; }
+  .stat-num{ font-family:'Plus Jakarta Sans'; font-size:1.65rem; font-weight:800; letter-spacing:-.6px; margin-bottom:.15rem; }
+  .stat-lbl{ font-size:.78rem; color:var(--text-dim); font-weight:600; }
+
+  /* ---------- Question progress ---------- */
+  .qprog-main{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.7rem; }
+  .qprog-main .big{ font-family:'Plus Jakarta Sans'; font-size:1.6rem; font-weight:800; }
+  .qprog-main .big span{ color:var(--text-faint); font-weight:600; font-size:1.1rem; }
+  .goal-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem; margin-top:1.4rem; }
+  .goal-item .glbl{ display:flex; justify-content:space-between; font-size:.78rem; font-weight:700; color:var(--text-dim); margin-bottom:.5rem; }
+  .goal-item .glbl b{ color:var(--text); }
+  .mini-track{ height:8px; background:var(--bg-soft); border-radius:999px; overflow:hidden; border:1px solid var(--border); }
+  .mini-fill{ height:100%; border-radius:999px; background:var(--accent); width:0%; transition:width 1s cubic-bezier(.16,1,.3,1); }
+
+  /* ---------- Mock performance ---------- */
+  .mock-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1.2rem; text-align:center; }
+  .mock-item .mv{ font-family:'Plus Jakarta Sans'; font-size:1.8rem; font-weight:800; }
+  .mock-item .ml{ font-size:.76rem; color:var(--text-faint); font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-top:.2rem; }
+  .mock-item.improve .mv{ color:var(--success); }
+
+  /* ---------- Two column ---------- */
+  .two-col{ display:grid; grid-template-columns:1fr 1.3fr; gap:1.2rem; margin-bottom:1.2rem; align-items:stretch; }
+  @media (max-width:800px){ .two-col{ grid-template-columns:1fr; } }
+
+  /* ---------- Streak card ---------- */
+  .streak-card{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    background:linear-gradient(160deg, var(--gold-soft), var(--surface) 60%); }
+  .streak-flame{ font-size:3rem; margin-bottom:.6rem; filter:drop-shadow(0 6px 14px rgba(180,83,9,.25)); animation:flicker 2.4s ease-in-out infinite; }
+  @keyframes flicker{ 0%,100%{ transform:scale(1) rotate(0deg);} 50%{ transform:scale(1.06) rotate(-2deg);} }
+  .streak-num{ font-family:'Plus Jakarta Sans'; font-size:2.2rem; font-weight:800; color:var(--gold); }
+  .streak-text{ font-size:.88rem; color:var(--text-dim); margin-top:.3rem; max-width:220px; }
+
+  /* ---------- Achievements ---------- */
+  .ach-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:.8rem; }
+  .ach-item{ border:1px solid var(--border); border-radius:16px; padding:1rem .8rem; text-align:center; transition:.18s; background:var(--bg-soft); }
+  .ach-item.unlocked{ background:linear-gradient(160deg, var(--accent-soft), var(--surface)); border-color:var(--accent); animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both; }
+  .ach-item.unlocked:hover{ transform:translateY(-3px) scale(1.02); box-shadow:var(--shadow-md); }
+  .ach-item.locked{ opacity:.4; filter:grayscale(.6); }
+  @keyframes popIn{ from{ opacity:0; transform:scale(.75);} to{ opacity:1; transform:scale(1);} }
+  .ach-emoji{ font-size:1.9rem; margin-bottom:.5rem; }
+  .ach-name{ font-size:.76rem; font-weight:700; line-height:1.25; }
+
+  /* ---------- Weekly activity ---------- */
+  .chart-wrap{ display:flex; align-items:flex-end; gap:.7rem; height:150px; padding-top:1rem; }
+  .chart-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:.5rem; height:100%; justify-content:flex-end; }
+  .chart-bar{ width:100%; max-width:34px; border-radius:8px 8px 4px 4px; background:linear-gradient(180deg,#7c3aed,#4338ca); height:2px; transition:height 1s cubic-bezier(.16,1,.3,1); position:relative; }
+  .chart-bar .val{ position:absolute; top:-1.3rem; left:50%; transform:translateX(-50%); font-size:.72rem; font-weight:700; color:var(--text-dim); white-space:nowrap; }
+  .chart-day{ font-size:.72rem; color:var(--text-faint); font-weight:600; }
+
+  /* ---------- Motivation ---------- */
+  .motivation-card{ border-radius:20px; padding:2rem 2.2rem; text-align:center; background:var(--accent-soft); border:1px solid var(--border);
+    position:relative; overflow:hidden; }
+  .motivation-quote{ font-size:1.15rem; font-weight:700; font-family:'Plus Jakarta Sans'; color:var(--text); max-width:560px; margin:0 auto;
+    letter-spacing:-.2px; transition:opacity .4s; }
+  .motivation-quote::before{ content:'\201C'; } .motivation-quote::after{ content:'\201D'; }
+
+  footer{ padding:2.6rem 5%; text-align:center; color:var(--text-faint); border-top:1px solid var(--border); font-size:.88rem; margin-top:1rem; }
+  footer a{ text-decoration:none; color:var(--text-dim); margin:0 .6rem; }
+  footer a:hover{ color:var(--text); }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">SAT<span>1600</span></a>
+    <ul class="nav-links">
+      <li><a href="question-bank.html">Question Bank</a></li>
+      <li><a href="mocks.html">SAT Mocks</a></li>
+      <li><a href="missions.html">Missions</a></li>
+      <li><a href="progress.html" class="active">Progress</a></li>
+      <li><a href="market.html">Market</a></li>
+      <li><a href="classroom.html">Classroom</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-login" onclick="openModal('login')">Log in</button>
+      <button class="btn-signup" onclick="openModal('signup')">Sign up</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div id="lockedView" class="locked" style="display:none;">
+      <h2>Progress — faqat ro'yxatdan o'tganlar uchun</h2>
+      <p>SAT tayyorgarligingizni kuzatish uchun tizimga kiring.</p>
+      <button onclick="openModal('login')">Log in</button>
+    </div>
+
+    <div id="appView" style="display:none;">
+
+      <div class="hero-banner anim anim-1" id="heroBanner"></div>
+
+      <div class="card target-progress anim anim-2" id="targetProgressCard" style="display:none;"></div>
+
+      <div class="stats-grid anim anim-2" id="statsGrid"></div>
+
+      <div class="card anim anim-3" id="questionProgressCard"></div>
+
+      <div class="card anim anim-3" id="mockPerfCard"></div>
+
+      <div class="two-col anim anim-4">
+        <div class="card streak-card" id="streakCard"></div>
+        <div class="card" id="achievementsCard"></div>
+      </div>
+
+      <div class="card anim anim-5" id="weeklyActivityCard"></div>
+
+      <div class="motivation-card anim anim-6" id="motivationCard"></div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <a href="index.html">Home</a><a href="question-bank.html">Question Bank</a><a href="mocks.html">Mocks</a><a href="market.html">Market</a>
+    </div>
+    <p style="margin-top:1rem;">© 2026 SAT1600</p>
+  </footer>
+
+  <!-- Login modal (shared) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Log in</h3>
+      <button type="button" class="btn-google" onclick="handleGoogleSignIn()">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.09-1.8 2.73v2.27h2.91c1.7-1.57 2.69-3.88 2.69-6.64z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.17l-2.91-2.27c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.34C2.44 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.96 10.71c-.18-.54-.28-1.11-.28-1.71s.1-1.17.28-1.71V4.95H.96C.35 6.17 0 7.55 0 9s.35 2.83.96 4.05l3-2.34z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.95l3 2.34C4.67 5.16 6.66 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+      <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;">
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+        <span style="font-size:.78rem; color:var(--text-faint);">or</span>
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+      </div>
+      <form onsubmit="return false;">
+        <input type="text" id="modalNameField" placeholder="Full name" style="display:none;">
+        <input type="email" id="modalEmailField" placeholder="Email address" autocomplete="email">
+        <input type="password" id="modalPasswordField" placeholder="Password" autocomplete="current-password">
+        <p id="modalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
+        <button class="btn-primary" type="submit" id="modalSubmit">Log in</button>
+      </form>
+      <div class="modal-switch">
+        <span id="modalSwitchText">Don't have an account? <a onclick="openModal('signup')">Sign up</a></span>
+      </div>
+      <p class="modal-note">Your account works across Question Bank, Mocks and progress tracking.</p>
+    </div>
+  </div>
+
+  <!-- Goal settings modal -->
+  <div class="modal-overlay" id="goalModalOverlay">
+    <div class="modal" style="max-width:420px;">
+      <button class="modal-close" onclick="closeGoalModal()">&times;</button>
+      <h3>🎯 Maqsadingizni sozlang</h3>
+      <label>Orzuingizdagi universitet</label>
+      <div class="uni-search-wrap">
+        <input type="text" id="uniSearchInput" placeholder="Universitet qidiring..." autocomplete="off" oninput="filterUniOptions()" onfocus="filterUniOptions()">
+        <div class="uni-dropdown" id="uniDropdown"></div>
+      </div>
+      <label>Maqsad SAT bali</label>
+      <input type="number" id="targetScoreInput" min="400" max="1600" step="10" placeholder="Masalan: 1550">
+      <label>Rasmiy SAT imtihon sanasi</label>
+      <input type="date" id="examDateInput">
+      <p id="goalModalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
+      <button class="btn-primary" id="goalModalSubmit" onclick="saveGoals()">Saqlash</button>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+  /* ================= University data ================= */
+  var UNIVERSITIES = [
+    { name:'Columbia University', flag:'🦁', greet:'Future Columbia Lion!', ivy:true },
+    { name:'Harvard University', flag:'🎓', greet:'Future Harvard Crimson!', ivy:true },
+    { name:'Stanford University', flag:'🌲', greet:'Future Stanford Cardinal!', ivy:false },
+    { name:'Princeton University', flag:'🐯', greet:'Future Princeton Tiger!', ivy:true },
+    { name:'Yale University', flag:'🐶', greet:'Future Yale Bulldog!', ivy:true },
+    { name:'MIT', flag:'⚙️', greet:'Future MIT Engineer!', ivy:false },
+    { name:'Cornell', flag:'🐻', greet:'Future Cornell Big Red!', ivy:true },
+    { name:'UPenn', flag:'🎓', greet:'Future Penn Quaker!', ivy:true },
+    { name:'Brown', flag:'🐻', greet:'Future Brown Bear!', ivy:true },
+    { name:'Duke', flag:'😈', greet:'Future Duke Blue Devil!', ivy:false },
+    { name:'University of Chicago', flag:'🎓', greet:'Future UChicago Maroon!', ivy:false },
+    { name:'Northwestern', flag:'🐱', greet:'Future Northwestern Wildcat!', ivy:false },
+    { name:'Caltech', flag:'🦫', greet:'Future Caltech Beaver!', ivy:false },
+    { name:'Carnegie Mellon', flag:'🎓', greet:'Future CMU Tartan!', ivy:false }
+  ];
+
+  var MOTIVATIONS = [
+    'Every question solved gets you one step closer to your dream school.',
+    'Small progress every day creates big results.',
+    'Discipline beats motivation.',
+    'The score you want is on the other side of the practice you’re avoiding.',
+    'Consistency compounds — keep showing up.',
+    'Future you is counting on the work you put in today.'
+  ];
+
+  /* ================= State ================= */
+  var pageState = { profile:null, solvedQuestions:[], mockAttempts:[], classroomAttempts:[], classroomTests:[] };
+  var motivationTimer = null;
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function findUni(name) {
+    if (!name) return null;
+    return UNIVERSITIES.find(function (u) { return u.name.toLowerCase() === name.toLowerCase(); }) || null;
+  }
+
+  /* ================= Goal modal ================= */
+  function openGoalModal() {
+    var p = window.currentUserProfile || {};
+    document.getElementById('uniSearchInput').value = p.dream_university || '';
+    document.getElementById('targetScoreInput').value = p.target_score || '';
+    document.getElementById('examDateInput').value = p.sat_exam_date || '';
+    document.getElementById('goalModalError').style.display = 'none';
+    document.getElementById('goalModalOverlay').classList.add('open');
+  }
+  window.openGoalModal = openGoalModal;
+
+  function closeGoalModal() {
+    document.getElementById('goalModalOverlay').classList.remove('open');
+    document.getElementById('uniDropdown').classList.remove('show');
+  }
+  window.closeGoalModal = closeGoalModal;
+
+  function filterUniOptions() {
+    var q = document.getElementById('uniSearchInput').value.trim().toLowerCase();
+    var dd = document.getElementById('uniDropdown');
+    var matches = UNIVERSITIES.filter(function (u) { return u.name.toLowerCase().indexOf(q) !== -1; });
+    var html = matches.map(function (u) {
+      return '<div class="uni-option" onclick="pickUni(' + "'" + u.name.replace(/'/g, "\\'") + "'" + ')"><span class="flag">' + u.flag + '</span>' + escapeHtml(u.name) + '</div>';
+    }).join('');
+    if (q && !matches.some(function (u) { return u.name.toLowerCase() === q; })) {
+      html += '<div class="uni-option" onclick="pickUni(document.getElementById(' + "'uniSearchInput'" + ').value)"><span class="flag">✏️</span>Custom: "' + escapeHtml(document.getElementById('uniSearchInput').value) + '"</div>';
+    }
+    dd.innerHTML = html || '<div class="uni-option" style="cursor:default; color:var(--text-faint);">Hech narsa topilmadi</div>';
+    dd.classList.add('show');
+  }
+  window.filterUniOptions = filterUniOptions;
+
+  function pickUni(name) {
+    document.getElementById('uniSearchInput').value = name;
+    document.getElementById('uniDropdown').classList.remove('show');
+  }
+  window.pickUni = pickUni;
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.uni-search-wrap')) {
+      var dd = document.getElementById('uniDropdown');
+      if (dd) dd.classList.remove('show');
+    }
+  });
+
+  async function saveGoals() {
+    var uni = document.getElementById('uniSearchInput').value.trim();
+    var target = parseInt(document.getElementById('targetScoreInput').value, 10);
+    var examDate = document.getElementById('examDateInput').value || null;
+    var errEl = document.getElementById('goalModalError');
+    errEl.style.display = 'none';
+    if (target && (target < 400 || target > 1600)) {
+      errEl.textContent = 'Maqsad bal 400 dan 1600 gacha bo\'lishi kerak.';
+      errEl.style.display = 'block';
+      return;
+    }
+    var btn = document.getElementById('goalModalSubmit');
+    var orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Saqlanmoqda…';
+    try {
+      var res = await window.sbClient.from('profiles').update({
+        dream_university: uni || null,
+        target_score: target || null,
+        sat_exam_date: examDate
+      }).eq('id', window.currentAuthUser.id);
+      if (res.error) throw res.error;
+      window.currentUserProfile.dream_university = uni || null;
+      window.currentUserProfile.target_score = target || null;
+      window.currentUserProfile.sat_exam_date = examDate;
+      closeGoalModal();
+      renderAll();
+      if (window.sat1600Toast) window.sat1600Toast('✅ Maqsad saqlandi!');
+    } catch (err) {
+      errEl.textContent = (err && err.message) || 'Xatolik yuz berdi.';
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  }
+  window.saveGoals = saveGoals;
+
+  /* ================= Data loading ================= */
+  async function loadAllData() {
+    var uid = window.currentAuthUser.id;
+    var results = await Promise.all([
+      window.sbClient.from('profiles').select('*').eq('id', uid).maybeSingle(),
+      window.sbClient.from('solved_questions').select('id,is_correct,solved_at').eq('user_id', uid),
+      window.sbClient.from('mock_attempts').select('id,test_num,status,score,total,pct,scaled_score,completed_at').eq('user_id', uid).eq('status', 'completed').order('completed_at', { ascending:true }),
+      window.sbClient.from('classroom_test_attempts').select('id,test_id,score,total,submitted_at').eq('student_id', uid),
+      window.sbClient.from('classroom_tests').select('id,test_type')
+    ]);
+    pageState.profile = results[0].data || {};
+    window.currentUserProfile = Object.assign({}, window.currentUserProfile, pageState.profile);
+    pageState.solvedQuestions = results[1].data || [];
+    pageState.mockAttempts = results[2].data || [];
+    pageState.classroomAttempts = results[3].data || [];
+    pageState.classroomTests = results[4].data || [];
+  }
+
+  /* ================= Rendering ================= */
+  function daysUntil(dateStr) {
+    if (!dateStr) return null;
+    var target = new Date(dateStr + 'T00:00:00');
+    var now = new Date();
+    now.setHours(0,0,0,0);
+    return Math.ceil((target - now) / 86400000);
+  }
+
+  function renderHero() {
+    var p = pageState.profile;
+    var uni = findUni(p.dream_university);
+    var greet = uni ? uni.greet : (p.dream_university ? 'Future ' + escapeHtml(p.dream_university) + ' Student!' : null);
+    var flag = uni ? uni.flag : '🎓';
+    var name = window.currentAuthUser && window.currentAuthUser.user_metadata && window.currentAuthUser.user_metadata.full_name
+      ? window.currentAuthUser.user_metadata.full_name.split(' ')[0] : 'Student';
+
+    var html = '<div class="hero-top">' +
+      '<div>' +
+        '<div class="hero-greeting">' + flag + ' ' + (greet ? escapeHtml(greet) : ('Salom, ' + escapeHtml(name) + '!')) + '</div>' +
+        '<div class="hero-sub">' + (p.dream_university ? 'SAT tayyorgarligingiz ' + escapeHtml(p.dream_university) + ' sari davom etmoqda.' : 'Orzuingizdagi universitetni tanlang va SAT sayohatingizni boshlang.') + '</div>' +
+      '</div>' +
+      '<button class="btn-edit-goal" onclick="openGoalModal()">⚙️ Maqsadni sozlash</button>' +
+    '</div>';
+
+    var days = daysUntil(p.sat_exam_date);
+    if (days !== null) {
+      html += '<div class="hero-countdown"><div><div class="countdown-label">📅 SAT imtihoni</div><div class="countdown-num">' +
+        (days >= 0 ? days : 0) + '</div></div><div class="countdown-label" style="margin-bottom:1.1rem;">' + (days >= 0 ? 'kun qoldi' : (days === null ? '' : 'imtihon o\'tdi')) + '</div></div>';
+    } else if (!p.dream_university && !p.target_score) {
+      html += '<div class="hero-empty-cta"><button onclick="openGoalModal()">Maqsadingizni belgilang →</button></div>';
+    }
+
+    var chips = [];
+    if (p.target_score) chips.push('🎯 Maqsad: ' + p.target_score);
+    if (p.streak_count) chips.push('🔥 ' + p.streak_count + ' kunlik streak');
+    if (chips.length) html += '<div class="hero-chips">' + chips.map(function(c){ return '<span class="hero-chip">' + c + '</span>'; }).join('') + '</div>';
+
+    document.getElementById('heroBanner').innerHTML = html;
+  }
+
+  function currentScore() {
+    var m = pageState.mockAttempts;
+    if (!m.length) return null;
+    return m[m.length - 1].scaled_score;
+  }
+
+  function renderTargetProgress() {
+    var p = pageState.profile;
+    var card = document.getElementById('targetProgressCard');
+    if (!p.target_score) { card.style.display = 'none'; return; }
+    var cur = currentScore();
+    var curDisplay = cur != null ? cur : '—';
+    var pct = cur != null ? Math.min(100, Math.round((cur / p.target_score) * 100)) : 0;
+    card.style.display = 'block';
+    card.innerHTML =
+      '<div class="card-head"><h2>Maqsad balga yo\'l</h2><span class="sub">Eng so\'nggi mock asosida</span></div>' +
+      '<div class="target-row">' +
+        '<div class="target-block"><div class="num">' + curDisplay + '</div><div class="lbl">Joriy</div></div>' +
+        '<div class="target-block right"><div class="num">' + p.target_score + '</div><div class="lbl">Maqsad</div></div>' +
+      '</div>' +
+      '<div class="progress-track"><div class="progress-fill" id="targetFill" style="width:0%;"></div></div>' +
+      '<div class="progress-pct">' + pct + '%</div>';
+    requestAnimationFrame(function () { setTimeout(function(){ var f = document.getElementById('targetFill'); if (f) f.style.width = pct + '%'; }, 60); });
+  }
+
+  function renderStats() {
+    var sq = pageState.solvedQuestions;
+    var ca = pageState.classroomAttempts;
+    var testTypeById = {};
+    pageState.classroomTests.forEach(function (t) { testTypeById[t.id] = t.test_type; });
+    var hwCompleted = ca.filter(function (a) { return testTypeById[a.test_id] === 'homework'; }).length;
+    var examCompleted = ca.filter(function (a) { return testTypeById[a.test_id] === 'exam'; }).length;
+    var mocks = pageState.mockAttempts;
+    var correct = sq.filter(function (q) { return q.is_correct; }).length;
+    var accuracy = sq.length ? Math.round((correct / sq.length) * 100) : 0;
+    var avgMock = mocks.length ? Math.round(mocks.reduce(function (s, m) { return s + (m.scaled_score||0); }, 0) / mocks.length) : null;
+    var highestMock = mocks.length ? Math.max.apply(null, mocks.map(function (m) { return m.scaled_score||0; })) : null;
+    var recent = mocks.slice(-3);
+    var curAvg = recent.length ? Math.round(recent.reduce(function (s, m) { return s + (m.scaled_score||0); }, 0) / recent.length) : null;
+
+    var activeDays = {};
+    sq.forEach(function (q) { if (q.solved_at) activeDays[q.solved_at.slice(0,10)] = 1; });
+    mocks.forEach(function (m) { if (m.completed_at) activeDays[m.completed_at.slice(0,10)] = 1; });
+    ca.forEach(function (a) { if (a.submitted_at) activeDays[a.submitted_at.slice(0,10)] = 1; });
+
+    var stats = [
+      { icon:'📝', bg:'var(--accent-soft)', color:'var(--accent)', num: sq.length, lbl:'Savollar yechildi' },
+      { icon:'📚', bg:'var(--success-soft)', color:'var(--success)', num: hwCompleted, lbl:'Uy vazifasi bajarildi' },
+      { icon:'🧪', bg:'var(--gold-soft)', color:'var(--gold)', num: examCompleted, lbl:'Imtihonlar topshirildi' },
+      { icon:'⏱️', bg:'var(--accent-soft)', color:'var(--accent)', num: mocks.length, lbl:'Mock testlar topshirildi' },
+      { icon:'📊', bg:'var(--success-soft)', color:'var(--success)', num: avgMock != null ? avgMock : '—', lbl:'O\'rtacha mock bal' },
+      { icon:'🎯', bg:'var(--gold-soft)', color:'var(--gold)', num: accuracy + '%', lbl:'O\'rtacha aniqlik' },
+      { icon:'📈', bg:'var(--accent-soft)', color:'var(--accent)', num: curAvg != null ? curAvg : '—', lbl:'Joriy SAT o\'rtachasi' },
+      { icon:'🏆', bg:'var(--gold-soft)', color:'var(--gold)', num: highestMock != null ? highestMock : '—', lbl:'Eng yuqori mock bal' },
+      { icon:'🔥', bg:'var(--gold-soft)', color:'var(--gold)', num: pageState.profile.streak_count || 0, lbl:'Joriy o\'quv streak' },
+      { icon:'📅', bg:'var(--success-soft)', color:'var(--success)', num: Object.keys(activeDays).length, lbl:'Faol o\'quv kunlari' }
+    ];
+
+    document.getElementById('statsGrid').innerHTML = stats.map(function (s) {
+      return '<div class="stat-card"><div class="stat-icon" style="background:' + s.bg + '; color:' + s.color + ';">' + s.icon + '</div>' +
+        '<div class="stat-num">' + s.num + '</div><div class="stat-lbl">' + s.lbl + '</div></div>';
+    }).join('');
+  }
+
+  function renderQuestionProgress() {
+    var total = pageState.solvedQuestions.length;
+    var goalTotal = 5000;
+    var todayStr = new Date().toISOString().slice(0,10);
+    var weekAgo = new Date(Date.now() - 6*86400000).toISOString().slice(0,10);
+    var monthAgo = new Date(Date.now() - 29*86400000).toISOString().slice(0,10);
+    var today=0, week=0, month=0;
+    pageState.solvedQuestions.forEach(function (q) {
+      if (!q.solved_at) return;
+      var d = q.solved_at.slice(0,10);
+      if (d === todayStr) today++;
+      if (d >= weekAgo) week++;
+      if (d >= monthAgo) month++;
+    });
+    var DAILY_GOAL = 20, WEEKLY_GOAL = 100, MONTHLY_GOAL = 400;
+    var overallPct = Math.min(100, Math.round((total/goalTotal)*100));
+
+    document.getElementById('questionProgressCard').innerHTML =
+      '<div class="card-head"><h2>Savollar progressi</h2><span class="sub">5,000 ta savol maqsadiga yo\'l</span></div>' +
+      '<div class="qprog-main"><div class="big">' + total.toLocaleString() + ' <span>/ ' + goalTotal.toLocaleString() + '</span></div><div class="sub" style="color:var(--accent); font-weight:700;">' + overallPct + '%</div></div>' +
+      '<div class="progress-track"><div class="progress-fill" id="qFill" style="width:0%;"></div></div>' +
+      '<div class="goal-grid">' +
+        goalItem('Kunlik maqsad', today, DAILY_GOAL) +
+        goalItem('Haftalik maqsad', week, WEEKLY_GOAL) +
+        goalItem('Oylik maqsad', month, MONTHLY_GOAL) +
+      '</div>';
+    requestAnimationFrame(function(){ setTimeout(function(){ var f=document.getElementById('qFill'); if(f) f.style.width = overallPct + '%'; },60); });
+    setTimeout(function () {
+      ['g0','g1','g2'].forEach(function (id) { var el = document.getElementById(id); if (el) el.style.width = el.dataset.pct + '%'; });
+    }, 80);
+  }
+  var goalIdx = 0;
+  function goalItem(label, val, goal) {
+    var id = 'g' + (goalIdx++ % 3);
+    var pct = Math.min(100, Math.round((val/goal)*100));
+    return '<div class="goal-item"><div class="glbl"><span>' + label + '</span><b>' + val + ' / ' + goal + '</b></div>' +
+      '<div class="mini-track"><div class="mini-fill" id="' + id + '" data-pct="' + pct + '" style="width:0%;"></div></div></div>';
+  }
+
+  function renderMockPerformance() {
+    var mocks = pageState.mockAttempts;
+    var card = document.getElementById('mockPerfCard');
+    if (!mocks.length) {
+      card.innerHTML = '<div class="card-head"><h2>Mock natijalar</h2></div>' +
+        '<p style="color:var(--text-dim); font-size:.9rem;">Hali mock test topshirmagansiz. <a href="mocks.html" style="color:var(--accent); font-weight:700; text-decoration:none;">Birinchi mockni boshlang →</a></p>';
+      return;
+    }
+    var latest = mocks[mocks.length-1].scaled_score;
+    var highest = Math.max.apply(null, mocks.map(function(m){ return m.scaled_score||0; }));
+    var avg = Math.round(mocks.reduce(function(s,m){ return s+(m.scaled_score||0); }, 0)/mocks.length);
+    var improvement = latest - mocks[0].scaled_score;
+    var improvementStr = (improvement >= 0 ? '+' : '') + improvement;
+    card.innerHTML =
+      '<div class="card-head"><h2>Mock natijalar</h2><span class="sub">' + mocks.length + ' ta topshirilgan</span></div>' +
+      '<div class="mock-grid">' +
+        '<div class="mock-item"><div class="mv">' + latest + '</div><div class="ml">Oxirgi</div></div>' +
+        '<div class="mock-item"><div class="mv">' + highest + '</div><div class="ml">Eng yuqori</div></div>' +
+        '<div class="mock-item"><div class="mv">' + avg + '</div><div class="ml">O\'rtacha</div></div>' +
+        '<div class="mock-item improve"><div class="mv">' + improvementStr + '</div><div class="ml">O\'sish</div></div>' +
+      '</div>';
+  }
+
+  function renderStreak() {
+    var streak = pageState.profile.streak_count || 0;
+    document.getElementById('streakCard').innerHTML =
+      '<div class="streak-flame">🔥</div>' +
+      '<div class="streak-num">' + streak + ' kunlik streak</div>' +
+      '<div class="streak-text">' + (streak > 0 ? 'Siz ' + streak + ' kun ketma-ket shug\'ullandingiz. Davom eting!' : 'Bugun shug\'ullaning va streak\'ni boshlang!') + '</div>';
+  }
+
+  function renderAchievements() {
+    var sq = pageState.solvedQuestions.length;
+    var streak = pageState.profile.streak_count || 0;
+    var mocks = pageState.mockAttempts;
+    var highestMock = mocks.length ? Math.max.apply(null, mocks.map(function(m){ return m.scaled_score||0; })) : 0;
+    var testTypeById = {};
+    pageState.classroomTests.forEach(function (t) { testTypeById[t.id] = t.test_type; });
+    var hwDone = pageState.classroomAttempts.some(function (a) { return testTypeById[a.test_id] === 'homework'; });
+    var uni = findUni(pageState.profile.dream_university);
+
+    var achievements = [
+      { emoji:'🏅', name:'Birinchi uy vazifasi', unlocked: hwDone },
+      { emoji:'🔥', name:'7 kunlik streak', unlocked: streak >= 7 },
+      { emoji:'📚', name:'1000 ta savol yechildi', unlocked: sq >= 1000 },
+      { emoji:'🎯', name:'Birinchi 1400+', unlocked: highestMock >= 1400 },
+      { emoji:'🚀', name:'Birinchi 1500+', unlocked: highestMock >= 1500 },
+      { emoji:'👑', name:'Future Ivy League Student', unlocked: !!(uni && uni.ivy) }
+    ];
+
+    document.getElementById('achievementsCard').innerHTML =
+      '<div class="card-head"><h2>Yutuqlar</h2><span class="sub">' + achievements.filter(function(a){return a.unlocked;}).length + ' / ' + achievements.length + ' ochildi</span></div>' +
+      '<div class="ach-grid">' + achievements.map(function (a) {
+        return '<div class="ach-item ' + (a.unlocked ? 'unlocked' : 'locked') + '"><div class="ach-emoji">' + a.emoji + '</div><div class="ach-name">' + a.name + '</div></div>';
+      }).join('') + '</div>';
+  }
+
+  function renderWeeklyActivity() {
+    var days = [];
+    var counts = {};
+    pageState.solvedQuestions.forEach(function (q) {
+      if (!q.solved_at) return;
+      var d = q.solved_at.slice(0,10);
+      counts[d] = (counts[d]||0) + 1;
+    });
+    var dayNames = ['Yak','Dush','Sesh','Chor','Pay','Jum','Shan'];
+    var maxCount = 1;
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date(Date.now() - i*86400000);
+      var key = d.toISOString().slice(0,10);
+      var c = counts[key] || 0;
+      maxCount = Math.max(maxCount, c);
+      days.push({ label: dayNames[d.getDay()], count: c });
+    }
+    var barsHtml = days.map(function (d, i) {
+      var h = Math.max(2, Math.round((d.count / maxCount) * 120));
+      return '<div class="chart-col"><div class="chart-bar" id="cbar' + i + '" data-h="' + h + '" style="height:2px;">' + (d.count ? '<span class="val">' + d.count + '</span>' : '') + '</div><div class="chart-day">' + d.label + '</div></div>';
+    }).join('');
+    document.getElementById('weeklyActivityCard').innerHTML =
+      '<div class="card-head"><h2>Haftalik faollik</h2><span class="sub">Kunlik yechilgan savollar</span></div>' +
+      '<div class="chart-wrap">' + barsHtml + '</div>';
+    setTimeout(function () {
+      for (var i = 0; i < 7; i++) {
+        var el = document.getElementById('cbar' + i);
+        if (el) el.style.height = el.dataset.h + 'px';
+      }
+    }, 100);
+  }
+
+  function renderMotivation() {
+    var uni = findUni(pageState.profile.dream_university);
+    var msgs = MOTIVATIONS.slice();
+    if (uni) msgs = ['Every question solved gets you one step closer to ' + pageState.profile.dream_university + '.'].concat(msgs);
+    var idx = 0;
+    function show() {
+      var el = document.getElementById('motivationCard');
+      var q = el.querySelector('.motivation-quote');
+      if (q) { q.style.opacity = 0; }
+      setTimeout(function () {
+        el.innerHTML = '<div class="motivation-quote">' + escapeHtml(msgs[idx % msgs.length]) + '</div>';
+        var nq = el.querySelector('.motivation-quote');
+        requestAnimationFrame(function () { nq.style.opacity = 1; });
+        idx++;
+      }, q ? 300 : 0);
+    }
+    show();
+    if (motivationTimer) clearInterval(motivationTimer);
+    motivationTimer = setInterval(show, 6000);
+  }
+
+  function renderAll() {
+    renderHero();
+    renderTargetProgress();
+    renderStats();
+    renderQuestionProgress();
+    renderMockPerformance();
+    renderStreak();
+    renderAchievements();
+    renderWeeklyActivity();
+    renderMotivation();
+  }
+
+  /* ================= Access control ================= */
+  async function checkAccess() {
+    var authed = !!window.currentAuthUser;
+    document.getElementById('lockedView').style.display = authed ? 'none' : 'block';
+    document.getElementById('appView').style.display = authed ? 'block' : 'none';
+    if (!authed) return;
+    try {
+      await loadAllData();
+      renderAll();
+    } catch (err) {
+      console.error('Progress page load failed', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () { setTimeout(checkAccess, 500); });
+  document.addEventListener('sat1600:authchange', checkAccess);
+</script>
+</body>
+</html>
