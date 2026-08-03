@@ -36,9 +36,9 @@
   window.sat1600Toast = showToast;
 
   async function fetchProfile(userId) {
-    var fallback = { coins: 0, streak_count: 0, role: 'student', full_name: null };
+    var fallback = { coins: 0, streak_count: 0, role: 'student', full_name: null, avatar_url: null };
     try {
-      var res = await sb.from('profiles').select('coins, streak_count, role, full_name').eq('id', userId).single();
+      var res = await sb.from('profiles').select('coins, streak_count, role, full_name, avatar_url').eq('id', userId).single();
       if (res.error) return fallback;
       return res.data || fallback;
     } catch (e) {
@@ -82,8 +82,38 @@
     return (user.email || 'there').split('@')[0];
   }
 
-  async function refreshAuthUI() {
+  function renderNavUser() {
     var navActions = document.querySelector('.nav-actions');
+    if (!navActions) return;
+    if (window.currentAuthUser) {
+      var role = window.currentUserProfile ? window.currentUserProfile.role : null;
+      var adminLink = (role === 'super_admin' || role === 'teacher')
+        ? '<a href="admin.html" class="btn-login" style="text-decoration:none; display:inline-flex; align-items:center;">Admin</a>'
+        : '';
+      var name = firstName(window.currentAuthUser);
+      var avatarUrl = window.currentUserProfile ? window.currentUserProfile.avatar_url : null;
+      var initial = escapeHtml((name || '?').charAt(0).toUpperCase());
+      var avatarHtml = avatarUrl
+        ? '<img src="' + escapeHtml(avatarUrl) + '" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;">'
+        : '<span style="width:26px;height:26px;border-radius:50%;background:var(--accent-soft,#eef2ff);color:var(--accent,#4338ca);' +
+          'display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;">' + initial + '</span>';
+      navActions.innerHTML =
+        '<a href="profile.html" class="nav-user" style="display:inline-flex; align-items:center; gap:.5rem; text-decoration:none;" title="Profile">' +
+          avatarHtml +
+          '<span>Hi, ' + escapeHtml(name) + '</span>' +
+        '</a>' +
+        '<span class="nav-coins">🪙 <span id="navCoinCount">' + (window.currentUserProfile ? window.currentUserProfile.coins : 0) + '</span></span>' +
+        adminLink +
+        '<button class="btn-login" onclick="handleSignOut()">Log out</button>';
+    } else {
+      navActions.innerHTML =
+        '<button class="btn-login" onclick="openModal(\'login\')">Log in</button>' +
+        '<button class="btn-signup" onclick="openModal(\'signup\')">Sign up</button>';
+    }
+  }
+  window.sat1600RefreshNavAvatar = renderNavUser;
+
+  async function refreshAuthUI() {
     var data;
     try {
       var res = await sb.auth.getSession();
@@ -100,23 +130,7 @@
       window.currentUserProfile = null;
     }
 
-    if (navActions) {
-      if (window.currentAuthUser) {
-        var role = window.currentUserProfile ? window.currentUserProfile.role : null;
-        var adminLink = (role === 'super_admin' || role === 'teacher')
-          ? '<a href="admin.html" class="btn-login" style="text-decoration:none; display:inline-flex; align-items:center;">Admin</a>'
-          : '';
-        navActions.innerHTML =
-          '<span class="nav-user">Hi, ' + escapeHtml(firstName(window.currentAuthUser)) + '</span>' +
-          '<span class="nav-coins">🪙 <span id="navCoinCount">' + (window.currentUserProfile ? window.currentUserProfile.coins : 0) + '</span></span>' +
-          adminLink +
-          '<button class="btn-login" onclick="handleSignOut()">Log out</button>';
-      } else {
-        navActions.innerHTML =
-          '<button class="btn-login" onclick="openModal(\'login\')">Log in</button>' +
-          '<button class="btn-signup" onclick="openModal(\'signup\')">Sign up</button>';
-      }
-    }
+    renderNavUser();
 
     // let other scripts on the page (e.g. mocks.html, player.html) react to auth state
     document.dispatchEvent(new CustomEvent('sat1600:authchange', { detail: { user: window.currentAuthUser, profile: window.currentUserProfile } }));
