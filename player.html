@@ -34,6 +34,11 @@
   .progress-track{ height:4px; background:var(--border); }
   .progress-fill{ height:100%; background:var(--accent); transition:width .25s; }
 
+  .focus-guard-banner{ display:none; align-items:center; gap:.6rem; background:var(--danger-soft); border:1px solid var(--danger);
+    color:var(--danger); border-radius:10px; padding:.65rem 1rem; font-size:.82rem; font-weight:600;
+    max-width:760px; margin:.9rem auto 0; }
+  .focus-guard-banner.show{ display:flex; }
+
   .wrap{ max-width:760px; margin:0 auto; padding:2rem 5% 4rem; }
 
   .qcard{ background:white; border:1px solid var(--border); border-radius:16px; padding:1.8rem; }
@@ -189,6 +194,7 @@
     </div>
   </div>
   <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="focus-guard-banner" id="focusGuardBanner">⚠️ <span id="focusGuardText"></span></div>
 
   <div class="wrap">
     <div class="qcard" id="qcard"></div>
@@ -490,6 +496,7 @@
 
     if(mode === 'mock' && testNum && QUESTIONS[testNum]){
       startTimerLoop();
+      startFocusGuard();
     }
   }
 
@@ -815,6 +822,13 @@
   let timerHidden = false;
   let timerInterval = null;
 
+  // --- Full-focus anti-cheat guard (mock mode only): tab-switch / window-blur detection ---
+  const MAX_FOCUS_VIOLATIONS = 3;
+  let focusViolations = 0;
+  let lastViolationAt = 0;
+  let focusVisibilityHandler = null;
+  let focusBlurHandler = null;
+
   function timerStorageKey(){ return `sat1600_mock_${testNum}_timers`; }
   function loadModuleTimers(){ try{ return JSON.parse(localStorage.getItem(timerStorageKey())) || {}; }catch(e){ return {}; } }
   function saveModuleTimers(){ try{ localStorage.setItem(timerStorageKey(), JSON.stringify(moduleTimers)); }catch(e){} }
@@ -855,6 +869,41 @@
       setTimeout(() => { submitTest(); }, 1400);
     }
   }
+  function startFocusGuard(){
+    stopFocusGuard();
+    focusViolations = 0;
+    lastViolationAt = 0;
+    focusVisibilityHandler = function(){ if(document.hidden) registerFocusViolation(); };
+    focusBlurHandler = function(){ registerFocusViolation(); };
+    document.addEventListener('visibilitychange', focusVisibilityHandler);
+    window.addEventListener('blur', focusBlurHandler);
+  }
+  function stopFocusGuard(){
+    if(focusVisibilityHandler){ document.removeEventListener('visibilitychange', focusVisibilityHandler); focusVisibilityHandler = null; }
+    if(focusBlurHandler){ window.removeEventListener('blur', focusBlurHandler); focusBlurHandler = null; }
+    const banner = document.getElementById('focusGuardBanner');
+    if(banner) banner.classList.remove('show');
+  }
+  function registerFocusViolation(){
+    if(mode !== 'mock' || !testNum) return;
+    const now = Date.now();
+    if(now - lastViolationAt < 1200) return; // debounce: blur + visibilitychange fire together for one real switch
+    lastViolationAt = now;
+    focusViolations++;
+    if(focusViolations >= MAX_FOCUS_VIOLATIONS){
+      stopFocusGuard();
+      showTimeUpToast(`You left the test tab ${MAX_FOCUS_VIOLATIONS} times — submitting your test.`);
+      setTimeout(() => { submitTest(); }, 1400);
+    } else {
+      const left = MAX_FOCUS_VIOLATIONS - focusViolations;
+      const banner = document.getElementById('focusGuardBanner');
+      const textEl = document.getElementById('focusGuardText');
+      if(textEl) textEl.textContent = `Stay on this tab during the test (${focusViolations}/${MAX_FOCUS_VIOLATIONS}). ${left} more and your test auto-submits.`;
+      if(banner) banner.classList.add('show');
+      showTimeUpToast(`Warning: you left the test tab (${focusViolations}/${MAX_FOCUS_VIOLATIONS}).`);
+    }
+  }
+
   function tickTimer(){
     const wrap = document.getElementById('timerWrap');
     if(mode !== 'mock' || !testNum){ if(wrap) wrap.classList.add('hidden'); return; }
@@ -889,6 +938,7 @@
   }
 
   function submitTest(){
+    stopFocusGuard();
     closeNav();
     showEnd();
   }

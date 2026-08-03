@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — SAT 1600</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#fafaf9; --border:#e4e4e7; --border-strong:#d4d4d8;
+    --text:#18181b; --text-dim:#71717a; --text-faint:#a1a1aa; --accent:#4338ca; --accent-soft:#eef2ff;
+    --gold:#b45309; --gold-soft:#fffbeb; --danger:#dc2626; --success:#16a34a; --success-soft:#f0fdf4;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background: var(--bg); color: var(--text); min-height:100vh; }
+  h1,h2{ font-family:'Plus Jakarta Sans','Inter',sans-serif; }
+  a{ color:inherit; }
+  nav { position: sticky; top:0; z-index:1000; display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 5%; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border-bottom:1px solid var(--border); }
+  .logo { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; text-decoration:none; color:var(--text); font-family:'Plus Jakarta Sans'; }
+  .logo span{ color:var(--accent); }
+  .nav-links { display:flex; gap:2.2rem; list-style:none; }
+  .nav-links a { text-decoration:none; color: var(--text-dim); font-size:0.925rem; font-weight:500; transition:.15s; display:inline-flex; align-items:center; gap:.4rem; }
+  .nav-links a.active, .nav-links a:hover { color: var(--text); }
+  .nav-actions { display:flex; gap:0.6rem; align-items:center; }
+  .btn-login { background:none; border:none; color:var(--text); font-weight:600; cursor:pointer; font-size:.9rem; padding:.55rem 1rem; font-family:inherit; border-radius:8px; }
+  .btn-login:hover{ background:var(--bg-soft); }
+  .btn-signup { background: var(--text); border:none; color:white; font-weight:600;
+    padding:.6rem 1.1rem; border-radius:8px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+  .nav-user{ font-size:.88rem; font-weight:600; color:var(--text-dim); padding:.55rem .3rem; }
+  .nav-coins{ font-size:.85rem; font-weight:700; color:var(--gold); background:var(--gold-soft); padding:.4rem .7rem; border-radius:999px; }
+  @media (max-width:900px){ .nav-links{ display:none; } }
+
+  .wrap{ max-width:640px; margin:0 auto; padding:3rem 5% 5rem; }
+  .page-head{ text-align:center; max-width:520px; margin:0 auto 2.4rem; }
+  .page-head h1{ font-size:clamp(2rem,5vw,2.6rem); font-weight:800; letter-spacing:-1px; margin-bottom:.8rem; }
+  .page-head p{ color:var(--text-dim); font-size:1.05rem; }
+
+  .guest-card{ border:1px solid var(--border); border-radius:16px; padding:2.4rem; text-align:center; margin-bottom:2rem; background:var(--bg-soft); }
+  .guest-card h3{ margin-bottom:.6rem; }
+  .guest-card p{ color:var(--text-dim); margin-bottom:1.4rem; }
+  .btn-primary{ background:var(--text); color:white; border:none; padding:.75rem 1.3rem; border-radius:10px; font-weight:700;
+    font-size:.9rem; cursor:pointer; font-family:inherit; text-decoration:none; text-align:center; display:inline-block; }
+  .btn-primary:hover{ background:#000; }
+  .btn-primary:disabled{ opacity:.5; cursor:not-allowed; }
+  .btn-secondary{ background:white; color:var(--text); border:1px solid var(--border-strong); padding:.7rem 1.2rem; border-radius:10px;
+    font-weight:700; font-size:.85rem; cursor:pointer; font-family:inherit; }
+  .btn-secondary:hover{ border-color:var(--accent); color:var(--accent); }
+  .btn-secondary:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .profile-card{ border:1px solid var(--border); border-radius:18px; padding:2.2rem; display:none; }
+  .avatar-row{ display:flex; align-items:center; gap:1.4rem; margin-bottom:2rem; flex-wrap:wrap; }
+  .avatar-preview{ width:92px; height:92px; border-radius:50%; object-fit:cover; background:var(--accent-soft);
+    color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:800;
+    flex-shrink:0; border:1px solid var(--border); }
+  .avatar-actions{ display:flex; flex-direction:column; gap:.55rem; align-items:flex-start; }
+  .avatar-actions .hint{ font-size:.78rem; color:var(--text-faint); }
+  .avatar-buttons{ display:flex; gap:.6rem; }
+
+  .field-group{ margin-bottom:1.6rem; }
+  .field-group label{ display:block; font-size:.82rem; font-weight:700; color:var(--text-dim); margin-bottom:.5rem; }
+  .field-group input{ width:100%; padding:.75rem .9rem; border-radius:9px; border:1px solid var(--border-strong);
+    font-size:.92rem; font-family:inherit; background:white; color:var(--text); }
+  .field-group input:focus{ outline:none; border-color:var(--accent); }
+  .field-group input:disabled{ background:var(--bg-soft); color:var(--text-faint); }
+  .field-group .name-row{ display:flex; gap:.6rem; }
+  .field-group .name-row input{ flex:1; }
+
+  .stats-row{ display:flex; gap:1rem; margin-top:2rem; padding-top:1.6rem; border-top:1px solid var(--border); flex-wrap:wrap; }
+  .stat-chip{ flex:1; min-width:120px; border:1px solid var(--border); border-radius:12px; padding:.9rem 1rem; text-align:center; }
+  .stat-chip .val{ font-size:1.3rem; font-weight:800; }
+  .stat-chip .lbl{ font-size:.72rem; color:var(--text-dim); font-weight:600; text-transform:uppercase; letter-spacing:.03em; margin-top:.2rem; }
+
+  .save-msg{ font-size:.82rem; margin-top:.6rem; display:none; }
+  .save-msg.show{ display:block; }
+  .save-msg.ok{ color:var(--success); }
+  .save-msg.err{ color:var(--danger); }
+
+  footer{ padding:2.6rem 5%; text-align:center; color:var(--text-faint); border-top:1px solid var(--border); font-size:.88rem; }
+  footer a{ text-decoration:none; color:var(--text-dim); margin:0 .6rem; }
+  footer a:hover{ color:var(--text); }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.4); backdrop-filter:blur(2px);
+    display:none; align-items:center; justify-content:center; z-index:2000; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:white; border:1px solid var(--border); border-radius:16px; padding:2.2rem;
+    width:90%; max-width:380px; position:relative; box-shadow:0 30px 60px -20px rgba(0,0,0,.25); }
+  .modal h3{ font-size:1.3rem; margin-bottom:1.4rem; font-weight:700; color:var(--text); }
+  .modal input{ width:100%; padding:.75rem .9rem; margin-bottom:.9rem; border-radius:8px;
+    border:1px solid var(--border-strong); background:white; color:var(--text); font-size:.92rem; font-family:inherit; }
+  .modal input:focus{ outline:none; border-color:var(--accent); }
+  .modal .btn-primary{ width:100%; }
+  .modal-close{ position:absolute; top:1.1rem; right:1.3rem; background:none; border:none; color:var(--text-faint);
+    font-size:1.3rem; cursor:pointer; }
+  .modal-switch{ text-align:center; margin-top:1.1rem; color:var(--text-dim); font-size:.88rem; }
+  .modal-switch a{ color:var(--accent); cursor:pointer; text-decoration:none; font-weight:600; }
+  .modal-note{ font-size:.78rem; color:var(--text-faint); text-align:center; margin-top:1rem; }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">SAT<span>1600</span></a>
+    <ul class="nav-links">
+      <li><a href="question-bank.html">Question Bank</a></li>
+      <li><a href="mocks.html">SAT Mocks</a></li>
+      <li><a href="missions.html">Missions</a></li>
+      <li><a href="market.html">Market</a></li>
+      <li><a href="classroom.html">Classroom</a></li>    </ul>
+    <div class="nav-actions">
+      <button class="btn-login" onclick="openModal('login')">Log in</button>
+      <button class="btn-signup" onclick="openModal('signup')">Sign up</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Profile</h1>
+      <p>Update your photo and display name.</p>
+    </div>
+
+    <div class="guest-card" id="guestCard" style="display:none;">
+      <h3>Log in to manage your profile</h3>
+      <p>Set a profile photo and display name once you're signed in.</p>
+      <button class="btn-primary" onclick="openModal('login')">Log in</button>
+    </div>
+
+    <div class="profile-card" id="profileCard">
+      <div class="avatar-row">
+        <div class="avatar-preview" id="avatarPreview">?</div>
+        <div class="avatar-actions">
+          <div class="avatar-buttons">
+            <button type="button" class="btn-secondary" id="choosePhotoBtn" onclick="document.getElementById('avatarInput').click()">Choose photo</button>
+            <button type="button" class="btn-primary" id="savePhotoBtn" style="display:none;" onclick="saveAvatar()">Save photo</button>
+          </div>
+          <div class="hint">JPG or PNG, up to 4 MB.</div>
+          <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp" style="display:none;" onchange="onAvatarChosen(event)">
+        </div>
+      </div>
+      <div id="avatarMsg" class="save-msg"></div>
+
+      <div class="field-group">
+        <label for="emailField">Email</label>
+        <input type="email" id="emailField" disabled>
+      </div>
+
+      <div class="field-group">
+        <label for="nameField">Full name</label>
+        <div class="name-row">
+          <input type="text" id="nameField" placeholder="Your name" maxlength="80">
+          <button type="button" class="btn-primary" onclick="saveName()" id="saveNameBtn">Save</button>
+        </div>
+        <div id="nameMsg" class="save-msg"></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-chip"><div class="val" id="statCoins">0</div><div class="lbl">Coins</div></div>
+        <div class="stat-chip"><div class="val" id="statStreak">0</div><div class="lbl">Day streak</div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <a href="question-bank.html">Question Bank</a>
+      <a href="mocks.html">Mocks</a>
+      <a href="missions.html">Missions</a>
+    </div>
+    <p style="margin-top:1rem;">© 2026 SAT 1600. All rights reserved.</p>
+  </footer>
+
+  <!-- Login / Sign up modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle">Log in</h3>
+      <button type="button" class="btn-google" onclick="handleGoogleSignIn()" style="width:100%; display:flex; align-items:center; justify-content:center; gap:.6rem; background:#fff; border:1px solid #dcdfe4; border-radius:10px; padding:.7rem 1rem; font-weight:600; font-size:.92rem; color:#1f1f1f; cursor:pointer; margin-bottom:1rem;">
+        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.13-.84 2.09-1.8 2.73v2.27h2.91c1.7-1.57 2.69-3.88 2.69-6.64z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.17l-2.91-2.27c-.81.54-1.84.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.96v2.34C2.44 15.98 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.96 10.71c-.18-.54-.28-1.11-.28-1.71s.1-1.17.28-1.71V4.95H.96C.35 6.17 0 7.55 0 9s.35 2.83.96 4.05l3-2.34z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.95l3 2.34C4.67 5.16 6.66 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+      <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;">
+        <div style="flex:1; height:1px; background:#e5e7eb;"></div>
+        <span style="font-size:.78rem; color:#9ca3af;">or</span>
+        <div style="flex:1; height:1px; background:#e5e7eb;"></div>
+      </div>
+      <form onsubmit="return false;">
+        <input type="text" id="modalNameField" placeholder="Full name" style="display:none;">
+        <input type="email" id="modalEmailField" placeholder="Email address" autocomplete="email">
+        <input type="password" id="modalPasswordField" placeholder="Password" autocomplete="current-password">
+        <p id="modalError" style="display:none; color:var(--danger); font-size:.82rem; margin:-.4rem 0 .9rem;"></p>
+        <button class="btn-primary" type="submit" id="modalSubmit">Log in</button>
+      </form>
+      <div class="modal-switch">
+        <span id="modalSwitchText">Don't have an account? <a onclick="openModal('signup')">Sign up</a></span>
+      </div>
+      <p class="modal-note">Your account works across Question Bank, Mocks and progress tracking.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="assets/auth.js"></script>
+  <script>
+    var pendingAvatarFile = null;
+
+    function escapeHtmlP(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function renderAvatarPreview(url, name, email){
+      var el = document.getElementById('avatarPreview');
+      if(url){
+        el.innerHTML = '';
+        el.style.backgroundImage = 'url(' + JSON.stringify(url).slice(1,-1) + ')';
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
+      } else {
+        el.style.backgroundImage = 'none';
+        var initial = (name && name.trim() ? name.trim().charAt(0) : (email || '?').charAt(0)).toUpperCase();
+        el.textContent = initial;
+      }
+    }
+
+    function showMsg(id, text, ok){
+      var el = document.getElementById(id);
+      el.textContent = text;
+      el.className = 'save-msg show ' + (ok ? 'ok' : 'err');
+    }
+
+    async function loadProfile(){
+      var guestCard = document.getElementById('guestCard');
+      var card = document.getElementById('profileCard');
+      if(!window.sbClient) return;
+
+      var session = null;
+      try{ var res = await window.sbClient.auth.getSession(); session = res.data && res.data.session; }catch(e){}
+
+      if(!session){
+        guestCard.style.display = 'block';
+        card.style.display = 'none';
+        return;
+      }
+      guestCard.style.display = 'none';
+      card.style.display = 'block';
+
+      var user = session.user;
+      var profRes = await window.sbClient.from('profiles').select('full_name, avatar_url, coins, streak_count').eq('id', user.id).single();
+      var prof = (profRes && profRes.data) || {};
+
+      document.getElementById('emailField').value = user.email || '';
+      var displayName = prof.full_name || (user.user_metadata && user.user_metadata.full_name) || '';
+      document.getElementById('nameField').value = displayName;
+      document.getElementById('statCoins').textContent = prof.coins != null ? prof.coins : 0;
+      document.getElementById('statStreak').textContent = prof.streak_count != null ? prof.streak_count : 0;
+      renderAvatarPreview(prof.avatar_url || null, displayName, user.email);
+    }
+
+    function onAvatarChosen(e){
+      var file = e.target.files && e.target.files[0];
+      if(!file) return;
+      if(file.size > 4 * 1024 * 1024){
+        showMsg('avatarMsg', 'File is too large — please choose an image under 4 MB.', false);
+        e.target.value = '';
+        return;
+      }
+      pendingAvatarFile = file;
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        var el = document.getElementById('avatarPreview');
+        el.innerHTML = '';
+        el.style.backgroundImage = 'url(' + JSON.stringify(ev.target.result).slice(1,-1) + ')';
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
+      };
+      reader.readAsDataURL(file);
+      document.getElementById('savePhotoBtn').style.display = 'inline-block';
+      document.getElementById('avatarMsg').className = 'save-msg';
+    }
+
+    async function saveAvatar(){
+      if(!pendingAvatarFile || !window.currentAuthUser) return;
+      var btn = document.getElementById('savePhotoBtn');
+      btn.disabled = true;
+      btn.textContent = 'Uploading…';
+      try{
+        var file = pendingAvatarFile;
+        var ext = (file.name && file.name.indexOf('.') !== -1) ? file.name.split('.').pop().toLowerCase() : 'jpg';
+        if(!/^[a-z0-9]{1,5}$/.test(ext)) ext = 'jpg';
+        var path = window.currentAuthUser.id + '/avatar.' + ext;
+        var upRes = await window.sbClient.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type || 'image/jpeg' });
+        if(upRes.error) throw upRes.error;
+        var pub = window.sbClient.storage.from('avatars').getPublicUrl(path);
+        var publicUrl = pub.data.publicUrl + '?t=' + Date.now();
+        var updRes = await window.sbClient.from('profiles').update({ avatar_url: publicUrl }).eq('id', window.currentAuthUser.id);
+        if(updRes.error) throw updRes.error;
+        if(window.currentUserProfile) window.currentUserProfile.avatar_url = publicUrl;
+        pendingAvatarFile = null;
+        document.getElementById('avatarInput').value = '';
+        btn.style.display = 'none';
+        showMsg('avatarMsg', 'Photo updated.', true);
+        if(window.sat1600RefreshNavAvatar) window.sat1600RefreshNavAvatar();
+      }catch(err){
+        showMsg('avatarMsg', (err && err.message) || 'Could not upload photo. Please try again.', false);
+      }finally{
+        btn.disabled = false;
+        btn.textContent = 'Save photo';
+      }
+    }
+
+    async function saveName(){
+      if(!window.currentAuthUser) return;
+      var input = document.getElementById('nameField');
+      var name = input.value.trim();
+      if(!name){
+        showMsg('nameMsg', 'Please enter a name.', false);
+        return;
+      }
+      var btn = document.getElementById('saveNameBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+      try{
+        var updRes = await window.sbClient.from('profiles').update({ full_name: name }).eq('id', window.currentAuthUser.id);
+        if(updRes.error) throw updRes.error;
+        var authRes = await window.sbClient.auth.updateUser({ data: { full_name: name } });
+        if(authRes.error) throw authRes.error;
+        if(window.currentUserProfile) window.currentUserProfile.full_name = name;
+        renderAvatarPreview((window.currentUserProfile && window.currentUserProfile.avatar_url) || null, name, window.currentAuthUser.email);
+        showMsg('nameMsg', 'Name updated.', true);
+        if(window.sat1600RefreshNavAvatar) window.sat1600RefreshNavAvatar();
+      }catch(err){
+        showMsg('nameMsg', (err && err.message) || 'Could not update name. Please try again.', false);
+      }finally{
+        btn.disabled = false;
+        btn.textContent = 'Save';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      setTimeout(loadProfile, 300);
+    });
+    document.addEventListener('sat1600:authchange', loadProfile);
+  </script>
+</body>
+</html>
