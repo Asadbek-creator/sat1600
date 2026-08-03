@@ -178,6 +178,35 @@
   .badge-score{ font-weight:700; color:var(--accent); }
   .results-summary{ color:var(--text-dim); font-size:.86rem; margin-bottom:1rem; }
 
+  /* ---------- Mock-style test taker ---------- */
+  .taker-topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:.8rem; gap:.8rem; flex-wrap:wrap; }
+  .taker-progress-info{ font-size:.82rem; color:var(--text-dim); font-weight:700; }
+  .taker-timer{ display:flex; align-items:center; gap:.5rem; }
+  .timer-chip{ display:flex; align-items:center; gap:.4rem; font-size:.85rem; font-weight:800; color:var(--text);
+    background:var(--bg-soft); border:1px solid var(--border-strong); padding:.4rem .8rem; border-radius:999px; font-variant-numeric:tabular-nums; }
+  .timer-chip.low{ color:var(--danger); border-color:var(--danger); background:#fef2f2; }
+  .timer-hide-btn{ background:none; border:1px solid var(--border-strong); border-radius:999px; padding:.3rem .65rem;
+    font-size:.7rem; font-weight:700; cursor:pointer; color:var(--text-dim); font-family:inherit; }
+  .timer-hide-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .taker-progress-track{ height:4px; background:var(--border); border-radius:2px; margin-bottom:1.3rem; overflow:hidden; }
+  .taker-progress-fill{ height:100%; background:var(--accent); transition:width .25s; }
+  .taker-qmeta{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+  .taker-qnum-tag{ font-size:.72rem; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:.3rem .7rem; border-radius:999px; }
+  .taker-choices{ display:flex; flex-direction:column; gap:.7rem; margin-bottom:.4rem; }
+  .taker-choice{ display:flex; align-items:center; gap:.8rem; border:1px solid var(--border-strong); border-radius:10px;
+    padding:.8rem 1rem; cursor:pointer; font-size:.94rem; transition:border-color .12s, background .12s; text-align:left;
+    background:white; width:100%; font-family:inherit; color:var(--text); }
+  .taker-choice:hover{ border-color:var(--accent); }
+  .taker-choice .letter{ width:26px; height:26px; border-radius:50%; border:1px solid var(--border-strong); display:flex;
+    align-items:center; justify-content:center; font-size:.78rem; font-weight:700; color:var(--text-dim); flex-shrink:0; }
+  .taker-choice.selected{ border-color:var(--accent); background:var(--accent-soft); }
+  .taker-choice.selected .letter{ background:var(--accent); border-color:var(--accent); color:white; }
+  .taker-grid-input{ display:flex; align-items:center; gap:.8rem; margin-bottom:.4rem; }
+  .taker-grid-input input{ flex:1; max-width:220px; padding:.8rem 1rem; border-radius:10px; border:1px solid var(--border-strong);
+    font-size:1rem; font-family:inherit; }
+  .taker-nav-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; gap:.8rem; }
+  .time-hint{ font-size:.78rem; color:var(--text-faint); }
+
   .msg{ font-size:.8rem; margin-top:.4rem; display:none; }
   .msg.show{ display:block; }
   .msg.error{ color:var(--danger); }
@@ -311,6 +340,8 @@
               <div class="form-row">
                 <label>Test nomi</label>
                 <input type="text" id="newTestTitle" placeholder="Masalan: 3-mavzu — kvadrat tenglamalar">
+                <label>Vaqt chegarasi (daqiqa, ixtiyoriy)</label>
+                <input type="number" id="newTestTimeLimit" min="1" max="300" placeholder="Masalan: 30 (bo'sh qoldirsangiz vaqt chegarasi bo'lmaydi)">
                 <label>Fayl (PDF, rasm, Word yoki matn)</label>
                 <input type="file" id="newTestFile" accept=".pdf,.png,.jpg,.jpeg,.docx,.txt">
               </div>
@@ -385,6 +416,10 @@
   var studentAttemptsByTestId = {};
   var currentTakerTest = null;
   var currentTakerAnswers = {};
+  var takerIdx = 0;
+  var takerDeadline = null;
+  var takerTimerInterval = null;
+  var takerTimerHidden = false;
 
   function parseFraction(s) {
     if (s == null) return null;
@@ -444,7 +479,7 @@
 
       var classroomIds = classrooms.map(function (c) { return c.id; });
       var testsRes = await window.sbClient.from('classroom_tests')
-        .select('id,classroom_id,title,questions,created_at')
+        .select('id,classroom_id,title,questions,time_limit_minutes,created_at')
         .in('classroom_id', classroomIds)
         .order('created_at', { ascending: false });
       var testsByClassroom = {};
@@ -472,9 +507,10 @@
           ? tests.map(function (test) {
               var attempt = studentAttemptsByTestId[test.id];
               var pct = attempt && attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
+              var timeHint = test.time_limit_minutes ? ' · ⏱ ' + test.time_limit_minutes + ' daqiqa' : '';
               var resultHtml = attempt
                 ? '<div class="sub">Natija: <b style="color:var(--accent);">' + attempt.score + '/' + attempt.total + '</b> (' + pct + '%)</div>'
-                : '<div class="sub">' + (test.questions ? test.questions.length : 0) + ' ta savol</div>';
+                : '<div class="sub">' + (test.questions ? test.questions.length : 0) + ' ta savol' + timeHint + '</div>';
               var btnLabel = attempt ? 'Qayta yechish' : 'Testni yechish';
               return '<div class="test-row" style="padding:.6rem .8rem;">' +
                 '<div><div class="who" style="font-size:.85rem;">' + escapeHtml(test.title) + '</div>' +
@@ -747,6 +783,7 @@
     form.style.display = willShow ? 'block' : 'none';
     if (willShow) {
       document.getElementById('newTestTitle').value = '';
+      document.getElementById('newTestTimeLimit').value = '';
       document.getElementById('newTestFile').value = '';
       hideMsg('createTestMsg');
     }
@@ -756,6 +793,7 @@
   async function submitNewTest() {
     if (!currentDetailClassroom) return;
     var title = document.getElementById('newTestTitle').value.trim();
+    var timeLimit = document.getElementById('newTestTimeLimit').value.trim();
     var fileInput = document.getElementById('newTestFile');
     var file = fileInput.files && fileInput.files[0];
     if (!title) { showMsg('createTestMsg', 'Test nomini kiriting.', 'error'); return; }
@@ -768,6 +806,7 @@
       var formData = new FormData();
       formData.append('classroom_id', currentDetailClassroom.id);
       formData.append('title', title);
+      if (timeLimit) formData.append('time_limit_minutes', timeLimit);
       formData.append('file', file);
       var res = await window.sbClient.functions.invoke('generate-classroom-test', { body: formData });
       if (res.error) {
@@ -799,7 +838,7 @@
     emptyEl.style.display = 'none';
     try {
       var res = await window.sbClient.from('classroom_tests')
-        .select('id,classroom_id,title,questions,created_at')
+        .select('id,classroom_id,title,questions,time_limit_minutes,created_at')
         .eq('classroom_id', classroomId)
         .order('created_at', { ascending: false });
       if (res.error) throw res.error;
@@ -823,7 +862,7 @@
     listEl.innerHTML = classroomTestsCache.map(function (t) {
       return '<div class="test-row">' +
         '<div><div class="who">' + escapeHtml(t.title) + '</div>' +
-        '<div class="sub">' + (t.questions ? t.questions.length : 0) + ' ta savol · ' + new Date(t.created_at).toLocaleDateString() + '</div></div>' +
+        '<div class="sub">' + (t.questions ? t.questions.length : 0) + ' ta savol' + (t.time_limit_minutes ? ' · ⏱ ' + t.time_limit_minutes + ' daqiqa' : '') + ' · ' + new Date(t.created_at).toLocaleDateString() + '</div></div>' +
         '<div class="actions">' +
           '<button class="btn-secondary" onclick="openTestViewer(\'' + t.id + '\')">Ko\'rish</button>' +
           '<button class="btn-secondary" onclick="openTestResults(\'' + t.id + '\')">Natijalar</button>' +
@@ -877,8 +916,11 @@
 
   function closeTestViewer() {
     document.getElementById('testViewerOverlay').classList.remove('open');
+    stopTakerTimer();
     currentTakerTest = null;
     currentTakerAnswers = {};
+    takerIdx = 0;
+    takerDeadline = null;
   }
   window.closeTestViewer = closeTestViewer;
 
@@ -889,56 +931,127 @@
     if (!test) return;
     currentTakerTest = test;
     currentTakerAnswers = {};
+    takerIdx = 0;
+    takerTimerHidden = false;
     document.getElementById('viewerTitle').textContent = test.title;
+    takerDeadline = test.time_limit_minutes ? (Date.now() + test.time_limit_minutes * 60000) : null;
     renderTestTaker();
     document.getElementById('testViewerOverlay').classList.add('open');
+    if (takerDeadline) startTakerTimer();
   }
   window.openTestTaker = openTestTaker;
 
   function renderTestTaker() {
     var test = currentTakerTest;
     var questions = test.questions || [];
-    var html = questions.map(function (q, i) {
-      var body;
-      if (q.type !== 'grid' && q.choices) {
-        body = '<div class="qchoices" id="qopts-' + i + '">' + ['A', 'B', 'C', 'D'].filter(function (k) { return q.choices[k]; }).map(function (k) {
-          return '<button type="button" class="qchoice-option" data-letter="' + k + '" onclick="selectTakerChoice(' + i + ',\'' + k + '\')"><b>' + k + '.</b>' + escapeHtml(String(q.choices[k])) + '</button>';
-        }).join('') + '</div>';
-      } else {
-        body = '<input type="text" class="grid-answer-input" id="qgrid-' + i + '" placeholder="Javobingizni kiriting" oninput="onTakerGridInput(' + i + ', this.value)">';
-      }
-      return '<div class="qcard">' +
-        '<div class="qnum">Savol ' + (q.num || (i + 1)) + '</div>' +
-        '<div class="qstem">' + escapeHtml(q.stem || '') + '</div>' +
-        body +
+    var q = questions[takerIdx];
+    if (!q) return;
+    var pct = questions.length ? (takerIdx / questions.length) * 100 : 0;
+
+    var timerHtml = takerDeadline
+      ? '<div class="taker-timer"><div class="timer-chip" id="takerTimerChip"><span>🕐</span><span id="takerTimerText">--:--</span></div>' +
+        '<button type="button" class="timer-hide-btn" id="takerTimerHideBtn" onclick="toggleTakerTimer()">Hide</button></div>'
+      : '';
+    var topHtml = '<div class="taker-topbar">' +
+        '<div class="taker-progress-info">Savol ' + (takerIdx + 1) + ' / ' + questions.length + '</div>' +
+        timerHtml +
+      '</div>' +
+      '<div class="taker-progress-track"><div class="taker-progress-fill" style="width:' + pct + '%;"></div></div>';
+
+    var body;
+    if (q.type !== 'grid' && q.choices) {
+      body = '<div class="taker-choices" id="taker-opts">' + ['A', 'B', 'C', 'D'].filter(function (k) { return q.choices[k]; }).map(function (k) {
+        var sel = currentTakerAnswers[takerIdx] === k ? ' selected' : '';
+        return '<button type="button" class="taker-choice' + sel + '" data-letter="' + k + '" onclick="selectTakerChoice(\'' + k + '\')">' +
+          '<span class="letter">' + k + '</span><span>' + escapeHtml(String(q.choices[k])) + '</span></button>';
+      }).join('') + '</div>';
+    } else {
+      var val = currentTakerAnswers[takerIdx] || '';
+      body = '<div class="taker-grid-input"><input type="text" id="taker-grid" placeholder="Javobingizni kiriting" value="' + escapeHtml(val) + '" oninput="onTakerGridInput(this.value)"></div>';
+    }
+
+    var isLast = takerIdx === questions.length - 1;
+    var navHtml = '<div class="taker-nav-actions">' +
+        '<button class="btn-secondary" onclick="takerPrev()" ' + (takerIdx === 0 ? 'disabled' : '') + '>← Oldingi</button>' +
+        '<button class="btn-new" onclick="' + (isLast ? 'submitTestAttempt()' : 'takerNext()') + '" id="takerNextBtn">' + (isLast ? 'Yakunlash' : 'Keyingi →') + '</button>' +
       '</div>';
-    }).join('');
-    html += '<div class="taker-actions"><button class="btn-new" onclick="submitTestAttempt()" id="submitAttemptBtn">Yuborish</button></div>';
-    document.getElementById('viewerQuestions').innerHTML = html;
+
+    document.getElementById('viewerQuestions').innerHTML = topHtml +
+      '<div class="qcard"><div class="taker-qmeta"><span class="taker-qnum-tag">Savol ' + (q.num || (takerIdx + 1)) + '</span></div>' +
+      '<div class="qstem">' + escapeHtml(q.stem || '') + '</div>' + body + '</div>' + navHtml;
+
     if (window.renderMathInElement) {
       renderMathInElement(document.getElementById('viewerQuestions'), { delimiters: [{ left: '$', right: '$', display: false }] });
     }
+    tickTakerTimer();
   }
 
-  function selectTakerChoice(i, letter) {
-    currentTakerAnswers[i] = letter;
-    var wrap = document.getElementById('qopts-' + i);
+  function takerNext() {
+    var test = currentTakerTest;
+    if (!test) return;
+    if (takerIdx < (test.questions || []).length - 1) { takerIdx++; renderTestTaker(); }
+  }
+  window.takerNext = takerNext;
+
+  function takerPrev() {
+    if (takerIdx > 0) { takerIdx--; renderTestTaker(); }
+  }
+  window.takerPrev = takerPrev;
+
+  function selectTakerChoice(letter) {
+    currentTakerAnswers[takerIdx] = letter;
+    var wrap = document.getElementById('taker-opts');
     if (wrap) {
-      Array.prototype.forEach.call(wrap.querySelectorAll('.qchoice-option'), function (el) {
+      Array.prototype.forEach.call(wrap.querySelectorAll('.taker-choice'), function (el) {
         el.classList.toggle('selected', el.dataset.letter === letter);
       });
     }
   }
   window.selectTakerChoice = selectTakerChoice;
 
-  function onTakerGridInput(i, val) {
-    currentTakerAnswers[i] = val;
+  function onTakerGridInput(val) {
+    currentTakerAnswers[takerIdx] = val;
   }
   window.onTakerGridInput = onTakerGridInput;
 
+  function startTakerTimer() {
+    stopTakerTimer();
+    tickTakerTimer();
+    takerTimerInterval = setInterval(tickTakerTimer, 1000);
+  }
+  function stopTakerTimer() {
+    if (takerTimerInterval) { clearInterval(takerTimerInterval); takerTimerInterval = null; }
+  }
+  function tickTakerTimer() {
+    if (!takerDeadline) return;
+    var el = document.getElementById('takerTimerText');
+    var chip = document.getElementById('takerTimerChip');
+    if (!el) return;
+    var remainMs = takerDeadline - Date.now();
+    var remainSec = Math.max(0, Math.round(remainMs / 1000));
+    var mm = Math.floor(remainSec / 60);
+    var ss = remainSec % 60;
+    el.textContent = takerTimerHidden ? 'Hidden' : (mm + ':' + (ss < 10 ? '0' : '') + ss);
+    if (chip) chip.classList.toggle('low', !takerTimerHidden && remainSec <= 60);
+    if (remainSec <= 0) {
+      stopTakerTimer();
+      if (window.sat1600Toast) window.sat1600Toast('⏱ Vaqt tugadi — test avtomatik topshirilmoqda.');
+      submitTestAttempt();
+    }
+  }
+  function toggleTakerTimer() {
+    takerTimerHidden = !takerTimerHidden;
+    var btn = document.getElementById('takerTimerHideBtn');
+    if (btn) btn.textContent = takerTimerHidden ? 'Show' : 'Hide';
+    tickTakerTimer();
+  }
+  window.toggleTakerTimer = toggleTakerTimer;
+
   async function submitTestAttempt() {
     if (!currentTakerTest) return;
+    stopTakerTimer();
     var test = currentTakerTest;
+    currentTakerTest = null;
     var questions = test.questions || [];
     var score = 0;
     var answersOut = {};
@@ -949,7 +1062,7 @@
       var ok = q.type === 'grid' ? checkGridAnswer(a, q.answer) : String(a) === String(q.answer);
       if (ok) score++;
     });
-    var btn = document.getElementById('submitAttemptBtn');
+    var btn = document.getElementById('takerNextBtn');
     if (btn) { btn.disabled = true; btn.textContent = 'Yuborilmoqda…'; }
     try {
       var res = await window.sbClient.from('classroom_test_attempts').upsert({
@@ -965,8 +1078,9 @@
       studentAttemptsByTestId[test.id] = { test_id: test.id, score: score, total: questions.length, submitted_at: new Date().toISOString() };
       renderTakerResult(score, questions.length, questions, answersOut);
     } catch (err) {
+      currentTakerTest = test;
       if (window.sat1600Toast) window.sat1600Toast('Xatolik: ' + ((err && err.message) || 'nomalum xatolik'));
-      if (btn) { btn.disabled = false; btn.textContent = 'Yuborish'; }
+      if (btn) { btn.disabled = false; btn.textContent = takerIdx === questions.length - 1 ? 'Yakunlash' : 'Keyingi →'; }
     }
   }
   window.submitTestAttempt = submitTestAttempt;
