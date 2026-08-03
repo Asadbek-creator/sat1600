@@ -154,6 +154,30 @@
     border-radius:8px; padding:.6rem .9rem; font-size:.86rem; font-weight:600; }
   .qcard .answer-box.show{ display:block; }
 
+  .qchoice-option{ display:block; width:100%; text-align:left; border:1px solid var(--border); border-radius:8px;
+    padding:.6rem .9rem; font-size:.89rem; font-family:inherit; background:white; cursor:pointer; margin-bottom:.5rem; transition:.12s; color:var(--text); }
+  .qchoice-option:hover{ border-color:var(--accent); }
+  .qchoice-option.selected{ border-color:var(--accent); background:var(--accent-soft); font-weight:600; }
+  .qchoice-option.correct{ border-color:var(--success); background:var(--success-soft); }
+  .qchoice-option.incorrect{ border-color:var(--danger); background:#fef2f2; }
+  .qchoice-option b{ color:var(--accent); margin-right:.4rem; }
+  .grid-answer-input{ width:100%; padding:.6rem .9rem; border-radius:8px; border:1px solid var(--border-strong);
+    font-size:.89rem; font-family:inherit; margin-bottom:.3rem; }
+  .grid-answer-input:focus{ outline:none; border-color:var(--accent); }
+  .taker-actions{ display:flex; justify-content:flex-end; margin-top:.4rem; }
+  .score-summary{ text-align:center; padding:1.6rem 1rem; border:1px solid var(--border); border-radius:14px;
+    margin-bottom:1.4rem; background:var(--bg-soft); }
+  .score-summary .big{ font-size:2.2rem; font-weight:800; margin-bottom:.2rem; }
+  .score-summary .pct{ color:var(--text-dim); font-size:.92rem; }
+  table.results-table{ width:100%; border-collapse:collapse; font-size:.87rem; }
+  table.results-table th{ text-align:left; color:var(--text-dim); font-weight:700; text-transform:uppercase;
+    font-size:.72rem; letter-spacing:.3px; padding:.5rem .4rem; border-bottom:1px solid var(--border-strong); }
+  table.results-table td{ padding:.65rem .4rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+  table.results-table tr:last-child td{ border-bottom:none; }
+  .badge-pending{ color:var(--text-faint); font-size:.82rem; }
+  .badge-score{ font-weight:700; color:var(--accent); }
+  .results-summary{ color:var(--text-dim); font-size:.86rem; margin-bottom:1rem; }
+
   .msg{ font-size:.8rem; margin-top:.4rem; display:none; }
   .msg.show{ display:block; }
   .msg.error{ color:var(--danger); }
@@ -358,6 +382,26 @@
   var rosterCache = [];
   var allTestsById = {};
   var classroomTestsCache = [];
+  var studentAttemptsByTestId = {};
+  var currentTakerTest = null;
+  var currentTakerAnswers = {};
+
+  function parseFraction(s) {
+    if (s == null) return null;
+    s = String(s).trim();
+    if (/^-?\d+\/\d+$/.test(s)) { var parts = s.split('/'); return Number(parts[0]) / Number(parts[1]); }
+    var n = parseFloat(s);
+    return isNaN(n) ? null : n;
+  }
+  function checkGridAnswer(input, correctRaw) {
+    var accepted = String(correctRaw).split('|').map(function (s) { return s.trim(); });
+    var userNum = parseFraction(input);
+    return accepted.some(function (a) {
+      var accNum = parseFraction(a);
+      if (userNum != null && accNum != null) return Math.abs(userNum - accNum) < 1e-6;
+      return String(input).trim() === a;
+    });
+  }
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -404,10 +448,21 @@
         .in('classroom_id', classroomIds)
         .order('created_at', { ascending: false });
       var testsByClassroom = {};
+      var testIds = [];
       (testsRes.data || []).forEach(function (t) {
         allTestsById[t.id] = t;
+        testIds.push(t.id);
         (testsByClassroom[t.classroom_id] = testsByClassroom[t.classroom_id] || []).push(t);
       });
+
+      studentAttemptsByTestId = {};
+      if (testIds.length) {
+        var attemptsRes = await window.sbClient.from('classroom_test_attempts')
+          .select('test_id,score,total,submitted_at')
+          .eq('student_id', window.currentAuthUser.id)
+          .in('test_id', testIds);
+        (attemptsRes.data || []).forEach(function (a) { studentAttemptsByTestId[a.test_id] = a; });
+      }
 
       wrap.innerHTML = '<div class="classroom-grid">' + classrooms.map(function (c) {
         var t = teacherMap[c.teacher_id];
@@ -415,10 +470,16 @@
         var tests = testsByClassroom[c.id] || [];
         var testsHtml = tests.length
           ? tests.map(function (test) {
+              var attempt = studentAttemptsByTestId[test.id];
+              var pct = attempt && attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
+              var resultHtml = attempt
+                ? '<div class="sub">Natija: <b style="color:var(--accent);">' + attempt.score + '/' + attempt.total + '</b> (' + pct + '%)</div>'
+                : '<div class="sub">' + (test.questions ? test.questions.length : 0) + ' ta savol</div>';
+              var btnLabel = attempt ? 'Qayta yechish' : 'Testni yechish';
               return '<div class="test-row" style="padding:.6rem .8rem;">' +
                 '<div><div class="who" style="font-size:.85rem;">' + escapeHtml(test.title) + '</div>' +
-                '<div class="sub">' + (test.questions ? test.questions.length : 0) + ' ta savol</div></div>' +
-                '<button class="btn-secondary" onclick="event.stopPropagation(); openTestViewer(\'' + test.id + '\')">Ko\'rish</button>' +
+                resultHtml + '</div>' +
+                '<button class="btn-secondary" onclick="event.stopPropagation(); openTestTaker(\'' + test.id + '\')">' + btnLabel + '</button>' +
               '</div>';
             }).join('')
           : '<p style="color:var(--text-faint); font-size:.82rem;">Hali vazifa yo\'q.</p>';
@@ -765,6 +826,7 @@
         '<div class="sub">' + (t.questions ? t.questions.length : 0) + ' ta savol · ' + new Date(t.created_at).toLocaleDateString() + '</div></div>' +
         '<div class="actions">' +
           '<button class="btn-secondary" onclick="openTestViewer(\'' + t.id + '\')">Ko\'rish</button>' +
+          '<button class="btn-secondary" onclick="openTestResults(\'' + t.id + '\')">Natijalar</button>' +
           '<button class="row-btn" onclick="deleteTest(\'' + t.id + '\', this)">O\'chirish</button>' +
         '</div>' +
       '</div>';
@@ -815,8 +877,171 @@
 
   function closeTestViewer() {
     document.getElementById('testViewerOverlay').classList.remove('open');
+    currentTakerTest = null;
+    currentTakerAnswers = {};
   }
   window.closeTestViewer = closeTestViewer;
+
+  /* ---------------- STUDENT: TAKE TEST ---------------- */
+
+  function openTestTaker(id) {
+    var test = allTestsById[id];
+    if (!test) return;
+    currentTakerTest = test;
+    currentTakerAnswers = {};
+    document.getElementById('viewerTitle').textContent = test.title;
+    renderTestTaker();
+    document.getElementById('testViewerOverlay').classList.add('open');
+  }
+  window.openTestTaker = openTestTaker;
+
+  function renderTestTaker() {
+    var test = currentTakerTest;
+    var questions = test.questions || [];
+    var html = questions.map(function (q, i) {
+      var body;
+      if (q.type !== 'grid' && q.choices) {
+        body = '<div class="qchoices" id="qopts-' + i + '">' + ['A', 'B', 'C', 'D'].filter(function (k) { return q.choices[k]; }).map(function (k) {
+          return '<button type="button" class="qchoice-option" data-letter="' + k + '" onclick="selectTakerChoice(' + i + ',\'' + k + '\')"><b>' + k + '.</b>' + escapeHtml(String(q.choices[k])) + '</button>';
+        }).join('') + '</div>';
+      } else {
+        body = '<input type="text" class="grid-answer-input" id="qgrid-' + i + '" placeholder="Javobingizni kiriting" oninput="onTakerGridInput(' + i + ', this.value)">';
+      }
+      return '<div class="qcard">' +
+        '<div class="qnum">Savol ' + (q.num || (i + 1)) + '</div>' +
+        '<div class="qstem">' + escapeHtml(q.stem || '') + '</div>' +
+        body +
+      '</div>';
+    }).join('');
+    html += '<div class="taker-actions"><button class="btn-new" onclick="submitTestAttempt()" id="submitAttemptBtn">Yuborish</button></div>';
+    document.getElementById('viewerQuestions').innerHTML = html;
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('viewerQuestions'), { delimiters: [{ left: '$', right: '$', display: false }] });
+    }
+  }
+
+  function selectTakerChoice(i, letter) {
+    currentTakerAnswers[i] = letter;
+    var wrap = document.getElementById('qopts-' + i);
+    if (wrap) {
+      Array.prototype.forEach.call(wrap.querySelectorAll('.qchoice-option'), function (el) {
+        el.classList.toggle('selected', el.dataset.letter === letter);
+      });
+    }
+  }
+  window.selectTakerChoice = selectTakerChoice;
+
+  function onTakerGridInput(i, val) {
+    currentTakerAnswers[i] = val;
+  }
+  window.onTakerGridInput = onTakerGridInput;
+
+  async function submitTestAttempt() {
+    if (!currentTakerTest) return;
+    var test = currentTakerTest;
+    var questions = test.questions || [];
+    var score = 0;
+    var answersOut = {};
+    questions.forEach(function (q, i) {
+      var a = currentTakerAnswers[i];
+      answersOut[i] = a == null ? null : a;
+      if (a == null || a === '') return;
+      var ok = q.type === 'grid' ? checkGridAnswer(a, q.answer) : String(a) === String(q.answer);
+      if (ok) score++;
+    });
+    var btn = document.getElementById('submitAttemptBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Yuborilmoqda…'; }
+    try {
+      var res = await window.sbClient.from('classroom_test_attempts').upsert({
+        test_id: test.id,
+        classroom_id: test.classroom_id,
+        student_id: window.currentAuthUser.id,
+        answers: answersOut,
+        score: score,
+        total: questions.length,
+        submitted_at: new Date().toISOString()
+      }, { onConflict: 'test_id,student_id' });
+      if (res.error) throw res.error;
+      studentAttemptsByTestId[test.id] = { test_id: test.id, score: score, total: questions.length, submitted_at: new Date().toISOString() };
+      renderTakerResult(score, questions.length, questions, answersOut);
+    } catch (err) {
+      if (window.sat1600Toast) window.sat1600Toast('Xatolik: ' + ((err && err.message) || 'nomalum xatolik'));
+      if (btn) { btn.disabled = false; btn.textContent = 'Yuborish'; }
+    }
+  }
+  window.submitTestAttempt = submitTestAttempt;
+
+  function renderTakerResult(score, total, questions, answersOut) {
+    var pct = total ? Math.round((score / total) * 100) : 0;
+    var html = '<div class="score-summary"><div class="big">' + score + ' / ' + total + '</div><div class="pct">' + pct + '% to\'g\'ri</div></div>';
+    html += questions.map(function (q, i) {
+      var given = answersOut[i];
+      var ok = given != null && given !== '' && (q.type === 'grid' ? checkGridAnswer(given, q.answer) : String(given) === String(q.answer));
+      var body;
+      if (q.type !== 'grid' && q.choices) {
+        body = '<div class="qchoices">' + ['A', 'B', 'C', 'D'].filter(function (k) { return q.choices[k]; }).map(function (k) {
+          var cls = k === String(q.answer) ? 'correct' : (k === given ? 'incorrect' : '');
+          return '<div class="qchoice-option ' + cls + '" style="cursor:default;"><b>' + k + '.</b>' + escapeHtml(String(q.choices[k])) + '</div>';
+        }).join('') + '</div>';
+      } else {
+        body = '<div class="sub">Sizning javobingiz: <b>' + escapeHtml(given == null || given === '' ? '(bo\'sh)' : String(given)) + '</b> — to\'g\'ri javob: <b>' + escapeHtml(String(q.answer)) + '</b></div>';
+      }
+      return '<div class="qcard">' +
+        '<div class="qnum">Savol ' + (q.num || (i + 1)) + ' — ' + (ok ? '<span style="color:var(--success);">To\'g\'ri</span>' : '<span style="color:var(--danger);">Noto\'g\'ri</span>') + '</div>' +
+        '<div class="qstem">' + escapeHtml(q.stem || '') + '</div>' +
+        body +
+      '</div>';
+    }).join('');
+    document.getElementById('viewerQuestions').innerHTML = html;
+    if (window.renderMathInElement) {
+      renderMathInElement(document.getElementById('viewerQuestions'), { delimiters: [{ left: '$', right: '$', display: false }] });
+    }
+    if (window.sat1600Toast) window.sat1600Toast('✅ Test topshirildi: ' + score + '/' + total);
+  }
+
+  /* ---------------- TEACHER: TEST RESULTS ---------------- */
+
+  async function openTestResults(id) {
+    var test = allTestsById[id];
+    if (!test) return;
+    currentTakerTest = null;
+    document.getElementById('viewerTitle').textContent = 'Natijalar — ' + test.title;
+    document.getElementById('viewerQuestions').innerHTML = '<p style="color:var(--text-faint);">Yuklanmoqda…</p>';
+    document.getElementById('testViewerOverlay').classList.add('open');
+    try {
+      var attRes = await window.sbClient.from('classroom_test_attempts')
+        .select('student_id,score,total,submitted_at')
+        .eq('test_id', id);
+      if (attRes.error) throw attRes.error;
+      var attemptsByStudent = {};
+      (attRes.data || []).forEach(function (a) { attemptsByStudent[a.student_id] = a; });
+
+      var roster = rosterCache;
+      if ((!roster || !roster.length) && currentDetailClassroom) {
+        await loadRoster(currentDetailClassroom.id);
+        roster = rosterCache;
+      }
+      if (!roster || !roster.length) {
+        document.getElementById('viewerQuestions').innerHTML = '<p class="empty-note">Guruhda o\'quvchi yo\'q.</p>';
+        return;
+      }
+      var rows = roster.map(function (s) {
+        var a = attemptsByStudent[s.id];
+        var name = s.full_name ? escapeHtml(s.full_name) : escapeHtml(s.email);
+        var statusHtml = a
+          ? '<span class="badge-score">' + a.score + ' / ' + a.total + '</span> <span style="color:var(--text-faint); font-size:.8rem;">(' + Math.round((a.score / a.total) * 100) + '%) · ' + new Date(a.submitted_at).toLocaleString() + '</span>'
+          : '<span class="badge-pending">Hali yechilmagan</span>';
+        return '<tr><td><div style="font-weight:600;">' + name + '</div><div style="color:var(--text-dim); font-size:.78rem;">' + escapeHtml(s.email) + '</div></td><td>' + statusHtml + '</td></tr>';
+      }).join('');
+      var submittedCount = Object.keys(attemptsByStudent).length;
+      document.getElementById('viewerQuestions').innerHTML =
+        '<p class="results-summary">' + submittedCount + ' / ' + roster.length + ' o\'quvchi topshirdi</p>' +
+        '<table class="results-table"><thead><tr><th>O\'quvchi</th><th>Natija</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    } catch (err) {
+      document.getElementById('viewerQuestions').innerHTML = '<p style="color:var(--danger);">Xatolik: ' + escapeHtml((err && err.message) || 'nomalum xatolik') + '</p>';
+    }
+  }
+  window.openTestResults = openTestResults;
 
   /* ---------------- ACCESS CONTROL ---------------- */
 
