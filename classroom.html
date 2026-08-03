@@ -135,6 +135,26 @@
   .test-row .actions{ display:flex; gap:.5rem; }
   .file-hint{ font-size:.78rem; color:var(--text-faint); margin:-.6rem 0 1rem; }
 
+  /* Assessment cards — SAT-mock-style Homework/Exam list, used in both student and teacher views */
+  .assessment-card{ display:flex; align-items:center; gap:.9rem; border:1px solid var(--border); background:white;
+    border-radius:14px; padding:.85rem 1rem; margin-bottom:.65rem; flex-wrap:wrap; transition:box-shadow .15s, border-color .15s; }
+  .assessment-card:hover{ border-color:var(--border-strong); box-shadow:0 10px 24px -14px rgba(0,0,0,.16); }
+  .assessment-icon{ width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    font-size:1.15rem; flex-shrink:0; }
+  .assessment-icon.exam{ background:var(--gold-soft); }
+  .assessment-icon.homework{ background:var(--accent-soft); }
+  .assessment-main{ flex:1; min-width:160px; }
+  .assessment-title{ font-weight:700; font-size:.92rem; }
+  .assessment-meta{ display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.4rem; }
+  .assessment-chip{ display:inline-flex; align-items:center; gap:.25rem; padding:.18rem .6rem; border-radius:999px;
+    background:var(--bg-soft); color:var(--text-dim); font-size:.7rem; font-weight:700; letter-spacing:.2px; white-space:nowrap; }
+  .assessment-chip.type-exam{ background:var(--gold-soft); color:var(--gold); }
+  .assessment-chip.type-homework{ background:var(--accent-soft); color:var(--accent); }
+  .assessment-chip.done{ background:var(--success-soft); color:var(--success); }
+  .assessment-score{ font-weight:800; font-size:1rem; color:var(--accent); text-align:right; white-space:nowrap; }
+  .assessment-score .pct{ display:block; font-weight:600; font-size:.72rem; color:var(--text-dim); }
+  .assessment-actions{ display:flex; gap:.5rem; flex-shrink:0; }
+
   .viewer-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.5); backdrop-filter:blur(2px);
     display:none; align-items:flex-start; justify-content:center; z-index:2100; overflow-y:auto; padding:3rem 1rem; }
   .viewer-overlay.open{ display:flex; }
@@ -638,16 +658,30 @@
           ? tests.map(function (test) {
               var attempt = studentAttemptsByTestId[test.id];
               var pct = attempt && attempt.total ? Math.round((attempt.score / attempt.total) * 100) : 0;
-              var timeHint = test.time_limit_minutes ? ' · ⏱ ' + test.time_limit_minutes + ' daqiqa' : '';
-              var resultHtml = attempt
-                ? '<div class="sub">Natija: <b style="color:var(--accent);">' + attempt.score + '/' + attempt.total + '</b> (' + pct + '%)</div>'
-                : '<div class="sub">' + (test.questions ? test.questions.length : 0) + ' ta savol' + timeHint + '</div>';
+              var isExam = !!test.time_limit_minutes;
+              var typeLabel = isExam ? 'Imtihon' : 'Uy vazifasi';
+              var typeClass = isExam ? 'type-exam' : 'type-homework';
+              var iconClass = isExam ? 'exam' : 'homework';
+              var iconEmoji = isExam ? '⏱️' : '📘';
+              var chips = '<span class="assessment-chip ' + typeClass + '">' + typeLabel + '</span>' +
+                '<span class="assessment-chip">' + (test.questions ? test.questions.length : 0) + ' ta savol</span>' +
+                (test.time_limit_minutes ? '<span class="assessment-chip">⏱ ' + test.time_limit_minutes + ' daqiqa</span>' : '') +
+                (attempt ? '<span class="assessment-chip done">✓ Bajarildi</span>' : '');
+              var scoreHtml = attempt
+                ? '<div class="assessment-score">' + attempt.score + '/' + attempt.total + '<span class="pct">' + pct + '%</span></div>'
+                : '';
               var btnLabel = attempt ? 'Natijani ko\'rish' : 'Testni yechish';
               var btnHandler = attempt ? 'openStudentResultView' : 'openTestTaker';
-              return '<div class="test-row" style="padding:.6rem .8rem;">' +
-                '<div><div class="who" style="font-size:.85rem;">' + escapeHtml(test.title) + '</div>' +
-                resultHtml + '</div>' +
-                '<button class="btn-secondary" onclick="event.stopPropagation(); ' + btnHandler + '(\'' + test.id + '\')">' + btnLabel + '</button>' +
+              return '<div class="assessment-card">' +
+                '<div class="assessment-icon ' + iconClass + '">' + iconEmoji + '</div>' +
+                '<div class="assessment-main">' +
+                  '<div class="assessment-title">' + escapeHtml(test.title) + '</div>' +
+                  '<div class="assessment-meta">' + chips + '</div>' +
+                '</div>' +
+                scoreHtml +
+                '<div class="assessment-actions">' +
+                  '<button class="btn-secondary" onclick="event.stopPropagation(); ' + btnHandler + '(\'' + test.id + '\')">' + btnLabel + '</button>' +
+                '</div>' +
               '</div>';
             }).join('')
           : '<p style="color:var(--text-faint); font-size:.82rem;">Hali vazifa yo\'q.</p>';
@@ -992,10 +1026,22 @@
     }
     emptyEl.style.display = 'none';
     listEl.innerHTML = classroomTestsCache.map(function (t) {
-      return '<div class="test-row">' +
-        '<div><div class="who">' + escapeHtml(t.title) + '</div>' +
-        '<div class="sub">' + (t.questions ? t.questions.length : 0) + ' ta savol' + (t.time_limit_minutes ? ' · ⏱ ' + t.time_limit_minutes + ' daqiqa' : '') + ' · ' + new Date(t.created_at).toLocaleDateString() + '</div></div>' +
-        '<div class="actions">' +
+      var isExam = !!t.time_limit_minutes;
+      var typeLabel = isExam ? 'Imtihon' : 'Uy vazifasi';
+      var typeClass = isExam ? 'type-exam' : 'type-homework';
+      var iconClass = isExam ? 'exam' : 'homework';
+      var iconEmoji = isExam ? '⏱️' : '📘';
+      var chips = '<span class="assessment-chip ' + typeClass + '">' + typeLabel + '</span>' +
+        '<span class="assessment-chip">' + (t.questions ? t.questions.length : 0) + ' ta savol</span>' +
+        (t.time_limit_minutes ? '<span class="assessment-chip">⏱ ' + t.time_limit_minutes + ' daqiqa</span>' : '') +
+        '<span class="assessment-chip">' + new Date(t.created_at).toLocaleDateString() + '</span>';
+      return '<div class="assessment-card">' +
+        '<div class="assessment-icon ' + iconClass + '">' + iconEmoji + '</div>' +
+        '<div class="assessment-main">' +
+          '<div class="assessment-title">' + escapeHtml(t.title) + '</div>' +
+          '<div class="assessment-meta">' + chips + '</div>' +
+        '</div>' +
+        '<div class="assessment-actions">' +
           '<button class="btn-secondary" onclick="openTestViewer(\'' + t.id + '\')">Ko\'rish</button>' +
           '<button class="btn-secondary" onclick="openTestResults(\'' + t.id + '\')">Natijalar</button>' +
           '<button class="row-btn" onclick="deleteTest(\'' + t.id + '\', this)">O\'chirish</button>' +
