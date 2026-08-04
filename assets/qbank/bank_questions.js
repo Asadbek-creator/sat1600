@@ -14305,7 +14305,2137 @@ const BANK_QUESTIONS = {
     "answer": "D",
     "domain": "Algebra",
     "difficulty": "Hard"
-  }
+  },
+  {
+    "num": 1036,
+    "stem": "[August 2025] Which expression is equivalent to $7x(x+4)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$7x^2+4$",
+      "B": "$7x^2+28x$",
+      "C": "$8x^2+4$",
+      "D": "$8x^2+11x$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1037,
+    "stem": "[August 2025] $65 = \\frac{2K}{v^2}$ For an object with a mass of 65 kilograms, the given equation relates the kinetic energy $K$, in joules, of the object to the object's speed $v$, in meters per second, where $K$ and $v$ are positive. Which equation correctly expresses this object's speed, in meters per second, in terms of the object's kinetic energy, in joules?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$v = \\frac{2K}{65^2}$",
+      "B": "$v = \\frac{65^2}{2K}$",
+      "C": "$v = \\sqrt{\\frac{65}{2K}}$",
+      "D": "$v = \\sqrt{\\frac{2K}{65}}$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1038,
+    "stem": "[August 2025] The percent increase in mass of a certain red kangaroo from 110 days old to 210 days old was 773%. If this red kangaroo's mass was k grams at 110 days old, which expression represents its mass, in grams, at 210 days old?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$0.07k$",
+      "B": "$1.07k$",
+      "C": "$7.73k$",
+      "D": "$8.73k$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1039,
+    "stem": "[August 2025] The percent increase in mass of a certain red kangaroo from 90 days old to 160 days old was 438%. If this red kangaroo's mass was k grams at 90 days old, which expression represents its mass, in grams, at 160 days old?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$0.06k$",
+      "B": "$1.06k$",
+      "C": "$4.38k$",
+      "D": "$5.38k$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1040,
+    "stem": "[August 2025] Which expression is equivalent to $(8nr^2+2nr)+(4n^2r+3nr)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$12n^2r^2+5nr$",
+      "B": "$12n^3r^3+5n^2r^2$",
+      "C": "$32n^3r^3+6n^2r^2$",
+      "D": "$8nr^2+4n^2r+5nr$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1041,
+    "stem": "[August 2025] $R = \\frac{0.43l}{A}$ The given equation relates the resistance $R$, in ohms, of a wire to its length $l$, in meters, and its cross-sectional area $A$, in square meters. Which equation correctly expresses the length, in meters, of the wire in terms of its resistance, in ohms, and its cross-sectional area, in square meters?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$l = \\frac{R-A}{0.43}$",
+      "B": "$l = \\frac{R+A}{0.43}$",
+      "C": "$l = \\frac{0.43R}{A}$",
+      "D": "$l = \\frac{AR}{0.43}$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1042,
+    "stem": "[August 2025] Which expression is equivalent to $6x(x+7)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$6x^2+7x$",
+      "B": "$6x^2+42x$",
+      "C": "$7x^2+7x$",
+      "D": "$6x^2+13x$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1043,
+    "stem": "[August 2025] $b - 38 = \\frac{x}{y}$ The given equation relates the positive numbers $b$, $x$, and $y$. Which equation correctly expresses $x$ in terms of $b$ and $y$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x = by - 38$",
+      "B": "$x = \\frac{b-38}{y}$",
+      "C": "$x = by - 38y$",
+      "D": "$x = \\frac{by-38}{y}$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1044,
+    "stem": "[August 2025] Which expression represents the product of $(x^{-9}y^8z^4)$ and $(x^5z^4+y^3z^{-7})$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x^{-4}y^8z^8+y^3z^{-7}$",
+      "B": "$4^{-4}z^8+x^{-9}z^{-3}$",
+      "C": "$x^{-4}y^8z^8+x^{-9}y^{11}z^{-3}$",
+      "D": "$x^{-4}z^8+y^{11}z^{-3}$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1045,
+    "stem": "[August 2025] $\\frac{a}{(b+c)} = 55$ The given equation relates the positive numbers $a$, $b$, and $c$. Which equation correctly expresses $a$ in terms of $b$ and $c$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$a = (b+c)$",
+      "B": "$a = 55-(b+c)$",
+      "C": "$a = 55(b+c)$",
+      "D": "$a = \\frac{55}{(b+c)}$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1046,
+    "stem": "[September 2025] $\\frac{a}{b+c} = 64$ The given equation relates the positive numbers a, b, and c. Which equation correctly expresses a in terms of b and c?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$a = b+c$",
+      "B": "$a = 64-(b+c)$",
+      "C": "$a = 64(b+c)$",
+      "D": "$a = \\frac{64}{(b+c)}$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1047,
+    "stem": "[September 2025] Which expression is equivalent to $(3x^3-8x+5)-(4x^6+9x-2)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$-4x^6+3x^3-17x+7$",
+      "B": "$-x^9-17x-7$",
+      "C": "$-x^9-x+3$",
+      "D": "$-4x^6+3x^3+x+3$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1048,
+    "stem": "[September 2025] Which expression is equivalent to $v^4-590v^3$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$v^3(v+590)$",
+      "B": "$(c^2+59)(v^2-10)$",
+      "C": "$(v^2-59)(v^2-10)$",
+      "D": "$v^3(v-590)$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1049,
+    "stem": "[September 2025] $b-19=\\frac{x}{y}$ The given equation relates the positive numbers $b$, $x$, and $y$. Which equation correctly expresses $x$ in terms of $b$ and $y$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x = \\frac{(b-19)}{y}$",
+      "B": "$x = by-19y$",
+      "C": "$x = \\frac{(by-19)}{y}$",
+      "D": "$x = by-19$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1050,
+    "stem": "[September 2025] The length of a rectangle is 35 centimeters greater than its width. Which equation gives the area $A$, in square centimeters, of the rectangle in terms of the width $w$, in centimeters, of the rectangle?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$A = (w)(w+35)$",
+      "B": "$A = (w)(35w)$",
+      "C": "$A = (w)(\\frac{w}{35})$",
+      "D": "$A = (w)(w-35)$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1051,
+    "stem": "[September 2025] Which expression represents the product of $(x^{-9}y^6z^5)$ and $(x^4z^5+y^8z^{-7})$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x^{-5}y^6z^{10}+y^8z^{-7}$",
+      "B": "$x^{-5}y^6z^{10}+x^{-9}y^{14}z^{-2}$",
+      "C": "$x^{-5}z^{10}+x^{-9}z^{-2}$",
+      "D": "$x^{-5}z^{10}+y^{14}z^{-2}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1052,
+    "stem": "[October 2025] $18qrt-2qrs+10rst=0$ In the given equation, $q$, $r$, $s$, and $t$ are positive, and $\\frac{q}{t}$ is greater than 5. Which expression is equivalent to $s$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$\\frac{-9qt}{q-5t}$",
+      "B": "$\\frac{9qt}{q-5t}$",
+      "C": "$18qrt$",
+      "D": "$\\frac{2qt}{q-5t}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1053,
+    "stem": "[October 2025] If $5c=15$, what is the value of $5c-8$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "3",
+      "B": "67",
+      "C": "7",
+      "D": "23"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1054,
+    "stem": "[October 2025] A city has an area of $x$ square miles and the population density of 1035 people per square mile. The suburb adjacent to the city has an area of $y$ square miles and the population density of 535 people per square mile. The combined population of the city and the suburb adjacent to the city is 13,165 people. Which equation represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$1035x+535y=13165$",
+      "B": "$1035x+535=13165y$",
+      "C": "$1035x+535=1570y$",
+      "D": "$1035x+535y=1570$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1055,
+    "stem": "[October 2025] $5a=\\frac{4b^2}{a}-20a$ The given equation relates the positive variables $a$ and $b$. Which equation correctly expresses $a$ in terms of $b$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$a=\\frac{4b}{25}$",
+      "B": "$a=\\frac{4b^2}{25}$",
+      "C": "$a=\\frac{2b}{5}$",
+      "D": "$a=\\frac{2b^2}{5}$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1056,
+    "stem": "[October 2025] Which expression is equivalent to $4x(5xy)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$20x^2y$",
+      "B": "$4x^2y$",
+      "C": "$20x^2y^2$",
+      "D": "$5x^2y^2$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1057,
+    "stem": "[October 2025] Which expression is equivalent to $72t^2s^3-48t^3s$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$4t^2s(18ts-12s)$",
+      "B": "$4t^2s(18s^2-12t)$",
+      "C": "$4ts(18s^2-12ts)$",
+      "D": "$4ts(18t^2s^2-12t)$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1058,
+    "stem": "[October 2025] $b^2+4c=7d$ The given equation relates the real numbers $b$, $c$, and $d$, where $d>\\frac{4}{7}c$. Which equation correctly expresses $b$ in terms of $c$ and $d$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$b=\\frac{7d+4c}{2}$",
+      "B": "$b=\\frac{7d-4c}{2}$",
+      "C": "$b=\\pm\\sqrt{7d+4c}$",
+      "D": "$b=\\pm\\sqrt{7d-4c}$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1059,
+    "stem": "[October 2025] $f(x)=2x+3$, $g(x)=7x-2$, $h(x)=5x+6$. The functions $f$, $g$, and $h$ are defined as shown. If $f(x)\\cdot g(x)-h(x)=ax^2+bx+c$, where $a$, $b$, and $c$ are constants, what is the value of $b$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "-5",
+      "B": "12",
+      "C": "20",
+      "D": "22"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1060,
+    "stem": "[August 2025] If $\\frac{x-17}{18} = \\frac{x-17}{6}$, what is the value of $x + 17$ ?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "0",
+      "B": "3",
+      "C": "17",
+      "D": "34"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1061,
+    "stem": "[August 2025] In the linear function $f$, $f(0) = 5$ and $f(7) = 5$. Which equation defines $f$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$f(x) = 0$",
+      "B": "$f(x) = 7$",
+      "C": "$f(x) = 5$",
+      "D": "$f(x) = x + 5$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1062,
+    "stem": "[August 2025] If $4 + \\frac{5(7-x)}{2} = \\frac{8(7-x)}{3}$, what is the value of $7 - x$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "24",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1063,
+    "stem": "[August 2025] $c(x-6) = -7(x+k)$\n\nIn the given equation, $c$ and $k$ are constants. The equation has exactly one solution. Which of the following statements must be true?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "The value of $c$ cannot be -7.",
+      "B": "The value of $c$ cannot be $-\\frac{7}{6}$",
+      "C": "The value of $k$ cannot be $\\frac{6}{7}$",
+      "D": "The value of $k$ cannot be -6"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1064,
+    "stem": "[August 2025] Micah deposited a total of $6,600 into two retirement accounts last year by depositing $x$ dollars once each month into one account and $y$ dollars twice each month into the other account. Which equation represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$6600 = 12x + 12y$",
+      "B": "$6600 = 12x + 24y$",
+      "C": "$6600 = 24x + 12y$",
+      "D": "$6600 = 24x + 24y$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1065,
+    "stem": "[August 2025] If $|16 - 2x| = 58$, which of the following is a value of $8 - x$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "0",
+      "B": "8",
+      "C": "29",
+      "D": "42"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1066,
+    "stem": "[August 2025] If $10 + \\frac{8(7-x)}{5} = \\frac{5(7-x)}{3}$, what is the value of $7 - x$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "150",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1067,
+    "stem": "[August 2025] $|a + 10| = 21$\n\nWhat is a possible solution to the given equation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "-21",
+      "B": "-10",
+      "C": "0",
+      "D": "11"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1068,
+    "stem": "[September 2025] During hibernation, American black bears do not eat or replenish calories. A certain black bear weighed 304 pounds when entering hibernation and lost weight at a rate of 0.6 pound per day. At this rate, how many days after entering hibernation did the black bear weigh 250 pounds?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "90",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1069,
+    "stem": "[September 2025] What is the $x$-intercept of the graph of $4x + y = 24$ in the $xy$-plane?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$(6, 0)$",
+      "B": "$(0, 0)$",
+      "C": "$(28, 0)$",
+      "D": "$(4, 0)$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1070,
+    "stem": "[September 2025] $1.5c + 3d = 42$\n\nThe given equation describes the relationship between the number of cats, $c$, and the number of dogs, $d$, that can be cared for at a pet care business during a week. If the business cares for 14 dogs during a week, how many cats can it care for during this week?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "0",
+      "B": "42",
+      "C": "21",
+      "D": "3"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1071,
+    "stem": "[September 2025] On January 1, 2000, the population of a town was 26,252 and on January 1, 2010, the population was 26,753. The equation $10x + 26,252 = 26,753$ describes this situation. Which of the following is the best interpretation of $x$ in this context?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "The percentage by which the population of the town increased each year between 2000 and 2010",
+      "B": "The total increase in population between 2000 and 2010",
+      "C": "The projected population of the town 10 years after 2010",
+      "D": "The average increase per year of the population between 2000 and 2010"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1072,
+    "stem": "[September 2025] $8(t+4) - 10(t+4) = 34$\n\nWhat value of $t$ is the solution to the given equation?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "-21",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1073,
+    "stem": "[September 2025] $g = 14 - \\frac{x}{23}$\n\nThe equation shown gives the estimated amount of gas $g$, in gallons, that remains in the gas tank of a car after being driven $x$ miles, where $0 \\le x \\le 322$. What is the estimated amount of gas, in gallons, that remains in the gas tank of the car when $x = 230$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "14",
+      "B": "0",
+      "C": "9",
+      "D": "4"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1074,
+    "stem": "[September 2025] The table shows the linear relationship between the number of cars, $c$, on a commuter train and the maximum number of passengers and crew, $p$, that the train can carry. Which equation represents the linear relationship between $c$ and $p$? (Table: Number of cars 2, 7, 9 correspond to Maximum number of passengers and crew 75, 245, 313 respectively.)",
+    "images": ["assets/qbank/bank_alg3_1074.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$34p - c = 7$",
+      "B": "$34c - p = 7$",
+      "C": "$34p - c = -7$",
+      "D": "$34c - p = -7$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1075,
+    "stem": "[September 2025] If $4(2x - 0.6) + x = 0.45 + 0.3x$, what is the value of $870x$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "285",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1076,
+    "stem": "[September 2025] $38x + 85y = 360$\n\nThe given equation represents the volume of mulch $x$, in cubic feet, and the volume of soil $y$, in cubic feet, in a mixture of mulch and soil that weighs 360 pounds. If the volume of soil in the mixture is 2 cubic feet, what is the volume of mulch in the mixture, in cubic feet?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "5",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1077,
+    "stem": "[September 2025] A partially filled container containing 28 milliliters of water is placed under a leaky faucet that produces one 0.05-milliliter drop of water every 5 seconds. Until the container is full, which of the following can be used to represent the volume $v$, in milliliters, of water in the container $t$ seconds after it is placed under the faucet, where $t$ is a multiple of 5?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$v = 5t$",
+      "B": "$v = 0.25t + 28$",
+      "C": "$v = 0.01t + 28$",
+      "D": "$v = 0.05t + 28$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1078,
+    "stem": "[September 2025] $g = 13 - \\frac{x}{29}$\n\nThe equation shown gives the estimated amount of gas $g$, in gallons, that remains in the gas tank of a car after being driven $x$ miles, where $0 \\le x \\le 377$. What is the estimated amount of gas, in gallons, that remains in the gas tank of the car when $x = 290$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "13",
+      "B": "0",
+      "C": "3",
+      "D": "16"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1079,
+    "stem": "[September 2025] What is the slope of the graph of $y = \\frac{7}{12}x$ in the $xy$-plane?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "0",
+      "B": "$\\frac{7}{12}$",
+      "C": "$-\\frac{7}{12}$",
+      "D": "$\\frac{12}{7}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1080,
+    "stem": "[September 2025] $34x + 79y = 260$\n\nThe given equation represents the volume of mulch $x$, in cubic feet, and the volume of soil $y$, in cubic feet, in a mixture of mulch and soil that weighs 260 pounds. If the volume of soil in the mixture is 2 cubic feet, what is the volume of mulch in the mixture, in cubic feet?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "3",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1081,
+    "stem": "[September 2025] A partially filled container containing 26 milliliters of water is placed under a leaky faucet that produces one 0.03-milliliter drop of water every 3 seconds. Until the container is full, which of the following can be used to represent the volume $v$, in milliliters, of water in the container $t$ seconds after it is placed under the faucet, where $t$ is a multiple of 3?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$v = 0.01t + 26$",
+      "B": "$v = 0.09t + 26$",
+      "C": "$v = 3t$",
+      "D": "$v = 0.03t + 26$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1082,
+    "stem": "[September 2025] If $\\frac{x+5}{3} = \\frac{x+5}{13}$, the value of $x + 5$ is between which of the following pairs of values?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "7 and 13",
+      "B": "4 and 6",
+      "C": "-4 and 4",
+      "D": "-6 and -3"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1083,
+    "stem": "[September 2025] During hibernation, American black bears do not eat or replenish calories. A certain black bear weighed 515 pounds when entering hibernation and lost weight at a rate of 0.5 pound per day. At this rate, how many days after entering hibernation did the black bear weigh 490 pounds?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "50",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1084,
+    "stem": "If $x + 1 = 3$, what is the value of $2(x + 1)$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "6",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1085,
+    "stem": "$1.5c + 3d = 108$\n\nThe given equation describes the relationship between the number of cats, $c$, and the number of dogs, $d$, that can be cared for at a pet care business during a week. If the business cares for 36 dogs during a week, how many cats can it care for during this week?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "3",
+      "B": "54",
+      "C": "0",
+      "D": "108"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1086,
+    "stem": "$6(t + 7) - 8(t + 7) = 38$\n\nWhat value of $t$ is the solution to the given equation?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "-26",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1087,
+    "stem": "If $\\frac{x+5}{4} = \\frac{x+5}{13}$, the value of $x + 5$ is between which of the following pairs of values?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "-2 and 2",
+      "B": "7 and 13",
+      "C": "-6 and -4",
+      "D": "2 and 6"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1088,
+    "stem": "$9x + 17 = 9x + k$\n\nIn the given equation, $k$ is a constant. The equation has infinitely many solutions. What is the value of $k$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "17",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1089,
+    "stem": "In the $xy$-plane, line $k$ passes through the points $(3, 0)$ and $(0, 5)$. Which of the following is an equation of line $k$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$3x - 5y = 15$",
+      "B": "$5x + 3y = 15$",
+      "C": "$3x + 5y = 15$",
+      "D": "$5x - 3y = 15$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1090,
+    "stem": "A chemist combines 25 grams of compound A, 35 grams of compound B, and $x$ grams of compound C. The resulting mixture has a mass of 125 grams. Find the value of $x$.",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "25",
+      "B": "65",
+      "C": "35",
+      "D": "10"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1091,
+    "stem": "Carmen needs at least 100 signatures to submit a petition. If Carmen already has 51 signatures, what is the minimum number of additional signatures Carmen needs to submit the petition?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "41",
+      "B": "151",
+      "C": "49",
+      "D": "51"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1092,
+    "stem": "There are a total of 340 seats in a school auditorium. During an assembly, students occupied 50% of the seats in the auditorium. How many seats did the students occupy during this assembly?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "290",
+      "B": "25",
+      "C": "170",
+      "D": "50"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1093,
+    "stem": "A phone plan charges a flat monthly fee plus a fixed rate per minute of calls. In January, a customer made 80 minutes of calls and was billed \\$22. In February, the same customer made 200 minutes of calls and was billed \\$40. Which of the following represents the monthly bill B, in dollars, as a function of the number of minutes m?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$B = 0.10m + 14$",
+      "B": "$B = 0.15m + 10$",
+      "C": "$B = 0.12m + 12$",
+      "D": "$B = 0.20m + 6$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1094,
+    "stem": "If $5c = 15$, what is the value of $5c - 8$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "3",
+      "B": "67",
+      "C": "7",
+      "D": "23"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1095,
+    "stem": "$7j = k + 13m$\n\nThe given equation relates the distinct positive numbers $j$, $k$, and $m$. Which equation correctly expresses $j$ in terms of $k$ and $m$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$j = 7(k + 13m)$",
+      "B": "$j = \\frac{k}{7} + 13m$",
+      "C": "$j = k + \\frac{13m}{7}$",
+      "D": "$j = \\frac{k+13m}{7}$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1096,
+    "stem": "The function $f$ is defined by $f(x) = \\frac{x}{5} + 9$. For what value of $x$ does $f(x) = 13$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "20",
+      "B": "-32",
+      "C": "-13",
+      "D": "-22"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1097,
+    "stem": "How many solutions does the equation $14x = 6x + 8x$ have?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Exactly one",
+      "B": "Zero",
+      "C": "Infinitely many",
+      "D": "Exactly two"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1098,
+    "stem": "A designer used a total of 23 yards of blue fabric and yellow fabric for a sewing project. The designer used 17 yards of blue fabric. How many yards of yellow fabric were used?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "6",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1099,
+    "stem": "If $9x + 4 = 67$, what is the value of $90x + 40$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "7",
+      "B": "70",
+      "C": "130",
+      "D": "670"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1100,
+    "stem": "The equation $58 = 2x + 2y$ gives the perimeter of a rectangular garden that has length $x$, in feet, and width $y$, in feet. The width of the garden is 14 feet. What is the length, in feet, of the garden?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "15",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1101,
+    "stem": "During hibernation, American black bears do not eat or replenish calories. A certain black bear weighed 293 pounds when entering hibernation and lost weight at a mean rate of 0.9 pounds per day. At this rate, how many days after entering hibernation would the black bear weigh 230 pounds?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "57",
+      "B": "63",
+      "C": "70",
+      "D": "207"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1102,
+    "stem": "$\\frac{x}{5} + \\frac{y}{9} = \\frac{47}{45}$\n\nAn engineer connects resistors in series, where the resistors in the series have a total resistance of $\\frac{47}{45}$ ohms. In this series, there are $x$ resistors of type A, which each have a resistance of $a$ ohms, and $y$ resistors of type B, which each have a resistance of $b$ ohms. The given equation represents this situation. According to this equation, what is the positive difference between the value of $a$ and the value of $b$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "47",
+      "B": "4",
+      "C": "$\\frac{47}{45}$",
+      "D": "$\\frac{4}{45}$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1103,
+    "stem": "$b(6 - x) = 5x + 12$\n\nIn the equation above, $b$ is a constant. The equation has exactly one solution for $x$. Which of the following CANNOT be a value of $b$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "-5",
+      "B": "0",
+      "C": "5",
+      "D": "10"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1104,
+    "stem": "The total cost $f(x)$, in dollars, to lease a car for 24 months from a particular car dealership is given by $f(x) = 24x + 1000$, where $x$ is the monthly payment, in dollars. What is the total cost to lease a car when the monthly payment is \\$300?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$6200",
+      "B": "$7000",
+      "C": "$8200",
+      "D": "$25300"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1105,
+    "stem": "$nx + 7t = -tx + 8n$\n\nIn the given equation, n and t are constants. The equation has no solution. What can be the value of $n + t$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "0",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1106,
+    "stem": "Each 3.0-ounce serving of cheddar cheese and each 1.2-ounce serving of tuna provides about 1 microgram of vitamin B12. If a total of 1.7 micrograms of vitamin B12 are consumed from eating $x$ ounces of cheese and $y$ ounces of tuna, which equation best represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$3.0x + 1.2y = 1.7$",
+      "B": "$0.33x + 0.83y = 1.7$",
+      "C": "$0.83x + 0.33y = 1.7$",
+      "D": "$1.2x + 3.0y = 1.7$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1107,
+    "stem": "[August 2025]\n\nIf $2x = 8$, what is the value of $10x$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "9",
+      "B": "13",
+      "C": "20",
+      "D": "40"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1108,
+    "stem": "[August 2025] $3x + 6y = 17$ $-3x - 4y = 5$ The solution to the given system of equations is $(x,y)$. What is the value of $2y$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "22",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1109,
+    "stem": "[August 2025] $y = -12x + 16$ $y = -20x + 24$ What is the solution $(x,y)$ to the given system of equations?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$(1,4)$",
+      "B": "$(16,24)$",
+      "C": "$(24,16)$",
+      "D": "$(4,1)$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1110,
+    "stem": "[August 2025] $2x = 9 + 7y$ $-2x = 3 + 7y$ The solution to the given system of equations is $(x,y)$. What is the value of $4x$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "6",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1111,
+    "stem": "[August 2025] $x^2 + y + 3 = 3$ $8x + 16 - y = 0$ The solution to the given system of equations is $(x,y)$. What is the value of $x$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$-16$",
+      "B": "$-4$",
+      "C": "$2$",
+      "D": "$8$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1112,
+    "stem": "[August 2025] $y = 3x + 5{,}000$ $y = -3x + 13{,}000$ The solution to the given system of equations is $(x,y)$. What is the value of $2y$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$36000$",
+      "B": "$18000$",
+      "C": "$9000$",
+      "D": "$8000$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1113,
+    "stem": "[August 2025] $y = (x-6)(x+5)$ $y = 11x - 66$ The solution to the given system of equations is $(x,y)$. What is the value of $2y$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$0$",
+      "B": "$-5$",
+      "C": "$-6$",
+      "D": "$6$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1114,
+    "stem": "[August 2025] $y = 3x + 11{,}000$ $y = -3x + 13{,}000$ The solution to the given system of equations is $(x, y)$. What is the value of $2y$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$48000$",
+      "B": "$24{,}000$",
+      "C": "$12{,}000$",
+      "D": "$2{,}000$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1115,
+    "stem": "[August 2025] An artist made 13 pieces of pottery using 42 pounds of clay. The pottery included only bowls and vases. Each bowl used 2 pounds of clay and each vase used 4 pounds of clay. How many vases did the artist make?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$5$",
+      "B": "$6$",
+      "C": "$7$",
+      "D": "$8$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1116,
+    "stem": "[September 2025] $y = -15x + 19$ $y = -20x + 24$ What is the solution $(x,y)$ to the given system of equations?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$(24, 19)$",
+      "B": "$(19, 24)$",
+      "C": "$(4, 1)$",
+      "D": "$(1, 4)$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1117,
+    "stem": "[September 2025] $5\\left(9x + 7 + \\dfrac{c}{5}\\right) = 45x$ In the given equation, $c$ is a constant. The equation has infinitely many solutions. What is the value of $c$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "-35",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1118,
+    "stem": "[September 2025] If $x + 4y = 31$ and $9x - 20y = -57$, what is the value of $y$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "6",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1119,
+    "stem": "[September 2025] $8x + 32y = 38$ $12x + 48y = 57$ At how many points do the graphs of the given equations intersect in the $xy$-plane?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Exactly one",
+      "B": "Infinitely many",
+      "C": "Exactly two",
+      "D": "Zero"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1120,
+    "stem": "[September 2025] If $x + 3y = 29$ and $7x - 12y = -61$, what is the value of $y$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "8",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1121,
+    "stem": "[September 2025] $8x + 32y = 30$ $12x + 48y = 45$ At how many points do the graphs of the given equations intersect in the $xy$-plane?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "zero",
+      "B": "exactly one",
+      "C": "infinitely many",
+      "D": "exactly two"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1122,
+    "stem": "[September 2025] $y = -10x + 13$ $y = -12x + 15$ What is the solution to the given system of equations?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$(13, 15)$",
+      "B": "$(15, 13)$",
+      "C": "$(3, 1)$",
+      "D": "$(1, 3)$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1123,
+    "stem": "[September 2025] $3x + y = 21$ $9x - y = 3$ How many solutions does the given system of equations have?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Infinitely many",
+      "B": "Zero",
+      "C": "Exactly two",
+      "D": "Exactly one"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1124,
+    "stem": "[September 2025] $(x+k) + \\dfrac{9}{2}(y+t) + 19 = 0$ $(x+k) - \\dfrac{9}{2}(y+t) - 19 = 0$ In the given system of equations, $k$ and $t$ are constants. The solution to this system is $(x,y)$. What is the value of $18(y+t)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$-76$",
+      "B": "$0$",
+      "C": "$38$",
+      "D": "$9$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1125,
+    "stem": "[October 2025] $x + 4y = -3$ $4x - y = 22$ The solution to the given system of equations is $(x,y)$. What is the value of $3x - 5y$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "25",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1126,
+    "stem": "[October 2025] $0.5x + 1.2y = 90$ $1.5x + 3.6y = 27$ How many solutions does the given system of equations have??",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Infinitely many",
+      "B": "Exactly two",
+      "C": "Exactly one",
+      "D": "Zero"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1127,
+    "stem": "[October 2025] For a study, a research team measured the heights of 380 king penguins from the Kerguelen Islands and 190 king penguins from the Falkland Islands. The research team determined that the mean height of the 380 king penguins from the Kerguelen Islands was 87 centimeters and the mean height of the 190 king penguins from the Falkland Islands was 93 centimeters. What was the mean height, in centimeters, of all 570 king penguins the research team measured for this study?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$91$",
+      "B": "$89$",
+      "C": "$90$",
+      "D": "$88$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1128,
+    "stem": "[October 2025] $y = \\dfrac{1}{2}x - 7$ $\\dfrac{1}{2}y = 3x + 2$ The solution to the given equations is $(x,y)$. What is the value of $(y - x)$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "-6",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1129,
+    "stem": "[October 2025] $ax - by = 52$ $2ax - 8y = 48$ In the given system of equations, $a$ and $b$ are constants. The graphs of these equations in the $xy$-plane intersect at the point $(2, 4)$. What is the value of $b$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$3$",
+      "B": "$4$",
+      "C": "$-8$",
+      "D": "$-3$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1130,
+    "stem": "[October 2025] $x + 6y = 28$ $6y = 14$ The solution to the given system of equations is $(x,y)$. What is the value of $x$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "14",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1131,
+    "stem": "[October 2025] $x^2 + y^2 = 36$ $y = mx + \\dfrac{b}{4}$ In the given system of equations, $m$ and $b$ are negative constants. In the $xy$-plane, the graphs of the equations in the given system intersect at the point $(-5, y)$, where $y < 0$. Which expression represents the value of $b$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$-\\dfrac{5m}{4} + \\dfrac{\\sqrt{11}}{4}$",
+      "B": "$\\dfrac{5m}{4} - \\dfrac{\\sqrt{11}}{4}$",
+      "C": "$-20m + 4\\sqrt{11}$",
+      "D": "$20m - 4\\sqrt{11}$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1132,
+    "stem": "[October 2025] A biologist mixed a solution that is 0.3% sodium chloride by mass with a solution that is 0.15% sodium chloride by mass to obtain a new solution, which has a mass of 80 grams and contains 0.21 grams of sodium chloride. How many grams of 0.3% sodium chloride solution did the biologist use?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$0.14$",
+      "B": "$20$",
+      "C": "$60$",
+      "D": "$79.86$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1133,
+    "stem": "[October 2025] The table shown gives values of $x$ and $y$: $x = 0, y = -10$; $x = 1, y = -4$; $x = 2, y = 2$. Line $k$ also lies in the $xy$-plane and is defined by the equation $y = 4x$. At what point $(x,y)$ do lines $j$ and $k$ intersect?",
+    "images": ["assets/qbank/bank_alg3_1133.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$(5, 20)$",
+      "B": "$(5, -44)$",
+      "C": "$(6, 24)$",
+      "D": "$(6, 26)$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1134,
+    "stem": "[October 2025] $4x - 6y = 10y + 2$ $ty = \\dfrac{1}{2} + 2x$ In the given system of equations, $t$ is a constant. If the system has no solution, what is the value of $t$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "8",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1135,
+    "stem": "[October 2025] The graph of a system of a linear equation and a nonlinear equation is shown. What is the solution $(x,y)$ to this system?",
+    "images": ["assets/qbank/bank_alg3_1135.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$(4, 0)$",
+      "B": "$(5, 4)$",
+      "C": "$(0, 0)$",
+      "D": "$(0, 5)$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1136,
+    "stem": "[October 2025] $0.5x + 1.2y = 9$ $1.5x + 3.6y = 27$ How many solutions does the given system of equations have?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Infinitely many",
+      "B": "Exactly two",
+      "C": "Exactly one",
+      "D": "Zero"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1137,
+    "stem": "[October 2025] The graph of a system of a linear equation and a nonlinear equation is shown. What is the solution $(x,y)$ to this system?",
+    "images": ["assets/qbank/bank_alg3_1137.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$(0, 0)$",
+      "B": "$(0, -2)$",
+      "C": "$(-2, 2)$",
+      "D": "$(3, 0)$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1138,
+    "stem": "[September 2025] $9x + y = 22$ $10x - y = 16$ How many solutions does the given equations have?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Exactly one",
+      "B": "Infinitely many",
+      "C": "Zero",
+      "D": "Exactly two"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1139,
+    "stem": "[September 2025] $x + 5 = 14$ $y = 3x^2 + 3$ At what point $(x,y)$ do the graphs of the equations in the given system intersect?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$(9, 243)$",
+      "B": "$(14, 591)$",
+      "C": "$(9, 246)$",
+      "D": "$(14, 3)$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1140,
+    "stem": "[August 2025] The function $f(x) = -30x + 310$ gives the predicted height above the ground $f(x)$, in feet, of a model airplane $x$ minutes after it begins to descend. What is the predicted height above the ground, in feet, of the model airplane 2 minutes after it begins to descend?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "60",
+      "B": "250",
+      "C": "280",
+      "D": "370"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1141,
+    "stem": "[August 2025] A bank account was opened with an initial deposit. Over the next several months, regular deposits were made into this account, and there were no withdrawals made during this time. The graph of the function $f$ shown, where $y = f(x)$, estimates the account balance, in dollars, in this bank account $x$ months since the initial deposit. To the nearest whole dollar, what is the amount of the initial deposit estimated by the graph?",
+    "images": ["assets/qbank/bank_alg3_1141.png"],
+    "type": "grid",
+    "choices": null,
+    "answer": "15",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1142,
+    "stem": "[August 2025] In the $xy$-plane, line $s$ passes through the point $(0,0)$ and is parallel to the line represented by the equation $y = 36x + 6$. If line $s$ also passes through the point $(9,d)$, what is the value of $d$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "324",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1143,
+    "stem": "[August 2025] The function $f$ is defined by $f(x) = 25x + 70$. What is the value of $f(x)$ when $x = 2$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "50",
+      "B": "97",
+      "C": "120",
+      "D": "190"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1144,
+    "stem": "[August 2025] The table below gives the number of hours, $h$, of labor and a plumber's total charge $f(h)$, in dollars, for two different jobs.\n\nHours ($h$) | Total Charge $f(h)$\n1 | 120\n3 | 220\n\nThere is a linear relationship between $h$ and $f(h)$. Which equation represents this relationship?",
+    "images": ["assets/qbank/bank_alg3_1144.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$f(h) = 20h + 100$",
+      "B": "$f(h) = 100h + 20$",
+      "C": "$f(h) = 50h + 70$",
+      "D": "$f(h) = 70h + 50$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1145,
+    "stem": "[August 2025] What is the slope of the graph of $60x - 10y = -48$ in the $xy$-plane?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "-6",
+      "B": "$-\\frac{5}{4}$",
+      "C": "$\\frac{5}{4}$",
+      "D": "6"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1146,
+    "stem": "[August 2025] In the relationship between variables $x$ and $y$, each increase of 8 in the value of $x$ decreases the value of $y$ by 3. When the value of $x$ is 16, the value of $y$ is 10. Which equation represents this relationship?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$y = -\\frac{3}{8}x + 10$",
+      "B": "$y = -\\frac{3}{8}x + 16$",
+      "C": "$y = -\\frac{8}{3}x + 10$",
+      "D": "$y = -\\frac{8}{3}x + \\frac{158}{3}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1147,
+    "stem": "[August 2025] Javier deposits $45 in a savings account at the end of each week. At the beginning of the 1st week of a year there was $900 in that savings account. How much money, in dollars, will be in the account at the end of the 4th week of the year?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "720",
+      "B": "945",
+      "C": "949",
+      "D": "1,080"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1148,
+    "stem": "[August 2025] Line k contains the points $(-3,-48)$, $(v,0)$, and $(5,56)$. What is the value of $v$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "0.692; 9/13",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1149,
+    "stem": "[August 2025] Kai used fabric measuring 4 yards in length to make each costume for a school play. The relationship between the number of costumes that Kai made, $x$, and the total length of fabric that he purchased $y$, in yards, is represented by the equation $y - 4x = 5$. What is the best interpretation of 5 in this context?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "Kai made 5 costumes",
+      "B": "Kai purchased a total of 5 yards of fabric.",
+      "C": "Kai used a a total of 5 yards of fabric to make the costumes.",
+      "D": "Kai purchased 5 yards more fabric than he used to costumes."
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1150,
+    "stem": "[August 2025] During the first 8.00 seconds after a car started moving, its speed increased to 11.0 meters per second. From 8.00 seconds to 14.0 seconds after the car started moving, its speed increased from 11.0 meters per second to 23.0 meters per second. To the nearest hundredth, what is the positive difference between the average rate of change of the speed of the car, in meters per second per second, during the first 8.00 seconds after the car started moving and the average rate of change of the speed of the car, in meters per second per second, from 8.00 seconds to 14.0 seconds after the car started moving?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "0.63",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1151,
+    "stem": "[August 2025] The function m is defined by $m(x) = 3x + 6$ and the function p is defined by $p(x) = 6 - x$. What is the value of $2m(6) - p(6)$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "48",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1152,
+    "stem": "[August 2025] There is a linear relationship between $x$ and $y$. The table shows three values of $x$ and their corresponding values of $y$ in terms of a constant $n$.\n\n$x$ | $y$\n0 | $n$\n5 | $n+24$\n10 | $n+48$\n\nWhat is the slope of the line that represents this relationship in the $xy$-plane?",
+    "images": ["assets/qbank/bank_alg3_1152.png"],
+    "type": "grid",
+    "choices": null,
+    "answer": "24/5; 4.8",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1153,
+    "stem": "[August 2025] A book-of-the-month club charges $16 for the first book purchased during the month and an additional $11 for each book after the first. Which equation describes this situation, where $y$ is the total cost, in dollars, for books purchased during a month, $x$ is the number of books purchased during the month, and $x > 0$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$y = x + 16$",
+      "B": "$y = 11x + 16$",
+      "C": "$y = 11(x-1) + 16$",
+      "D": "$y = (x-1) + 16$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1154,
+    "stem": "[August 2025] What is the slope of the graph of $48x - 6y = -32$ in the $xy$-plane?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "-8",
+      "B": "$-\\frac{3}{2}$",
+      "C": "$\\frac{3}{2}$",
+      "D": "8"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1155,
+    "stem": "[August 2025] The table gives the number of hours, $h$, of labor and a plumber's total charge $f(h)$, in dollars, for two different jobs.\n\n$h$ | $f(h)$\n1 | 125\n3 | 225\n\nThere is a linear relationship between $h$ and $f(h)$. Which equation represents this relationship?",
+    "images": ["assets/qbank/bank_alg3_1155.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$f(h) = 25h + 100$",
+      "B": "$f(h) = 100h + 25$",
+      "C": "$f(h) = 50h + 75$",
+      "D": "$f(h) = 75h + 50$"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1156,
+    "stem": "[August 2025] The function $f$ is defined by $f(x) = 7x - 65$. If the point $(k, 2k)$ lies on the graph of $y = f(x)$ in the $xy$-plane, where $k$ is a constant, what is the value of $k$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "7",
+      "B": "14",
+      "C": "13",
+      "D": "165"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1157,
+    "stem": "[October 2025] Charles saves $\\frac{3}{5}$ of the $225 he earns each week from his summer job. If Charles continues to save at this rate, how much money, in dollars, will Charles save in 3 weeks?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "405",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1158,
+    "stem": "[August 2025] In the relationship between variables x and y, each increase of 7 in the value of x decreases the value of y by 3. When the value of x is 14, the value of y is 9. Which equation represents this relationship?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$y = \\frac{-3}{7}x + 9$",
+      "B": "$y = \\frac{-3}{7}x + 15$",
+      "C": "$y = \\frac{-7}{3}x + 9$",
+      "D": "$y = \\frac{-7}{3}x + \\frac{125}{3}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1159,
+    "stem": "[August 2025] For the linear function $g$, the table shows four values of $x$ and their corresponding values of $g(x)$.\n\n$x$ | $g(x)$\n1 | 44\n2 | 38\n3 | 32\n4 | 26\n\nThe function can be written as $g(x) = mx + b$, where $m$ and $b$ are constants. What is the value of $b$?",
+    "images": ["assets/qbank/bank_alg3_1159.png"],
+    "type": "mc",
+    "choices": {
+      "A": "6",
+      "B": "22",
+      "C": "44",
+      "D": "50"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1160,
+    "stem": "[September 2025] For the linear function $f$, the graph of $y = f(x)$ in the $xy$-plane passes through the points $(0,6)$ and $(7,7)$. What is the slope of $y = f(x)$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "1/7",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1161,
+    "stem": "[September 2025] There is a linear relationship between the mass of an object attached to a vertical spring and the length of the spring extension. The table shows data collected after certain objects were each attached to the spring.\n\nMass of object | Length of spring extension\n20 grams | 7 cm\n60 grams | 21 cm\n\nWhat is the length of the spring extension, in centimeters, when a 50 gram object is attached to the spring?",
+    "images": ["assets/qbank/bank_alg3_1161.png"],
+    "type": "mc",
+    "choices": {
+      "A": "24.5",
+      "B": "34",
+      "C": "14",
+      "D": "17.5"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1162,
+    "stem": "[August 2025] Line p is defined by $kx + 8y = 17$. Line p passes through the points $(r,0)$ and $(0,t)$ in the $xy$-plane, where k, r, and t are nonzero constants and r is not equal to t. Which expression represents the value of k?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$\\frac{17}{t}$",
+      "B": "$\\frac{17}{r}$",
+      "C": "$\\frac{8}{t}$",
+      "D": "$\\frac{8}{r}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1163,
+    "stem": "[October 2025] The graph of the linear function $f$ is shown, where $y = f(x)$. The line slants gradually up from left to right. The line passes through the following points: $(-6,-8)$, $(0,-7)$, $(6,-6)$. What is the slope of the graph of $f$?",
+    "images": ["assets/qbank/bank_alg3_1163.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$\\frac{1}{6}$",
+      "B": "-7",
+      "C": "$-\\frac{1}{6}$",
+      "D": "7"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1164,
+    "stem": "[October 2025] $\\frac{q}{t} = \\frac{9q}{s} + 5$\n\nIn the given equation, $q, r, s$, and $t$ are positive, and $\\frac{q}{t}$ is greater than 5. Which expression is equivalent to $s$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$\\frac{-9qt}{q-5t}$",
+      "B": "$\\frac{9qt}{q-5t}$",
+      "C": "$18qrt$",
+      "D": "$\\frac{2qt}{q-5t}$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1165,
+    "stem": "[October 2025] For certain air temperatures, the table gives wind chill temperatures for two different wind speeds.\n\nAir temperature | Wind chill temperature at wind speed 5 mph | Wind chill temperature at wind speed 15 mph\n27 F | 21 F | 15 F\n29 F | 24 F | 18 F\n31 F | 26 F | 20 F\n\nAccording to the table, what is the wind chill temperature, in degrees Fahrenheit, when the air temperature is 26 Fahrenheit and the wind speed is 15 mph? (Disregard the degree when entering your answer)?",
+    "images": ["assets/qbank/bank_alg3_1165.png"],
+    "type": "grid",
+    "choices": null,
+    "answer": "18",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1166,
+    "stem": "[October 2025] A city has an area of $x$ square miles and the population density of 1035 people per square mile. The suburb adjacent to the city has an area of $y$ square miles and the population density of 535 people per square mile. The combined population of the city and the suburb adjacent to the city is 13,165 people. Which equation represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$1035x + 535y = 13165$",
+      "B": "$1035x + 535 = 13165y$",
+      "C": "$1035x + 535 = 1570y$",
+      "D": "$1035x + 535y = 1570$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1167,
+    "stem": "[October 2025] The function $f(x) = -40x + 340$ gives the predicted height above the ground $f(x)$, in feet, of a model airplane $x$ minutes after it begins to descend. What is the predicted height above the ground, in feet, of the model airplane 3 minutes after it begins to descend?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "120",
+      "B": "220",
+      "C": "300",
+      "D": "460"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1168,
+    "stem": "[August 2025] A company developed a plan to set the selling price of a product. The company determined that for a selling price of $120.00, zero products would be sold. For each $2.50 decrease in the selling price, the number of products sold would increase by one. For a revenue of exactly $1,437.50, which of the following could be the number of products sold? (revenue = price x number of products sold)",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "23",
+      "B": "24",
+      "C": "527",
+      "D": "1440"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1169,
+    "stem": "[October 2025] In the $xy$-plane, what is the slope of the line that passes through the points $(0,0)$ and $(13,14)$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "13",
+      "B": "$\\frac{14}{13}$",
+      "C": "$\\frac{13}{14}$",
+      "D": "14"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1170,
+    "stem": "[September 2025] The table shows the linear relationship between the number of cars, c, on a commuter train and the maximum number of passengers and crew, p, that the train can carry.\n\nNumber of cars | Maximum number of passengers and crew\n2 | 102\n6 | 294\n10 | 486\n\nWhich equation represents the linear relationship between c and p?",
+    "images": ["assets/qbank/bank_alg3_1170.png"],
+    "type": "mc",
+    "choices": {
+      "A": "$48p - c = -6$",
+      "B": "$48c - p = 6$",
+      "C": "$48p - c = 6$",
+      "D": "$48c - p = -6$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1171,
+    "stem": "[August 2025] In a set of three consecutive integers, where the integers are ordered from least to greatest, the first integer is represented by $x$. The sum of 4 and the second integer is less than the product of 17 and the third integer. Which inequality represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$4 + (x+1) > 17(x+2)$",
+      "B": "$4 + (x+1) < 17(x+2)$",
+      "C": "$4 + (x+2) > 17(x+3)$",
+      "D": "$4 + (x+2) < 17(x+3)$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1172,
+    "stem": "[August 2025] The graphs of $y = -3x + 7$ and $y = x - 5$ are shown. Point $P$ (not shown) has coordinates $(-3, 5)$ and lies in the shaded region. The coordinates of $P$ satisfy which of the following inequality? I. $y < -3x + 7$ II. $y > x - 5$",
+    "images": ["assets/qbank/bank_alg3_1172.png"],
+    "type": "mc",
+    "choices": {
+      "A": "I only",
+      "B": "II only",
+      "C": "I and II",
+      "D": "Neither I nor II"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1173,
+    "stem": "[August 2025] A number $x$ is less than 8 more than $\\frac{1}{2}$ times the value of a number $y$. If $y$ is an integer and $x = 17$, what is the least possible value of $y$?",
+    "images": [],
+    "type": "grid",
+    "choices": null,
+    "answer": "19",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1174,
+    "stem": "[August 2025] To win a game show, a contestant needs to score at least 70 total points from two rounds. Correct responses in the first round are worth 4 points each, and correct responses in the second round are worth 5 points each. Which inequality models this situation, where f is the number of correct responses in the first round and s is the number of correct responses in the second round?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$f + s \\le 70$",
+      "B": "$4f + 5s \\ge 70$",
+      "C": "$5f + s \\ge 70$",
+      "D": "$5f + 4s \\le 70$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1175,
+    "stem": "[September 2025] A freight elevator can hold a maximum weight of 5,340 pounds during one trip. A 190-pound person needs to deliver several boxes using the freight elevator. Some of these boxes weigh 25 pounds each and the others weigh 64 pounds each. Which inequality represents the possible combinations of the number of 25-pound boxes, $x$, and the number of 64-pound boxes, $y$, the person can deliver during one trip if only the person and the boxes are on the freight elevator?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$64x + 25y \\ge 5340$",
+      "B": "$64x + 25y \\le 5340$",
+      "C": "$25x + 64y \\ge 5150$",
+      "D": "$25x + 64y \\le 5150$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1176,
+    "stem": "[September 2025] $y > 2x - 90$, $y < -\\frac{1}{6}x - 8$. For which of the following tables are all the values of $x$ and their corresponding values of $y$ solutions to the given system of inequalities?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x=18,\\ y=-8;\\quad x=24,\\ y=-9;\\quad x=30,\\ y=-10$",
+      "B": "$x=18,\\ y=-14;\\quad x=24,\\ y=-15;\\quad x=30,\\ y=-16$",
+      "C": "$x=18,\\ y=-11;\\quad x=24,\\ y=-12;\\quad x=30,\\ y=-13$",
+      "D": "$x=18,\\ y=-57;\\quad x=24,\\ y=-58;\\quad x=30,\\ y=-59$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1177,
+    "stem": "[September 2025] $y > \\frac{9}{2}x + b$. In the given inequality, $b$ is a positive constant. Which of the following does NOT contain any points $(x,y)$ in the $xy$-plane that are solutions to this inequality?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "The region where $x > 0$ and $y > 0$",
+      "B": "The region where $x < 0$ and $y < 0$",
+      "C": "The region where $x < 0$ and $y > 0$",
+      "D": "The region where $x > 0$ and $y < 0$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1178,
+    "stem": "[September 2025] $y > \\frac{9}{7}x + b$. In the given inequality, $b$ is a positive constant. Which of the following does NOT contain any points $(x,y)$ in the $xy$-plane that are solutions to this inequality?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "The region where $x < 0$ and $y < 0$",
+      "B": "The region where $x < 0$ and $y > 0$",
+      "C": "The region where $x > 0$ and $y > 0$",
+      "D": "The region where $x > 0$ and $y < 0$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1179,
+    "stem": "[October 2025] In the $xy$-plane, which of the following does NOT contain any points that are part of the solution set to $5x - 7y > 35$?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "The x-axis",
+      "B": "The region where $x > 0$ and $y > 0$",
+      "C": "The region where $x < 0$ and $y < 0$",
+      "D": "The region where $x < 0$ and $y > 0$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1180,
+    "stem": "[September 2025] $y < x$, $y > -5x - 10$. For which of the following tables are all the values of $x$ and their corresponding values of $y$ solutions to the given system of inequalities?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x=6,\\ y=11;\\quad x=7,\\ y=10;\\quad x=8,\\ y=9$",
+      "B": "$x=6,\\ y=4;\\quad x=7,\\ y=5;\\quad x=8,\\ y=6$",
+      "C": "$x=-13,\\ y=-15;\\quad x=-12,\\ y=-14;\\quad x=-11,\\ y=-13$",
+      "D": "$x=-13,\\ y=-6;\\quad x=-12,\\ y=-7;\\quad x=-11,\\ y=-8$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1181,
+    "stem": "[September 2025] $y < x$, $y > -4x - 9$. For which of the following tables are all the values of $x$ and their corresponding values of $y$ solutions to the given system of inequalities?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x=5,\\ y=4;\\quad x=6,\\ y=5;\\quad x=7,\\ y=6$",
+      "B": "$x=-12,\\ y=-5;\\quad x=-11,\\ y=-6;\\quad x=-10,\\ y=-7$",
+      "C": "$x=-12,\\ y=-13;\\quad x=-11,\\ y=-12;\\quad x=-10,\\ y=-11$",
+      "D": "$x=5,\\ y=10;\\quad x=6,\\ y=9;\\quad x=7,\\ y=8$"
+    },
+    "answer": "A",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1182,
+    "stem": "[September 2025] A freight elevator can hold a maximum weight of 5,450 pounds during one trip. A 190-pound person needs to deliver several boxes using the freight elevator. Some of these boxes weigh 23 pounds each and the others weigh 60 pounds each. Which inequality represents the possible combinations of the number of 23-pound boxes, $x$, and the number of 60-pound boxes, $y$, the person can deliver during one trip if only the person and the boxes are on the freight elevator?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$60x + 23y \\ge 5450$",
+      "B": "$23x + 60y \\ge 5260$",
+      "C": "$60x + 23y \\le 5450$",
+      "D": "$23x + 60y \\le 5260$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Medium"
+  },
+  {
+    "num": 1183,
+    "stem": "[September 2025] $y > 2x - 72$, $y < \\frac{-1}{6}x - 9$. For which of the following tables are all the values of $x$ and their corresponding values of $y$ solutions to the given system of inequalities?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$x=12,\\ y=-11;\\quad x=18,\\ y=-12;\\quad x=24,\\ y=-13$",
+      "B": "$x=12,\\ y=-14;\\quad x=18,\\ y=-15;\\quad x=24,\\ y=-16$",
+      "C": "$x=12,\\ y=-57;\\quad x=18,\\ y=-58;\\quad x=24,\\ y=-59$",
+      "D": "$x=12,\\ y=-8;\\quad x=18,\\ y=-9;\\quad x=24,\\ y=-10$"
+    },
+    "answer": "B",
+    "domain": "Algebra",
+    "difficulty": "Hard"
+  },
+  {
+    "num": 1184,
+    "stem": "[October 2025] A pet service that takes care of both cats and dogs can care for at most 43 animals. Which inequality represents this situation, where $c$ is the number of cats and $d$ is the number of dogs?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$c - d \\le 43$",
+      "B": "$c - d \\ge 43$",
+      "C": "$c + d \\ge 43$",
+      "D": "$c + d \\le 43$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1185,
+    "stem": "[October 2025] Carmen needs at least 100 signatures to submit a petition. If Carmen already has 51 signatures, what is the minimum number of additional signatures Carmen needs to submit the petition?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "41",
+      "B": "151",
+      "C": "49",
+      "D": "51"
+    },
+    "answer": "C",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1186,
+    "stem": "[October 2025] An environmental scientist needs to collect at least 38 samples of red clay soil for analysis. If $r$ represents the number of samples the scientist collects for analysis, which inequality represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$r \\le 38$",
+      "B": "$r - 38 \\ge 38$",
+      "C": "$r - 38 \\le 38$",
+      "D": "$r \\ge 38$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1187,
+    "stem": "[October 2025] An agricultural scientist needs to collect at least 200 soil samples in a certain area for a study on soil quality. If the scientist has already collected 168 soil samples, what is the minimum number of additional soil samples the scientist needs to collect for the study?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "368",
+      "B": "12",
+      "C": "148",
+      "D": "32"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
+  {
+    "num": 1188,
+    "stem": "[October 2025] Zuri has a goal to run at least 16 miles per week while training for a race. This week, she has run 4 miles. If $x$ represents the additional number of miles Zuri needs to run this week to meet her goal, which inequality represents this situation?",
+    "images": [],
+    "type": "mc",
+    "choices": {
+      "A": "$4 - x \\le 16$",
+      "B": "$4 + x \\le 16$",
+      "C": "$4 - x \\ge 16$",
+      "D": "$4 + x \\ge 16$"
+    },
+    "answer": "D",
+    "domain": "Algebra",
+    "difficulty": "Easy"
+  },
 ],
   "Advanced Math": [
 { num: 1, stem: "A rectangle has a length that is 15 times its width. The function y = (15w)(w) represents this situation, where y is the area, in square feet, of the rectangle and y > 0. Which of the following is the best interpretation of 15w in this context?", images: [], type: "mc", choices: {"A": "The length of the rectangle, in feet", "B": "The area of the rectangle, in square feet", "C": "The difference between the length and the width of the rectangle, in feet", "D": "The width of the rectangle, in feet"}, answer: "A", domain: "Advanced Math", difficulty: "Medium" },
