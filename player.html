@@ -284,6 +284,29 @@
   .bb-btn-next:hover{ background:#372da3; }
   .nav-chip.marked{ position:relative; }
   .nav-chip.marked::after{ content:'⚑'; position:absolute; top:-7px; right:-5px; font-size:.7rem; }
+
+  body.mock-mode .nav-panel{ text-align:center; max-width:540px; }
+  .bb-nav-title{ font-size:1.3rem; font-weight:800; margin-bottom:.7rem; }
+  .bb-nav-desc{ font-size:.82rem; color:var(--text-dim); margin-bottom:.25rem; line-height:1.5; }
+  .bb-nav-box{ border:1px solid var(--border); border-radius:10px; margin-top:1.3rem; text-align:left; overflow:hidden; }
+  .bb-nav-box-head{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.6rem;
+    padding:.9rem 1.1rem; border-bottom:1px solid var(--border); font-size:.85rem; font-weight:700; }
+  .bb-nav-legend{ display:flex; gap:1rem; font-size:.72rem; font-weight:600; color:var(--text-dim); flex-wrap:wrap; }
+  .bb-nav-legend span{ display:flex; align-items:center; gap:.3rem; }
+  .bb-legend-box{ width:13px; height:13px; border:1.5px dashed var(--border-strong); border-radius:3px; display:inline-block; }
+  .bb-nav-module-label{ font-size:.75rem; font-weight:700; color:var(--text-dim); text-transform:uppercase;
+    letter-spacing:.03em; padding:.9rem 1.1rem 0; }
+  .bb-nav-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(42px,1fr)); gap:.7rem; padding:1.1rem; }
+  .bb-nav-chip{ position:relative; aspect-ratio:1; border-radius:6px; border:1.5px dashed var(--border-strong); background:#fff;
+    font-weight:700; font-size:.82rem; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); }
+  .bb-nav-chip.answered{ border-style:solid; border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+  .bb-nav-chip .bb-chip-pin{ position:absolute; top:-11px; left:50%; transform:translateX(-50%); font-size:.8rem; line-height:1; }
+  .bb-nav-chip .bb-chip-flag{ position:absolute; top:-7px; right:-7px; font-size:.72rem; line-height:1; }
+  .bb-nav-review-btn{ margin-top:1.4rem; background:var(--accent); color:#fff; border:none; padding:.75rem 2rem; border-radius:10px;
+    font-weight:700; font-size:.92rem; cursor:pointer; font-family:inherit; }
+  .bb-nav-review-btn:hover{ background:#372da3; }
+  .bb-nav-back{ margin-top:.9rem; background:none; border:none; color:var(--text-dim); font-weight:600; font-size:.82rem;
+    cursor:pointer; font-family:inherit; text-decoration:underline; display:block; margin-left:auto; margin-right:auto; }
 </style>
 </head>
 <body>
@@ -1025,11 +1048,52 @@
   }
 
   function openNav(){
-    document.getElementById('navPanel').innerHTML = buildNavHtml();
+    document.getElementById('navPanel').innerHTML = mode === 'mock' ? buildMockNavHtml() : buildNavHtml();
     document.getElementById('navOverlay').classList.remove('hidden');
   }
   function closeNav(){
     document.getElementById('navOverlay').classList.add('hidden');
+  }
+
+  function buildMockNavHtml(){
+    const q = pool[idx];
+    const sectionLabel = q && q.module ? `Section 2, ${q.module}: Math` : 'Math';
+    let gridHtml = '';
+    const m1 = pool.map((qq,i)=>({q:qq,i})).filter(x=>x.q.module==='Module 1');
+    const m2 = pool.map((qq,i)=>({q:qq,i})).filter(x=>x.q.module==='Module 2');
+    [['Module 1', m1], ['Module 2', m2]].forEach(([label, items])=>{
+      if(!items.length) return;
+      gridHtml += `<div class="bb-nav-module-label">${label}</div><div class="bb-nav-grid">`;
+      items.forEach(({q:iq,i})=>{
+        const answered = userAnswers[i]!=null && userAnswers[i]!=='';
+        const marked = !!markedForReview[i];
+        const isCurrent = i===idx;
+        gridHtml += `<button type="button" class="bb-nav-chip ${answered?'answered':''}" onclick="goToQuestion(${i})">
+          ${isCurrent ? '<span class="bb-chip-pin">📍</span>' : ''}
+          ${marked ? '<span class="bb-chip-flag">🚩</span>' : ''}
+          ${i+1}
+        </button>`;
+      });
+      gridHtml += `</div>`;
+    });
+    return `
+      <div class="bb-nav-title">Check Your Work</div>
+      <div class="bb-nav-desc">On test day, you won't be able to move on to the next module until time expires.</div>
+      <div class="bb-nav-desc">For these practice questions, you can click Next when you're ready to move on.</div>
+      <div class="bb-nav-box">
+        <div class="bb-nav-box-head">
+          <span>${sectionLabel} Questions</span>
+          <div class="bb-nav-legend">
+            <span>📍 Current</span>
+            <span><span class="bb-legend-box"></span> Unanswered</span>
+            <span>🚩 For Review</span>
+          </div>
+        </div>
+        ${gridHtml}
+      </div>
+      <button type="button" class="bb-nav-review-btn" onclick="submitTest()">Go to Review Page</button>
+      <button type="button" class="bb-nav-back" onclick="closeNav()">← Back to Question</button>
+    `;
   }
 
   // --- Reference sheet ---
