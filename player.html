@@ -1076,6 +1076,12 @@
       });
       gridHtml += `</div>`;
     });
+    // Opening this navigator (via the footer pill, at ANY question) must never end the test on its own —
+    // only offer real submission once the learner is on the very last question of the last module.
+    const isAtEnd = idx === pool.length - 1;
+    const primaryBtn = isAtEnd
+      ? `<button type="button" class="bb-nav-review-btn" onclick="submitTest()">Submit Test</button>`
+      : `<button type="button" class="bb-nav-review-btn" onclick="closeNav()">Go to Review Page</button>`;
     return `
       <div class="bb-nav-title">Check Your Work</div>
       <div class="bb-nav-desc">On test day, you won't be able to move on to the next module until time expires.</div>
@@ -1091,7 +1097,7 @@
         </div>
         ${gridHtml}
       </div>
-      <button type="button" class="bb-nav-review-btn" onclick="submitTest()">Go to Review Page</button>
+      ${primaryBtn}
       <button type="button" class="bb-nav-back" onclick="closeNav()">← Back to Question</button>
     `;
   }
