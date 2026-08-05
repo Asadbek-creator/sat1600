@@ -307,6 +307,47 @@
   .bb-nav-review-btn:hover{ background:#372da3; }
   .bb-nav-back{ margin-top:.9rem; background:none; border:none; color:var(--text-dim); font-weight:600; font-size:.82rem;
     cursor:pointer; font-family:inherit; text-decoration:underline; display:block; margin-left:auto; margin-right:auto; }
+
+  /* Option Eliminator */
+  .bb-tool-btn.active{ background:var(--accent-soft); border-radius:6px; padding:.15rem .4rem; }
+  body.mock-mode .choice{ position:relative; }
+  .choice .elim-x{ display:none; position:absolute; right:12px; top:50%; transform:translateY(-50%); width:22px; height:22px;
+    border-radius:50%; border:1.5px solid var(--border-strong); background:#fff; align-items:center; justify-content:center;
+    font-size:.68rem; font-weight:800; color:var(--text-dim); cursor:pointer; z-index:2; }
+  body.mock-mode.eliminator-on .choice .elim-x{ display:flex; }
+  .choice.eliminated{ opacity:.5; }
+  .choice.eliminated .choice-text{ text-decoration:line-through; }
+  .choice.eliminated .elim-x{ background:var(--text); color:#fff; border-color:var(--text); }
+
+  /* Line Reader */
+  .line-reader-mask{ position:fixed; inset:0; z-index:500; pointer-events:none; display:none; }
+  .line-reader-mask.active{ display:block; }
+  .line-reader-band{ position:absolute; left:0; right:0; background:rgba(24,24,27,.5); }
+
+  /* Zoom */
+  .bb-zoom-wrap{ position:relative; }
+  .bb-zoom-panel{ position:absolute; top:120%; right:0; background:#fff; border:1px solid var(--border-strong); border-radius:8px;
+    box-shadow:0 12px 30px -10px rgba(0,0,0,.3); padding:.5rem .7rem; display:flex; align-items:center; gap:.5rem; z-index:70; }
+  .bb-zoom-panel.hidden{ display:none; }
+  .bb-zoom-btn{ width:26px; height:26px; border-radius:6px; border:1px solid var(--border-strong); background:#fff;
+    font-weight:800; cursor:pointer; font-family:inherit; }
+  .bb-zoom-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .bb-zoom-pct{ font-size:.78rem; font-weight:700; min-width:36px; text-align:center; }
+
+  /* Accommodations + Listen */
+  .bb-modal-accom{ margin-top:1.1rem; padding-top:1rem; border-top:1px solid var(--border); }
+  .bb-accom-check{ display:flex; align-items:center; gap:.5rem; font-size:.85rem; font-weight:600; color:var(--text); cursor:pointer; }
+  .bb-listen-btn{ background:none; border:1px solid var(--border-strong); border-radius:999px; padding:.3rem .8rem;
+    font-size:.72rem; font-weight:700; color:var(--text-dim); cursor:pointer; font-family:inherit; margin-left:.6rem; }
+  .bb-listen-btn:hover{ border-color:var(--accent); color:var(--accent); }
+
+  /* Preview mode end screen */
+  .bb-preview-end{ text-align:center; padding:2.4rem 1.5rem; }
+  .bb-preview-end .big-emoji{ font-size:2.6rem; margin-bottom:.8rem; }
+  .bb-preview-end h2{ font-size:1.4rem; margin-bottom:.6rem; }
+  .bb-preview-end p{ color:var(--text-dim); margin-bottom:1.6rem; }
+  .bb-preview-badge{ background:var(--accent); color:#fff; font-size:.72rem; font-weight:800; letter-spacing:.02em;
+    padding:.3rem .8rem; border-radius:999px; }
 </style>
 </head>
 <body>
@@ -328,12 +369,20 @@
             <p>We lock your device during the test. If you leave this tab 3 times, your test will be automatically submitted.</p>
           </div>
         </div>
+        <div class="bb-modal-accom">
+          <label class="bb-accom-check"><input type="checkbox" id="bbExtraTimeCheck"> Extended time (1.5×) — accommodation</label>
+        </div>
       </div>
       <div class="bb-modal-actions">
         <button type="button" class="bb-btn-cancel" onclick="cancelRules()">CANCEL</button>
         <button type="button" class="bb-btn-next" onclick="startMockFromRules()">NEXT</button>
       </div>
     </div>
+  </div>
+
+  <div class="line-reader-mask" id="lineReaderMask">
+    <div class="line-reader-band" id="lrTop" style="top:0; height:0;"></div>
+    <div class="line-reader-band" id="lrBot" style="bottom:0; height:0;"></div>
   </div>
 
   <div class="bb-chrome">
@@ -352,6 +401,16 @@
         <button type="button" class="bb-tool-btn" onclick="openReport()"><span class="ic">&#9888;&#65039;</span>Report</button>
         <button type="button" class="bb-tool-btn" onclick="toggleCalc()"><span class="ic">&#128425;&#65039;</span>Calculator</button>
         <button type="button" class="bb-tool-btn" onclick="openRef()"><span class="ic">&#128207;</span>Reference</button>
+        <button type="button" class="bb-tool-btn" id="bbElimBtn" onclick="toggleEliminator()"><span class="ic">&#128260;</span>ABC</button>
+        <button type="button" class="bb-tool-btn" id="bbLineBtn" onclick="toggleLineReader()"><span class="ic">&#128207;</span>Line Reader</button>
+        <div class="bb-zoom-wrap">
+          <button type="button" class="bb-tool-btn" onclick="toggleZoomPanel()"><span class="ic">&#128269;</span>Zoom</button>
+          <div class="bb-zoom-panel hidden" id="bbZoomPanel">
+            <button type="button" class="bb-zoom-btn" onclick="adjustZoom(-10)">A−</button>
+            <span class="bb-zoom-pct" id="bbZoomPct">100%</span>
+            <button type="button" class="bb-zoom-btn" onclick="adjustZoom(10)">A+</button>
+          </div>
+        </div>
         <div class="bb-more-wrap">
           <button type="button" class="bb-tool-btn" onclick="toggleMoreMenu()"><span class="ic">&#8942;</span>More</button>
           <div class="bb-more-menu hidden" id="bbMoreMenu">
@@ -364,6 +423,7 @@
     <div class="bb-qheader">
       <span class="bb-qnum-badge" id="bbQNumBadge">1</span>
       <label class="bb-mark-review"><input type="checkbox" id="bbMarkReview" onchange="toggleMarkReview()"><span class="bb-flag">&#9873;&#65039;</span> Mark for Review</label>
+      <button type="button" class="bb-listen-btn" onclick="readAloud()">&#128266; Listen</button>
       <span class="bb-brand">sat1600.com</span>
     </div>
 
@@ -494,6 +554,15 @@
   const domainFilter = params.get('domain') || 'All';
   const difficultyFilter = params.get('difficulty') || 'All';
   const testNum = params.get('test');
+  const isPreview = params.get('preview') === '1';
+
+  // ---- New tool state: Option Eliminator, Line Reader, Zoom, accommodations, adaptive Module 2 ----
+  let eliminatorOn = false;
+  let eliminatedChoices = {}; // qId -> array of eliminated letters
+  let lineReaderOn = false;
+  let zoomPct = 100;
+  let extraTimeMultiplier = 1;
+  let module2Adapted = false;
 
   // --- Local progress store (per-browser today; swaps to Supabase once accounts land) ---
   const MockProgress = {
@@ -640,17 +709,26 @@
 
     if(mode === 'mock' && testNum && QUESTIONS[testNum]){
       document.getElementById('backLink').href = 'mocks.html';
-      document.getElementById('titleText').textContent = 'Mock Test ' + testNum;
+      document.getElementById('titleText').textContent = isPreview ? ('Mock Test ' + testNum + ' — Preview') : ('Mock Test ' + testNum);
       QUESTIONS[testNum].M1.forEach(q => pool.push({...q, module:'Module 1'}));
       QUESTIONS[testNum].M2.forEach(q => pool.push({...q, module:'Module 2'}));
-      const saved = MockProgress.get(testNum);
-      if(saved && saved.status === 'in_progress' && Array.isArray(saved.userAnswers) && saved.userAnswers.length === pool.length){
-        resumedFrom = saved;
+      if(isPreview){
+        pool = pool.slice(0, 5); // untimed, unscored trial — just enough to feel the interface out
+      } else {
+        const saved = MockProgress.get(testNum);
+        if(saved && saved.status === 'in_progress' && Array.isArray(saved.userAnswers) && saved.userAnswers.length === pool.length){
+          resumedFrom = saved;
+        }
       }
       document.getElementById('practiceBanner').classList.remove('hidden');
-      document.getElementById('timerWrap').classList.remove('hidden');
+      if(!isPreview) document.getElementById('timerWrap').classList.remove('hidden');
       moduleTimers = loadModuleTimers();
       document.body.classList.add('mock-mode');
+      if(isPreview){
+        document.body.classList.add('preview-mode');
+        const topbarCenter = document.querySelector('.bb-topbar-center');
+        if(topbarCenter) topbarCenter.innerHTML = '<span class="bb-preview-badge">Free Preview — untimed</span>';
+      }
       buildWatermark();
     } else {
       // Bank mode draws ONLY from BANK_QUESTIONS (assets/qbank/bank_questions.js) — a data source
@@ -698,7 +776,7 @@
       return;
     }
 
-    if(mode === 'mock' && testNum && QUESTIONS[testNum] && !resumedFrom){
+    if(mode === 'mock' && testNum && QUESTIONS[testNum] && !resumedFrom && !isPreview){
       showRulesModal();
       return; // beginPlay() runs once the user clicks NEXT on the rules modal
     }
@@ -708,7 +786,7 @@
 
   function beginPlay(){
     render();
-    if(mode === 'mock' && testNum){
+    if(mode === 'mock' && testNum && !isPreview){
       saveMockProgress(); // marks it in_progress the moment the test is opened
       window.addEventListener('beforeunload', saveMockProgress);
       startTimerLoop();
@@ -723,6 +801,8 @@
     location.href = 'mocks.html';
   }
   function startMockFromRules(){
+    const extraTimeCb = document.getElementById('bbExtraTimeCheck');
+    extraTimeMultiplier = (extraTimeCb && extraTimeCb.checked) ? 1.5 : 1;
     document.getElementById('bbRulesOverlay').classList.add('hidden');
     beginPlay();
   }
@@ -748,7 +828,7 @@
   }
 
   function saveMockProgress(){
-    if(mode !== 'mock' || !testNum) return;
+    if(mode !== 'mock' || !testNum || isPreview) return; // preview runs are never persisted to real mock history
     MockProgress.save(testNum, { status:'in_progress', idx, userAnswers, markedForReview, updatedAt: Date.now() });
   }
 
@@ -770,6 +850,7 @@
   }
 
   function render(){
+    if(mode === 'mock') maybeAdaptModule2(); // may reorder pool's Module 2 slice — must run before reading pool[idx]
     const q = pool[idx];
     const card = document.getElementById('qcard');
     document.getElementById('progressFill').style.width = ((idx)/(pool.length))*100 + '%';
@@ -846,11 +927,14 @@
   function buildMockQuestionHtml(q){
     const imgsHtml = (q.images && q.images.length) ? q.images.map(src=>`<img class="qimg" src="${src}" alt="figure">`).join('') : '';
     if(q.type === 'mc'){
+      const elimList = eliminatedChoices[qId(idx)] || [];
       let choicesHtml = `<div class="choices" id="choicesWrap">`;
       ['A','B','C','D'].forEach(letter=>{
         const sel = userAnswers[idx] === letter ? 'selected' : '';
-        choicesHtml += `<button type="button" class="choice ${sel}" data-letter="${letter}" onclick="selectChoice('${letter}')">
-          <span class="letter">${letter}</span><span>${escapeHtml(q.choices[letter])}</span></button>`;
+        const isElim = elimList.includes(letter);
+        choicesHtml += `<button type="button" class="choice ${sel} ${isElim?'eliminated':''}" data-letter="${letter}" onclick="selectChoice('${letter}')">
+          <span class="letter">${letter}</span><span class="choice-text">${escapeHtml(q.choices[letter])}</span>
+          <span class="elim-x" onclick="event.stopPropagation(); toggleEliminate('${letter}')">${isElim ? '↺' : '✕'}</span></button>`;
       });
       choicesHtml += `</div>`;
       return `${imgsHtml}<div class="bb-stem" id="qstem">${stemHtmlWithHighlights(q.stem, highlights[qId(idx)])}</div>${choicesHtml}<div class="feedback" id="feedback"></div>`;
@@ -918,6 +1002,9 @@
     const dirWrap = document.querySelector('.bb-directions-wrap');
     const dirPanel = document.getElementById('bbDirectionsPanel');
     if(dirWrap && dirPanel && !dirWrap.contains(e.target)) dirPanel.classList.add('hidden');
+    const zoomWrap = document.querySelector('.bb-zoom-wrap');
+    const zoomPanel = document.getElementById('bbZoomPanel');
+    if(zoomWrap && zoomPanel && !zoomWrap.contains(e.target)) zoomPanel.classList.add('hidden');
   });
 
   function saveAndExit(){
@@ -943,6 +1030,7 @@
 
   function selectChoice(letter){
     if(mode==='bank' && checkedState[idx]) return;
+    if((eliminatedChoices[qId(idx)] || []).includes(letter)) return; // crossed-out choices can't be selected
     userAnswers[idx] = letter;
     document.querySelectorAll('.choice').forEach(el=>{
       el.classList.toggle('selected', el.dataset.letter === letter);
@@ -952,6 +1040,101 @@
   function onGridInput(val){
     userAnswers[idx] = val;
     saveMockProgress();
+  }
+
+  // ---- Option Eliminator ----
+  function toggleEliminator(){
+    eliminatorOn = !eliminatorOn;
+    document.body.classList.toggle('eliminator-on', eliminatorOn);
+    const btn = document.getElementById('bbElimBtn');
+    if(btn) btn.classList.toggle('active', eliminatorOn);
+  }
+  function toggleEliminate(letter){
+    const key = qId(idx);
+    const list = eliminatedChoices[key] || [];
+    const i = list.indexOf(letter);
+    if(i>=0) list.splice(i,1); else list.push(letter);
+    eliminatedChoices[key] = list;
+    render();
+  }
+
+  // ---- Line Reader ----
+  function toggleLineReader(){
+    lineReaderOn = !lineReaderOn;
+    const mask = document.getElementById('lineReaderMask');
+    if(mask) mask.classList.toggle('active', lineReaderOn);
+    const btn = document.getElementById('bbLineBtn');
+    if(btn) btn.classList.toggle('active', lineReaderOn);
+  }
+  document.addEventListener('mousemove', (e)=>{
+    if(!lineReaderOn) return;
+    const top = document.getElementById('lrTop');
+    const bot = document.getElementById('lrBot');
+    if(top) top.style.height = Math.max(0, e.clientY - 24) + 'px';
+    if(bot) bot.style.height = Math.max(0, window.innerHeight - (e.clientY + 24)) + 'px';
+  });
+
+  // ---- Zoom ----
+  function toggleZoomPanel(){
+    const panel = document.getElementById('bbZoomPanel');
+    if(panel) panel.classList.toggle('hidden');
+  }
+  function adjustZoom(delta){
+    zoomPct = Math.max(80, Math.min(200, zoomPct + delta));
+    const card = document.getElementById('qcard');
+    if(card) card.style.zoom = zoomPct + '%';
+    const pctEl = document.getElementById('bbZoomPct');
+    if(pctEl) pctEl.textContent = zoomPct + '%';
+  }
+
+  // ---- Read Aloud (text-to-speech accommodation) ----
+  function readAloud(){
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const q = pool[idx];
+    if(!q) return;
+    let text = q.stem;
+    if(q.type === 'mc' && q.choices){
+      text += '. Choices: ' + ['A','B','C','D'].map(l => `${l}: ${q.choices[l]}`).join('. ');
+    }
+    try{
+      const utter = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(utter);
+    }catch(e){}
+  }
+
+  // ---- Adaptive Module 2: reorder the Module 2 pool by difficulty based on Module 1 performance ----
+  function maybeAdaptModule2(){
+    if(mode !== 'mock' || module2Adapted) return;
+    const q = pool[idx];
+    if(!q || q.module !== 'Module 2') return; // only once the learner has actually reached Module 2
+    module2Adapted = true;
+
+    const m1Indices = [], m2Indices = [];
+    pool.forEach((qq,i)=>{ if(qq.module==='Module 1') m1Indices.push(i); else if(qq.module==='Module 2') m2Indices.push(i); });
+    if(!m1Indices.length || !m2Indices.length) return;
+
+    let correct = 0;
+    m1Indices.forEach(i=>{
+      const a = userAnswers[i]; if(a==null || a==='') return;
+      const qi = pool[i];
+      const ok = qi.type==='mc' ? a===String(qi.answer) : checkGrid(a, qi.answer);
+      if(ok) correct++;
+    });
+    const pct = Math.round((correct / m1Indices.length) * 100);
+    const harderPath = pct >= 60;
+
+    const rankHard = { 'Hard': 0, 'Medium': 1, 'Easy': 2 };
+    const rankEasy = { 'Easy': 0, 'Medium': 1, 'Hard': 2 };
+    const order = harderPath ? rankHard : rankEasy;
+
+    const m2Questions = m2Indices.map(i => pool[i]);
+    m2Questions.sort((a,b) => (order[a.difficulty] ?? 1) - (order[b.difficulty] ?? 1));
+    m2Indices.forEach((poolIdx, k) => { pool[poolIdx] = m2Questions[k]; });
+
+    showTimeUpToast(harderPath
+      ? "Module 2: harder-difficulty path, based on your Module 1 performance."
+      : "Module 2: standard-difficulty path, based on your Module 1 performance.");
   }
 
   function checkAnswer(){
@@ -1222,7 +1405,7 @@
   function ensureModuleTimer(moduleName){
     if(!moduleName) return;
     if(!moduleTimers[moduleName]){
-      moduleTimers[moduleName] = Date.now() + MODULE_TIME_SEC * 1000;
+      moduleTimers[moduleName] = Date.now() + MODULE_TIME_SEC * extraTimeMultiplier * 1000;
       saveModuleTimers();
     }
   }
@@ -1293,7 +1476,7 @@
 
   function tickTimer(){
     const wrap = document.getElementById('timerWrap');
-    if(mode !== 'mock' || !testNum){ if(wrap) wrap.classList.add('hidden'); return; }
+    if(mode !== 'mock' || !testNum || isPreview){ if(wrap) wrap.classList.add('hidden'); return; }
     const q = pool[idx];
     if(!q || !q.module){ if(wrap) wrap.classList.add('hidden'); return; }
     if(wrap) wrap.classList.remove('hidden');
@@ -1345,6 +1528,18 @@
     const end = document.getElementById('endScreen');
     end.classList.remove('hidden');
     document.getElementById('progressFill').style.width = '100%';
+
+    if(isPreview){
+      end.innerHTML = `
+        <div class="bb-preview-end">
+          <div class="big-emoji">👀</div>
+          <h2>That's a wrap on the free preview!</h2>
+          <p>This preview was untimed and unscored, just to show you what the real Bluebook-style mock test feels like. Ready to try a full mock with real timing and scoring?</p>
+          <a href="mocks.html" class="btn btn-primary" style="text-decoration:none; display:inline-block;">Back to Mock Tests</a>
+        </div>
+      `;
+      return;
+    }
 
     let finalScore = score;
     if(mode === 'mock'){
