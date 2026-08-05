@@ -172,9 +172,191 @@
     padding:.7rem 1.2rem; border-radius:10px; font-weight:700; font-size:.85rem; z-index:3000;
     box-shadow:0 12px 30px -8px rgba(0,0,0,.4); opacity:0; transition:opacity .25s; pointer-events:none; }
   .timeup-toast.show{ opacity:1; }
+
+  /* ===================== Bluebook-style mock UI ===================== */
+  body.mock-mode{ background:#fff; }
+  body.mock-mode .topbar, body.mock-mode .progress-track, body.mock-mode .practice-banner{ display:none; }
+  body.mock-mode .focus-guard-banner{ margin-top:118px; }
+  body.mock-mode .calc-panel{ top:118px; }
+  body.mock-mode .wrap{ max-width:none; padding:126px 4% 100px; position:relative; z-index:1; }
+  body.mock-mode .qcard{ background:transparent; border:none; padding:0; position:relative; z-index:1; max-width:900px; margin:0 auto; }
+  body.mock-mode .actions{ display:none; }
+  body.mock-mode .qmeta{ display:none; }
+
+  .bb-watermark{ position:fixed; top:-40%; left:-30%; width:180%; height:220%; z-index:0; pointer-events:none;
+    display:flex; flex-wrap:wrap; align-content:flex-start; transform:rotate(-22deg);
+    opacity:.055; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1.6rem;
+    color:#18181b; line-height:4.2rem; }
+  .bb-watermark span{ white-space:nowrap; margin:0 2.6rem; }
+
+  .bb-chrome{ display:none; }
+  body.mock-mode .bb-chrome{ display:block; }
+
+  .bb-topbar{ position:fixed; top:0; left:0; right:0; z-index:60; background:#fff; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; padding:.6rem 1.4rem; }
+  .bb-directions-wrap{ position:relative; }
+  .bb-directions-btn{ background:none; border:none; font-weight:700; font-size:.85rem; color:var(--text); cursor:pointer;
+    display:flex; align-items:center; gap:.3rem; font-family:inherit; padding:.3rem 0; }
+  .bb-directions-panel{ position:absolute; top:130%; left:0; background:#fff; border:1px solid var(--border-strong);
+    border-radius:8px; box-shadow:0 12px 30px -10px rgba(0,0,0,.3); padding:1rem 1.1rem; width:280px; font-size:.82rem;
+    color:var(--text-dim); line-height:1.5; z-index:70; }
+  .bb-directions-panel.hidden{ display:none; }
+  .bb-topbar-center{ display:flex; align-items:center; gap:.6rem; position:absolute; left:50%; transform:translateX(-50%); }
+  .bb-timer{ font-weight:800; font-size:1rem; font-variant-numeric:tabular-nums; }
+  .bb-hide-btn{ background:none; border:1px solid var(--border-strong); border-radius:999px; padding:.25rem .7rem;
+    font-size:.7rem; font-weight:700; cursor:pointer; color:var(--text-dim); font-family:inherit; }
+  .bb-topbar-right{ display:flex; align-items:center; gap:1.3rem; }
+  .bb-tool-btn{ background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:.15rem;
+    font-size:.68rem; font-weight:700; color:var(--accent); cursor:pointer; font-family:inherit; }
+  .bb-tool-btn .ic{ font-size:1rem; }
+  .bb-more-wrap{ position:relative; }
+  .bb-more-menu{ position:absolute; top:120%; right:0; background:#fff; border:1px solid var(--border-strong);
+    border-radius:8px; box-shadow:0 12px 30px -10px rgba(0,0,0,.3); padding:.5rem .3rem; min-width:150px; z-index:70; }
+  .bb-more-menu.hidden{ display:none; }
+  .bb-more-item{ display:flex; align-items:center; gap:.5rem; padding:.45rem .6rem; font-size:.82rem; font-weight:600;
+    cursor:pointer; border-radius:6px; }
+  .bb-more-item:hover{ background:var(--bg-soft); }
+
+  .bb-dashline{ height:4px; background: repeating-linear-gradient(90deg, #f59e0b 0 9px, transparent 9px 13px,
+    #16a34a 13px 22px, transparent 22px 26px, #4338ca 26px 35px, transparent 35px 39px); }
+
+  .bb-qheader{ position:fixed; top:53px; left:0; right:0; z-index:59; background:#fff; display:flex; align-items:center;
+    gap:.8rem; padding:.55rem 1.4rem; border-bottom:1px solid var(--border); }
+  .bb-qnum-badge{ background:var(--text); color:#fff; font-weight:800; font-size:.85rem; width:26px; height:26px;
+    border-radius:5px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .bb-mark-review{ display:flex; align-items:center; gap:.4rem; font-size:.82rem; font-weight:600; cursor:pointer;
+    color:var(--text-dim); }
+  .bb-mark-review input{ width:14px; height:14px; }
+  .bb-flag{ font-size:.85rem; }
+  .bb-brand{ margin-left:auto; font-size:.85rem; font-weight:700; color:var(--text-faint); }
+
+  .bb-footer{ position:fixed; bottom:0; left:0; right:0; z-index:60; background:#fff; border-top:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; padding:.7rem 1.4rem; }
+  .bb-footer-left{ font-size:.82rem; font-weight:700; color:var(--text-faint); min-width:100px; }
+  .bb-footer-center{ position:absolute; left:50%; transform:translateX(-50%); }
+  .bb-qpill{ background:var(--text); color:#fff; font-size:.82rem; font-weight:700; padding:.5rem 1.1rem;
+    border-radius:999px; cursor:pointer; border:none; font-family:inherit; }
+  .bb-footer-right{ display:flex; gap:.7rem; }
+  .bb-nav-btn{ padding:.55rem 1.5rem; border-radius:6px; border:1px solid var(--border-strong); background:#fff;
+    color:var(--text); font-weight:700; font-size:.88rem; cursor:pointer; font-family:inherit; }
+  .bb-nav-btn:disabled{ opacity:.35; cursor:not-allowed; }
+  .bb-nav-btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .bb-nav-btn-primary:hover{ background:#372da3; }
+
+  body.mock-mode .choices{ gap:.6rem; }
+  body.mock-mode .choice{ border-radius:6px; padding:.85rem 1.1rem; }
+  body.mock-mode .choice:hover{ background:var(--accent-soft); }
+  body.mock-mode .choice .letter{ border-radius:50%; }
+
+  .bb-stem{ font-size:1rem; line-height:1.6; margin-bottom:1.3rem; font-weight:400; }
+
+  .bb-grid-layout{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:#fff; }
+  .bb-grid-directions{ padding:1.6rem; border-right:1px solid var(--border); font-size:.85rem; color:var(--text); }
+  .bb-grid-directions h4{ font-size:.95rem; margin-bottom:.9rem; font-weight:700; }
+  .bb-grid-directions ul{ padding-left:1.2rem; margin-bottom:1.2rem; display:flex; flex-direction:column; gap:.5rem; }
+  .bb-grid-directions li{ line-height:1.5; }
+  .bb-examples-label{ font-weight:700; text-align:center; margin-bottom:.6rem; }
+  .bb-examples-table{ width:100%; border-collapse:collapse; font-size:.78rem; }
+  .bb-examples-table th, .bb-examples-table td{ border:1px solid var(--border-strong); padding:.4rem .5rem; text-align:center; }
+  .bb-examples-table th{ background:var(--bg-soft); font-weight:700; }
+  .bb-grid-question{ padding:1.6rem; }
+  .bb-grid-input-box{ width:180px; padding:.75rem .9rem; border:1.5px solid var(--border-strong); border-radius:6px;
+    font-size:1rem; font-family:inherit; margin:1rem 0 1.4rem; display:block; }
+  .bb-answer-preview-label{ font-weight:700; font-size:.9rem; margin-bottom:.4rem; }
+  .bb-answer-preview{ min-height:1.6rem; font-size:1rem; color:var(--text-dim); }
+  @media (max-width:800px){ .bb-grid-layout{ grid-template-columns:1fr; } .bb-grid-directions{ border-right:none; border-bottom:1px solid var(--border); } }
+
+  .bb-modal-overlay{ position:fixed; inset:0; background:rgba(24,24,27,.5); z-index:3000; display:flex;
+    align-items:center; justify-content:center; padding:1.5rem; }
+  .bb-modal-overlay.hidden{ display:none; }
+  .bb-modal{ background:#fff; border-radius:12px; max-width:480px; width:100%; max-height:80vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 30px 70px -20px rgba(0,0,0,.35); }
+  .bb-modal-body{ padding:1.8rem 1.8rem 1rem; overflow-y:auto; }
+  .bb-modal-body h3{ font-size:1.05rem; margin:1.1rem 0 .4rem; }
+  .bb-modal-body h3:first-child{ margin-top:0; }
+  .bb-modal-body p{ font-size:.88rem; color:var(--text-dim); line-height:1.5; }
+  .bb-modal-at-row{ display:flex; gap:.8rem; align-items:flex-start; margin-top:1.1rem; }
+  .bb-lock-icon{ font-size:1.3rem; flex-shrink:0; }
+  .bb-modal-actions{ display:flex; justify-content:flex-end; gap:.8rem; padding:1rem 1.8rem; border-top:1px solid var(--border); }
+  .bb-btn-cancel{ background:none; border:1.5px solid var(--border-strong); color:var(--text); font-weight:700;
+    padding:.6rem 1.3rem; border-radius:8px; cursor:pointer; font-family:inherit; font-size:.85rem; }
+  .bb-btn-next{ background:var(--accent); border:none; color:#fff; font-weight:700; padding:.6rem 1.5rem;
+    border-radius:8px; cursor:pointer; font-family:inherit; font-size:.85rem; }
+  .bb-btn-next:hover{ background:#372da3; }
+  .nav-chip.marked{ position:relative; }
+  .nav-chip.marked::after{ content:'⚑'; position:absolute; top:-7px; right:-5px; font-size:.7rem; }
 </style>
 </head>
 <body>
+  <div class="bb-watermark hidden" id="bbWatermark"></div>
+
+  <div class="bb-modal-overlay hidden" id="bbRulesOverlay">
+    <div class="bb-modal">
+      <div class="bb-modal-body">
+        <h3>Timing</h3>
+        <p>Adaptive mock exams are strictly timed and cannot be paused. To ensure authentic scoring, the timer keeps running even if you close the application or device.</p>
+        <h3>Scores</h3>
+        <p>When you finish the practice test, go to your completed mock history to review your exact score and review the questions.</p>
+        <h3>Assistive Technology (AT)</h3>
+        <p>Be sure to practice with any AT you use for testing.</p>
+        <div class="bb-modal-at-row">
+          <span class="bb-lock-icon">🔓</span>
+          <div>
+            <h3 style="margin-top:0;">No Device Lock</h3>
+            <p>We don't lock your device during practice. On test day, you'll be blocked from using other programs or apps.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bb-modal-actions">
+        <button type="button" class="bb-btn-cancel" onclick="cancelRules()">CANCEL</button>
+        <button type="button" class="bb-btn-next" onclick="startMockFromRules()">NEXT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bb-chrome">
+    <div class="bb-topbar">
+      <div class="bb-directions-wrap">
+        <button type="button" class="bb-directions-btn" onclick="toggleDirections()">Directions <span>&#9662;</span></button>
+        <div class="bb-directions-panel hidden" id="bbDirectionsPanel">
+          For multiple-choice questions, select the best answer from the four choices. For student-produced response questions, follow the directions to enter your answer in the box provided.
+        </div>
+      </div>
+      <div class="bb-topbar-center">
+        <div class="bb-timer" id="bbTimer">35:00</div>
+        <button type="button" class="bb-hide-btn" id="bbHideBtn" onclick="toggleTimerVisibility()">Hide</button>
+      </div>
+      <div class="bb-topbar-right">
+        <button type="button" class="bb-tool-btn" onclick="openReport()"><span class="ic">&#9888;&#65039;</span>Report</button>
+        <button type="button" class="bb-tool-btn" onclick="toggleCalc()"><span class="ic">&#128425;&#65039;</span>Calculator</button>
+        <button type="button" class="bb-tool-btn" onclick="openRef()"><span class="ic">&#128207;</span>Reference</button>
+        <div class="bb-more-wrap">
+          <button type="button" class="bb-tool-btn" onclick="toggleMoreMenu()"><span class="ic">&#8942;</span>More</button>
+          <div class="bb-more-menu hidden" id="bbMoreMenu">
+            <label class="bb-more-item"><input type="checkbox" onclick="saveAndExit()"> Save and Exit</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bb-dashline"></div>
+    <div class="bb-qheader">
+      <span class="bb-qnum-badge" id="bbQNumBadge">1</span>
+      <label class="bb-mark-review"><input type="checkbox" id="bbMarkReview" onchange="toggleMarkReview()"><span class="bb-flag">&#9873;&#65039;</span> Mark for Review</label>
+      <span class="bb-brand">sat1600.com</span>
+    </div>
+
+    <div class="bb-footer">
+      <div class="bb-footer-left" id="bbFooterLeft"></div>
+      <div class="bb-footer-center">
+        <button type="button" class="bb-qpill" id="bbQPill" onclick="openNav()">Question 1 of 22 &#9652;</button>
+      </div>
+      <div class="bb-footer-right">
+        <button type="button" class="bb-nav-btn" id="bbBackBtn" onclick="prevQ()">Back</button>
+        <button type="button" class="bb-nav-btn bb-nav-btn-primary" id="bbNextBtn" onclick="nextQ()">Next</button>
+      </div>
+    </div>
+    <div class="bb-dashline" style="position:fixed; bottom:52px; left:0; right:0; z-index:60;"></div>
+  </div>
+
   <div class="practice-banner hidden" id="practiceBanner">This is a practice test</div>
   <div class="topbar">
     <a href="#" id="backLink" class="back-link">← Back</a>
@@ -311,6 +493,7 @@
   let noContent = false;
   let loggedInUser = null;
   let highlights = {}; // id -> [[start,end], ...]
+  let markedForReview = [];
   let pendingRange = null; // Range currently selected, awaiting highlight click
 
   const SCORE_CURVE = [ [0,200],[10,300],[20,350],[30,400],[40,450],[50,500],[60,560],[70,620],[80,680],[90,740],[95,780],[100,800] ];
@@ -444,6 +627,8 @@
       document.getElementById('practiceBanner').classList.remove('hidden');
       document.getElementById('timerWrap').classList.remove('hidden');
       moduleTimers = loadModuleTimers();
+      document.body.classList.add('mock-mode');
+      buildWatermark();
     } else {
       // Bank mode draws ONLY from BANK_QUESTIONS (assets/qbank/bank_questions.js) — a data source
       // kept intentionally separate from the mock-test QUESTIONS object (assets/qbank/questions.js)
@@ -479,25 +664,44 @@
 
     idx = resumedFrom ? Math.min(resumedFrom.idx||0, pool.length-1) : 0;
     userAnswers = resumedFrom ? resumedFrom.userAnswers.slice() : new Array(pool.length).fill(null);
+    markedForReview = (resumedFrom && Array.isArray(resumedFrom.markedForReview)) ? resumedFrom.markedForReview.slice() : new Array(pool.length).fill(false);
     checkedState = new Array(pool.length).fill(false);
-
-    if(mode === 'mock' && testNum){
-      saveMockProgress(); // marks it in_progress the moment the test is opened
-      window.addEventListener('beforeunload', saveMockProgress);
-    }
 
     if(allSolved){
       renderAllSolved();
+      return;
     } else if(noContent){
       renderNoContent();
-    } else {
-      render();
+      return;
     }
 
-    if(mode === 'mock' && testNum && QUESTIONS[testNum]){
+    if(mode === 'mock' && testNum && QUESTIONS[testNum] && !resumedFrom){
+      showRulesModal();
+      return; // beginPlay() runs once the user clicks NEXT on the rules modal
+    }
+
+    beginPlay();
+  }
+
+  function beginPlay(){
+    render();
+    if(mode === 'mock' && testNum){
+      saveMockProgress(); // marks it in_progress the moment the test is opened
+      window.addEventListener('beforeunload', saveMockProgress);
       startTimerLoop();
       startFocusGuard();
     }
+  }
+
+  function showRulesModal(){
+    document.getElementById('bbRulesOverlay').classList.remove('hidden');
+  }
+  function cancelRules(){
+    location.href = 'mocks.html';
+  }
+  function startMockFromRules(){
+    document.getElementById('bbRulesOverlay').classList.add('hidden');
+    beginPlay();
   }
 
   function renderAllSolved(){
@@ -522,7 +726,7 @@
 
   function saveMockProgress(){
     if(mode !== 'mock' || !testNum) return;
-    MockProgress.save(testNum, { status:'in_progress', idx, userAnswers, updatedAt: Date.now() });
+    MockProgress.save(testNum, { status:'in_progress', idx, userAnswers, markedForReview, updatedAt: Date.now() });
   }
 
   function parseFraction(s){
@@ -549,31 +753,37 @@
     document.getElementById('scoreChip').textContent = `${score} / ${pool.length}`;
     tickTimer();
 
-    let html = `<div class="qmeta"><span class="domain-tag">${q.domain}${q.module ? ' · '+q.module : ''}${q.difficulty ? ' · '+q.difficulty : ''}</span><span class="qnum">Question ${idx+1} of ${pool.length}</span></div>`;
-    if(q.images && q.images.length){
-      q.images.forEach(src => { html += `<img class="qimg" src="${src}" alt="figure">`; });
-    }
-    html += `<div class="qstem" id="qstem">${stemHtmlWithHighlights(q.stem, highlights[qId(idx)])}</div>`;
-
-    if(q.type === 'mc'){
-      html += `<div class="choices" id="choicesWrap">`;
-      ['A','B','C','D'].forEach(letter=>{
-        const sel = userAnswers[idx] === letter ? 'selected' : '';
-        html += `<button type="button" class="choice ${sel}" data-letter="${letter}" onclick="selectChoice('${letter}')">
-          <span class="letter">${letter}</span><span>${escapeHtml(q.choices[letter])}</span></button>`;
-      });
-      html += `</div>`;
+    let html;
+    if(mode === 'mock'){
+      syncMockChrome(q);
+      html = buildMockQuestionHtml(q);
     } else {
-      const val = userAnswers[idx] || '';
-      html += `<div class="grid-input"><input type="text" id="gridInput" placeholder="Enter your answer" value="${val}" oninput="onGridInput(this.value)"></div>`;
-    }
+      html = `<div class="qmeta"><span class="domain-tag">${q.domain}${q.module ? ' · '+q.module : ''}${q.difficulty ? ' · '+q.difficulty : ''}</span><span class="qnum">Question ${idx+1} of ${pool.length}</span></div>`;
+      if(q.images && q.images.length){
+        q.images.forEach(src => { html += `<img class="qimg" src="${src}" alt="figure">`; });
+      }
+      html += `<div class="qstem" id="qstem">${stemHtmlWithHighlights(q.stem, highlights[qId(idx)])}</div>`;
 
-    html += `<div class="feedback" id="feedback"></div>`;
-    html += `<div class="actions">
-        <button class="btn btn-ghost" id="prevBtn" onclick="prevQ()" ${idx===0?'disabled':''}>← Previous</button>
-        ${mode==='bank' ? `<button class="btn btn-primary" id="checkBtn" onclick="checkAnswer()">Check Answer</button>` : ''}
-        <button class="btn btn-primary" id="nextBtn" onclick="nextQ()">${idx===pool.length-1 ? 'Finish' : 'Next →'}</button>
-      </div>`;
+      if(q.type === 'mc'){
+        html += `<div class="choices" id="choicesWrap">`;
+        ['A','B','C','D'].forEach(letter=>{
+          const sel = userAnswers[idx] === letter ? 'selected' : '';
+          html += `<button type="button" class="choice ${sel}" data-letter="${letter}" onclick="selectChoice('${letter}')">
+            <span class="letter">${letter}</span><span>${escapeHtml(q.choices[letter])}</span></button>`;
+        });
+        html += `</div>`;
+      } else {
+        const val = userAnswers[idx] || '';
+        html += `<div class="grid-input"><input type="text" id="gridInput" placeholder="Enter your answer" value="${val}" oninput="onGridInput(this.value)"></div>`;
+      }
+
+      html += `<div class="feedback" id="feedback"></div>`;
+      html += `<div class="actions">
+          <button class="btn btn-ghost" id="prevBtn" onclick="prevQ()" ${idx===0?'disabled':''}>← Previous</button>
+          ${mode==='bank' ? `<button class="btn btn-primary" id="checkBtn" onclick="checkAnswer()">Check Answer</button>` : ''}
+          <button class="btn btn-primary" id="nextBtn" onclick="nextQ()">${idx===pool.length-1 ? 'Finish' : 'Next →'}</button>
+        </div>`;
+    }
 
     card.innerHTML = html;
     setupHighlightListener();
@@ -596,6 +806,112 @@
     if(window.renderMathInElement){
       renderMathInElement(card, { delimiters: [{left:'$', right:'$', display:false}] });
     }
+  }
+
+  // ---- Bluebook-style mock UI helpers ----
+  function syncMockChrome(q){
+    const badge = document.getElementById('bbQNumBadge');
+    if(badge) badge.textContent = idx+1;
+    const pill = document.getElementById('bbQPill');
+    if(pill) pill.innerHTML = `Question ${idx+1} of ${pool.length} &#9652;`;
+    const backBtn = document.getElementById('bbBackBtn');
+    if(backBtn) backBtn.disabled = idx===0;
+    const markCb = document.getElementById('bbMarkReview');
+    if(markCb) markCb.checked = !!markedForReview[idx];
+  }
+
+  function buildMockQuestionHtml(q){
+    const imgsHtml = (q.images && q.images.length) ? q.images.map(src=>`<img class="qimg" src="${src}" alt="figure">`).join('') : '';
+    if(q.type === 'mc'){
+      let choicesHtml = `<div class="choices" id="choicesWrap">`;
+      ['A','B','C','D'].forEach(letter=>{
+        const sel = userAnswers[idx] === letter ? 'selected' : '';
+        choicesHtml += `<button type="button" class="choice ${sel}" data-letter="${letter}" onclick="selectChoice('${letter}')">
+          <span class="letter">${letter}</span><span>${escapeHtml(q.choices[letter])}</span></button>`;
+      });
+      choicesHtml += `</div>`;
+      return `${imgsHtml}<div class="bb-stem" id="qstem">${stemHtmlWithHighlights(q.stem, highlights[qId(idx)])}</div>${choicesHtml}<div class="feedback" id="feedback"></div>`;
+    }
+    const val = userAnswers[idx] || '';
+    return `<div class="bb-grid-layout">
+        <div class="bb-grid-directions">
+          <h4>Student-produced response directions</h4>
+          <ul>
+            <li>If you find more than one correct answer, enter only one answer.</li>
+            <li>You can enter up to 5 characters for a <b>positive</b> answer and up to 6 characters (including the negative sign) for a <b>negative</b> answer.</li>
+            <li>If your answer is a <b>fraction</b> that doesn't fit in the provided space, enter the decimal equivalent.</li>
+            <li>If your answer is a <b>decimal</b> that doesn't fit in the provided space, enter it by truncating or rounding at the fourth digit.</li>
+            <li>If your answer is a <b>mixed number</b> (such as 3&#189;), enter it as an improper fraction (7/2) or its decimal equivalent (3.5).</li>
+            <li>Don't enter <b>symbols</b> such as a percent sign, comma, or dollar sign.</li>
+          </ul>
+          <div class="bb-examples-label">Examples</div>
+          <table class="bb-examples-table">
+            <tr><th>Answer</th><th>Acceptable ways to enter</th><th>Unacceptable: will NOT receive credit</th></tr>
+            <tr><td>3.5</td><td>3.5<br>3.50<br>7/2</td><td>31/2<br>3 1/2</td></tr>
+            <tr><td>2/3</td><td>2/3<br>.6666<br>.6667<br>0.666<br>0.667</td><td>0.66<br>.66<br>0.67<br>.67</td></tr>
+            <tr><td>&minus;1/3</td><td>&minus;1/3<br>&minus;.3333<br>&minus;0.333</td><td>&minus;.33<br>&minus;0.33</td></tr>
+          </table>
+        </div>
+        <div class="bb-grid-question">
+          ${imgsHtml}
+          <div class="bb-stem" id="qstem">${stemHtmlWithHighlights(q.stem, highlights[qId(idx)])}</div>
+          <input type="text" class="bb-grid-input-box" id="gridInput" placeholder="" value="${escapeHtml(val)}" oninput="onGridInput(this.value); updateAnswerPreview(this.value)">
+          <div class="bb-answer-preview-label">Answer Preview:</div>
+          <div class="bb-answer-preview" id="bbAnswerPreview">${escapeHtml(val)}</div>
+        </div>
+      </div>
+      <div class="feedback" id="feedback"></div>`;
+  }
+
+  function updateAnswerPreview(val){
+    const preview = document.getElementById('bbAnswerPreview');
+    if(preview) preview.textContent = val || '';
+  }
+
+  function buildWatermark(){
+    const el = document.getElementById('bbWatermark');
+    if(!el || el.dataset.built) return;
+    let html = '';
+    for(let i=0;i<220;i++){ html += '<span>sat1600.com</span>'; }
+    el.innerHTML = html;
+    el.classList.remove('hidden');
+    el.dataset.built = '1';
+  }
+
+  function toggleDirections(){
+    const panel = document.getElementById('bbDirectionsPanel');
+    if(panel) panel.classList.toggle('hidden');
+  }
+
+  function toggleMoreMenu(){
+    const menu = document.getElementById('bbMoreMenu');
+    if(menu) menu.classList.toggle('hidden');
+  }
+
+  document.addEventListener('click', (e)=>{
+    const moreWrap = document.querySelector('.bb-more-wrap');
+    const moreMenu = document.getElementById('bbMoreMenu');
+    if(moreWrap && moreMenu && !moreWrap.contains(e.target)) moreMenu.classList.add('hidden');
+    const dirWrap = document.querySelector('.bb-directions-wrap');
+    const dirPanel = document.getElementById('bbDirectionsPanel');
+    if(dirWrap && dirPanel && !dirWrap.contains(e.target)) dirPanel.classList.add('hidden');
+  });
+
+  function saveAndExit(){
+    saveMockProgress();
+    location.href = 'mocks.html';
+  }
+
+  function toggleMarkReview(){
+    const cb = document.getElementById('bbMarkReview');
+    markedForReview[idx] = cb ? cb.checked : !markedForReview[idx];
+    saveMockProgress();
+  }
+
+  function openReport(){
+    const subject = encodeURIComponent(`SAT1600 Mock Test ${testNum || ''} — Report Question ${idx+1}`);
+    const body = encodeURIComponent(`Test: Mock ${testNum || ''}\nQuestion: ${idx+1} of ${pool.length}\n\nDescribe the issue here:\n`);
+    location.href = `mailto:asadbek11122009@gmail.com?subject=${subject}&body=${body}`;
   }
 
   function escapeHtml(s){
@@ -681,7 +997,8 @@
         body += `<div class="nav-module-label">${label}</div><div class="nav-grid">`;
         items.forEach(({q,i})=>{
           const answered = userAnswers[i]!=null && userAnswers[i]!=='';
-          body += `<button type="button" class="nav-chip ${answered?'answered':''} ${i===idx?'current':''}" onclick="goToQuestion(${i})">${i+1}</button>`;
+          const marked = !!markedForReview[i];
+          body += `<button type="button" class="nav-chip ${answered?'answered':''} ${marked?'marked':''} ${i===idx?'current':''}" onclick="goToQuestion(${i})">${i+1}</button>`;
         });
         body += `</div>`;
       });
@@ -917,6 +1234,8 @@
     const textEl = document.getElementById('timerText');
     if(textEl) textEl.textContent = timerHidden ? 'Hidden' : formatTime(remainSec);
     if(chip) chip.classList.toggle('low', !timerHidden && remainSec <= 300);
+    const bbTimerEl = document.getElementById('bbTimer');
+    if(bbTimerEl) bbTimerEl.textContent = timerHidden ? 'Hidden' : formatTime(remainSec);
     if(remainSec <= 0 && !expiredModules.has(q.module)){
       expiredModules.add(q.module);
       handleModuleTimeUp(q.module);
@@ -934,6 +1253,8 @@
     timerHidden = !timerHidden;
     const btn = document.getElementById('hideTimerBtn');
     if(btn) btn.textContent = timerHidden ? 'Show' : 'Hide';
+    const bbBtn = document.getElementById('bbHideBtn');
+    if(bbBtn) bbBtn.textContent = timerHidden ? 'Show' : 'Hide';
     tickTimer();
   }
 
